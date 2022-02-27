@@ -2,6 +2,8 @@ package MMU
 
 import (
 	"encoding/binary"
+	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 )
@@ -122,4 +124,35 @@ func (mmu *MMU_struct) ReadWord(address uint16) uint16 {
 func (mmu *MMU_struct) WriteWord(address uint16, nn uint16) {
 	mmu.Memory[address] = uint8(nn & 0xff)
 	mmu.Memory[address+1] = uint8(nn >> 8)
+}
+
+func (mmu *MMU_struct) DumpMemory() {
+	var byteArray []uint8 = make([]uint8, 0xffff)
+	copy(byteArray[:], mmu.Memory[:])
+	err := ioutil.WriteFile("data/dumps/dump.bin", byteArray, 0222)
+	if err != nil {
+		fmt.Println("Issue dumping memory")
+	}
+}
+
+func (mmu *MMU_struct) LoadDump() {
+	var dumpPath = "data/dumps/dump.bin"
+
+	if !fileExists(dumpPath) {
+		dumpPath = "../" + dumpPath
+	}
+
+	//read dump
+	dumpFile, err := os.Open(dumpPath)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer dumpFile.Close()
+
+	memory_bootstrap := mmu.Memory[:0xffff]
+	err = binary.Read(dumpFile, binary.LittleEndian, &memory_bootstrap)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
 }

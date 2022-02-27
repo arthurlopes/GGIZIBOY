@@ -53,12 +53,12 @@ func (gpu *GPU_struct) Update_clock(cpu_clock int) {
 	gpu.gpu_clock = cpu_clock
 }
 
-func (gpu *GPU_struct) decode_tile(tile *[16]uint16) *[]uint8 {
-	tile_dec := make([]uint8, 64)
+func (gpu *GPU_struct) decode_tile(tile [16]uint8) []uint8 {
+	tile_dec := make([]uint8, 0)
 
-	for i := 0; i < 8; i += 2 {
+	for i := 0; i < 16; i += 2 {
 		for j := 0; j < 8; j++ {
-			var l_pix uint8 = 1
+			var l_pix uint8 = 0
 			if (tile[i] & (1 << (7 - j))) > 0 {
 				l_pix = 1
 			}
@@ -71,22 +71,22 @@ func (gpu *GPU_struct) decode_tile(tile *[16]uint16) *[]uint8 {
 		}
 	}
 
-	return &tile_dec
+	return tile_dec
 }
 
-func (gpu *GPU_struct) create_tile_map() *map[uint16]*[]uint8 {
-	var tile_map map[uint16]*[]uint8
+func (gpu *GPU_struct) Create_tile_map() map[uint16][]uint8 {
+	var tile_map = make(map[uint16][]uint8)
 
 	for address := 0x8000; address < 0x9000; address += 16 {
-		var tile_raw [16]uint16
-		for row := 0; row < 16; row += 2 {
-			tile_raw[row/2] = gpu.MMU.ReadWord(uint16(address))
+		var tile_raw [16]uint8
+		for i := 0; i < 16; i++ {
+			tile_raw[i] = gpu.MMU.ReadByte(uint16(address + i))
 		}
-		var tile *[]uint8 = gpu.decode_tile(&tile_raw)
+		var tile []uint8 = gpu.decode_tile(tile_raw)
 		tile_map[uint16((address-0x8000)/16)] = tile
 	}
 
-	return &tile_map
+	return tile_map
 }
 
 // func (GPU *GPU_struct) render_screen() *[]uint8 {

@@ -14,6 +14,7 @@ type IMMU interface {
 	ReadWord(uint16) uint16
 	WriteByte(uint16, uint8)
 	WriteWord(uint16, uint16)
+	DumpMemory()
 }
 
 type Registers_struct struct {
@@ -70,6 +71,8 @@ func (cpu *CPU_struct) Run(limit int) {
 
 		if cpu.Registers.PC == 0x00FE {
 			fmt.Printf("%X, %X, %X, %d %d\n", cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
+			cpu.MMU.DumpMemory()
+			fmt.Scanln()
 		}
 
 		if next_instruction == 0xCB {
