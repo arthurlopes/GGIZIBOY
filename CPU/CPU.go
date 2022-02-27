@@ -1,8 +1,6 @@
 package CPU
 
-import (
-	"fmt"
-)
+import "fmt"
 
 type IGPU interface {
 	Update_clock(int)
@@ -69,11 +67,11 @@ func (cpu *CPU_struct) Run(limit int) {
 	for {
 		var next_instruction uint8 = cpu.MMU.ReadByte(cpu.Registers.PC)
 
-		if cpu.Registers.PC == 0x00FE {
-			fmt.Printf("%X, %X, %X, %d %d\n", cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
-			cpu.MMU.DumpMemory()
-			fmt.Scanln()
-		}
+		// if cpu.Registers.PC == 0x00FE {
+		// 	fmt.Printf("%X, %X, %X, %d %d\n", cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
+		// 	cpu.MMU.DumpMemory()
+		// 	fmt.Scanln()
+		// }
 
 		if next_instruction == 0xCB {
 			cpu.Registers.PC += 1

@@ -1,20 +1,28 @@
 package gameboy
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 )
 
-func TestRenderScreen(t *testing.T) {
-	var gb = GameboyFactory()
-	gb.mmu.LoadDump()
+func TestRenderBackground(t *testing.T) {
+	ch := make(chan bool)
+	var gb = GameboyFactory(ch)
+	gb.MMU.LoadDump()
+
+	gb.GPU.Render_Background()
+
+	// TODO: Check if logo was printed
+	fmt.Println("")
 }
 
 func TestCreateTileMap(t *testing.T) {
-	var gb = GameboyFactory()
-	gb.mmu.LoadDump()
+	ch := make(chan bool)
+	var gb = GameboyFactory(ch)
+	gb.MMU.LoadDump()
 
-	var tileMap = gb.gpu.Create_tile_map()
+	var tileMap = gb.GPU.Create_tile_map()
 
 	var cp = reflect.DeepEqual(tileMap[1], []uint8{
 		0x01, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00,

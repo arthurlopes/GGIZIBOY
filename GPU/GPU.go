@@ -13,10 +13,11 @@ type IMMU interface {
 
 type GPU_struct struct {
 	// GPU internal values
-	mode      int
-	modeclock int
-	gpu_clock int
-	screen    [][]uint8
+	mode       int
+	modeclock  int
+	gpu_clock  int
+	Screen     [][]uint8
+	Background [][]uint8
 
 	// GPU registers
 	Lcd_control        uint8
@@ -31,21 +32,31 @@ type GPU_struct struct {
 	Bgtile             uint8
 	Switchlcd          uint8
 
+	// Channels
+	hblank_channel chan bool
+
 	CPU ICPU
 	MMU IMMU
 }
 
-func GPUFactory() *GPU_struct {
+func GPUFactory(hblank_channel chan bool) *GPU_struct {
 	var gpu = GPU_struct{}
-	gpu.Innit()
+	gpu.Innit(hblank_channel)
 	return &gpu
 }
 
-func (gpu *GPU_struct) Innit() {
-	gpu.screen = make([][]uint8, 160)
-	for i := range gpu.screen {
-		gpu.screen[i] = make([]uint8, 144)
+func (gpu *GPU_struct) Innit(hblank_channel chan bool) {
+	gpu.Screen = make([][]uint8, 160)
+	for i := range gpu.Screen {
+		gpu.Screen[i] = make([]uint8, 144)
 	}
+
+	gpu.Background = make([][]uint8, 256)
+	for i := range gpu.Background {
+		gpu.Background[i] = make([]uint8, 256)
+	}
+
+	gpu.hblank_channel = hblank_channel
 }
 
 func (gpu *GPU_struct) Update_clock(cpu_clock int) {
@@ -89,22 +100,30 @@ func (gpu *GPU_struct) Create_tile_map() map[uint16][]uint8 {
 	return tile_map
 }
 
-// func (GPU *GPU_struct) render_screen() *[]uint8 {
+func (gpu *GPU_struct) Render_Background() [][]uint8 {
+	var tile_map = gpu.Create_tile_map()
+	var tile_i, tile_j, i, j uint8
+	for address := 0x9800; address <= 0x9bff; address++ {
+		var tile_idx = gpu.MMU.ReadByte(uint16(address))
+		var tile = tile_map[uint16(tile_idx)]
 
-// 	// print(tile_map)
-// 	// for tile_idx in mmu.memory[0x9800:0x9bff+1] {
-// 	// 	screen.append(tile_map[tile_idx])
-// 	// }
+		for i = 0; i < 8; i++ {
+			for j = 0; j < 8; j++ {
+				gpu.Background[tile_i+i][tile_j+j] = tile[8*i+j]
+			}
+		}
 
-// 	// plt.figure()
-// 	// plt.imshow(np.array(screen).reshape(32, 32, 8, 8).reshape(32, 256, 8).reshape(256, 256))
-// 	// plt.show()
+		tile_j = (tile_j + 8) % 255
+		if tile_j == 0 {
+			tile_i = (tile_i + 8) % 255
+		}
+	}
 
-// 	return &GPU.screen
-// }
+	return gpu.Background
+}
 
 func (gpu *GPU_struct) Step() {
-	// render_screen()
+	// render_Screen()
 	// Scanline - OAM
 	if gpu.mode == 2 {
 		if gpu.modeclock >= 80 {
@@ -126,7 +145,14 @@ func (gpu *GPU_struct) Step() {
 			if gpu.Line == 143 {
 				gpu.mode = 1
 				// CPU.IE |= 0x01
-				// render_screen()
+				gpu.Render_Background()
+				gpu.hblank_channel <- true
+				// select {
+				// case gpu.hblank_channel <- true:
+				// 	// fmt.Println("sent message", msg)
+				// default:
+				// 	// fmt.Println("no message sent")
+				// }
 			} else {
 				gpu.mode = 2
 			}

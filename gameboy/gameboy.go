@@ -7,32 +7,32 @@ import (
 )
 
 type Gameboy_struct struct {
-	mmu *MMU.MMU_struct
-	cpu *CPU.CPU_struct
-	gpu *GPU.GPU_struct
+	MMU *MMU.MMU_struct
+	CPU *CPU.CPU_struct
+	GPU *GPU.GPU_struct
 }
 
-func GameboyFactory() *Gameboy_struct {
+func GameboyFactory(hblank_channel chan bool) *Gameboy_struct {
 	var gb = Gameboy_struct{}
-	gb.Innit()
+	gb.Innit(hblank_channel)
 	return &gb
 }
 
-func (gb *Gameboy_struct) Innit() {
-	gb.mmu = MMU.MMUFactory()
-	gb.cpu = CPU.CPUFactory()
-	gb.gpu = GPU.GPUFactory()
+func (gb *Gameboy_struct) Innit(hblank_channel chan bool) {
+	gb.MMU = MMU.MMUFactory()
+	gb.CPU = CPU.CPUFactory()
+	gb.GPU = GPU.GPUFactory(hblank_channel)
 
-	gb.gpu.CPU = gb.cpu
-	gb.gpu.MMU = gb.mmu
+	gb.GPU.CPU = gb.CPU
+	gb.GPU.MMU = gb.MMU
 
-	gb.mmu.CPU = gb.cpu
-	gb.mmu.GPU = gb.gpu
+	gb.MMU.CPU = gb.CPU
+	gb.MMU.GPU = gb.GPU
 
-	gb.cpu.MMU = gb.mmu
-	gb.cpu.GPU = gb.gpu
+	gb.CPU.MMU = gb.MMU
+	gb.CPU.GPU = gb.GPU
 }
 
 func (gb *Gameboy_struct) Run(limit int) {
-	gb.cpu.Run(limit)
+	gb.CPU.Run(limit)
 }

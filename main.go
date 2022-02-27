@@ -12,8 +12,8 @@ import (
 )
 
 const (
-	rows    = 160
-	columns = 144
+	rows    = 256
+	columns = 256
 
 	width  = columns * 4
 	height = rows * 4
@@ -50,8 +50,9 @@ var (
 type pixel struct {
 	drawable uint32
 
-	x int
-	y int
+	x     int
+	y     int
+	color uint8
 }
 
 func (c *pixel) draw() {
@@ -59,14 +60,16 @@ func (c *pixel) draw() {
 	gl.DrawArrays(gl.TRIANGLES, 0, int32(len(square)/3))
 }
 
-func draw(cells [][]*pixel, window *glfw.Window, program uint32) {
+func draw(screen [][]*pixel, window *glfw.Window, program uint32) {
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 	gl.UseProgram(program)
 
 	for y := 0; y < rows; y++ {
 		for x := 0; x < columns; x++ {
-			var c *pixel = cells[y][x]
-			c.draw()
+			var c *pixel = screen[y][x]
+			if c.color != 0 {
+				c.draw()
+			}
 		}
 	}
 
@@ -74,19 +77,31 @@ func draw(cells [][]*pixel, window *glfw.Window, program uint32) {
 	window.SwapBuffers()
 }
 
-func makeCells() [][]*pixel {
-	cells := make([][]*pixel, rows)
+func makeScreen(colors [][]uint8) [][]*pixel {
+	screen := make([][]*pixel, rows)
 	for y := 0; y < rows; y++ {
 		for x := 0; x < columns; x++ {
-			c := newPixel(x, y)
-			cells[y] = append(cells[y], c)
+			color := colors[y][x]
+			c := newPixel(x, y, color)
+			screen[y] = append(screen[y], c)
 		}
 	}
 
-	return cells
+	return screen
 }
 
-func newPixel(x, y int) *pixel {
+func updateScreen(new_screen [][]uint8, screen [][]*pixel) [][]*pixel {
+	for y := 0; y < rows; y++ {
+		for x := 0; x < columns; x++ {
+			color := new_screen[y][x]
+			screen[y][x].color = color
+		}
+	}
+
+	return screen
+}
+
+func newPixel(x, y int, color uint8) *pixel {
 	points := make([]float32, len(square))
 	copy(points, square)
 
@@ -114,9 +129,27 @@ func newPixel(x, y int) *pixel {
 	return &pixel{
 		drawable: makeVao(points),
 
-		x: x,
-		y: y,
+		x:     x,
+		y:     y,
+		color: color,
 	}
+}
+
+// makeVao initializes and returns a vertex array from the points provided.
+func makeVao(points []float32) uint32 {
+	var vbo uint32
+	gl.GenBuffers(1, &vbo)
+	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
+	gl.BufferData(gl.ARRAY_BUFFER, 4*len(points), gl.Ptr(points), gl.STATIC_DRAW)
+
+	var vao uint32
+	gl.GenVertexArrays(1, &vao)
+	gl.BindVertexArray(vao)
+	gl.EnableVertexAttribArray(0)
+	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 0, nil)
+
+	return vao
 }
 
 // initGlfw initializes glfw and returns a Window to use.
@@ -164,23 +197,6 @@ func initOpenGL() uint32 {
 	return prog
 }
 
-// makeVao initializes and returns a vertex array from the points provided.
-func makeVao(points []float32) uint32 {
-	var vbo uint32
-	gl.GenBuffers(1, &vbo)
-	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
-	gl.BufferData(gl.ARRAY_BUFFER, 4*len(points), gl.Ptr(points), gl.STATIC_DRAW)
-
-	var vao uint32
-	gl.GenVertexArrays(1, &vao)
-	gl.BindVertexArray(vao)
-	gl.EnableVertexAttribArray(0)
-	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 0, nil)
-
-	return vao
-}
-
 func compileShader(source string, shaderType uint32) (uint32, error) {
 	shader := gl.CreateShader(shaderType)
 
@@ -211,13 +227,20 @@ func main() {
 	defer glfw.Terminate()
 	program := initOpenGL()
 
-	cells := makeCells()
+	hblank_channel := make(chan bool)
 
-	var gameboy = gameboy.GameboyFactory()
+	var gameboy = gameboy.GameboyFactory(hblank_channel)
 	go gameboy.Run(20000000)
 
+	var screen [][]*pixel
+	screen = makeScreen(gameboy.GPU.Background)
+
 	for !window.ShouldClose() {
-		draw(cells, window, program)
+		draw_flag := <-hblank_channel
+		if draw_flag {
+			updateScreen(gameboy.GPU.Background, screen)
+			draw(screen, window, program)
+		}
 	}
 
 }
