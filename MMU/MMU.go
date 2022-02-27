@@ -6,25 +6,25 @@ import (
 	"os"
 )
 
-type IGPU_MMU interface {
+type IGPU interface {
 	GetLine() uint8
 	GetScroll_x() uint8
 	GetScroll_y() uint8
 }
 
-type ICPU_MMU interface {
+type ICPU interface {
 	GetIE() uint8
 	GetIF() uint8
 }
 
 type MMU_struct struct {
-	memory         [0xffff]uint8
-	rom            [0xffff]uint8
+	Memory         [0xffff]uint8
+	Rom            [0xffff]uint8
 	Bootstrap_path string
 	ROM_path       string
 
-	GPU IGPU_MMU
-	CPU ICPU_MMU
+	GPU IGPU
+	CPU ICPU
 }
 
 func MMUFactory() *MMU_struct {
@@ -33,9 +33,25 @@ func MMUFactory() *MMU_struct {
 	return &mmu
 }
 
+func fileExists(filename string) bool {
+	info, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return !info.IsDir()
+}
+
 func (mmu *MMU_struct) Innit() {
 	mmu.Bootstrap_path = "data/bootstrap/dmg_boot.bin"
 	mmu.ROM_path = "data/ROM/Pokemon - Blue Version (USA, Europe) (SGB Enhanced).gb"
+
+	if !fileExists(mmu.ROM_path) {
+		mmu.ROM_path = "../" + mmu.ROM_path
+	}
+
+	if !fileExists(mmu.Bootstrap_path) {
+		mmu.Bootstrap_path = "../" + mmu.Bootstrap_path
+	}
 
 	//read bootstrap
 	bootstrap_file, err := os.Open(mmu.Bootstrap_path)
@@ -44,7 +60,7 @@ func (mmu *MMU_struct) Innit() {
 	}
 	defer bootstrap_file.Close()
 
-	memory_bootstrap := mmu.memory[:0x100]
+	memory_bootstrap := mmu.Memory[:0x100]
 	err = binary.Read(bootstrap_file, binary.LittleEndian, &memory_bootstrap)
 	if err != nil {
 		log.Fatalln(err)
@@ -57,7 +73,7 @@ func (mmu *MMU_struct) Innit() {
 	}
 	defer rom_file.Close()
 
-	memory_rom := mmu.rom[:]
+	memory_rom := mmu.Rom[:]
 	err = binary.Read(rom_file, binary.LittleEndian, &memory_rom)
 	if err != nil {
 		log.Fatalln(err)
@@ -66,7 +82,7 @@ func (mmu *MMU_struct) Innit() {
 
 func (mmu *MMU_struct) ReadByte(address uint16) uint8 {
 	if address >= 0x0100 && address < 0x8000 {
-		return mmu.rom[address]
+		return mmu.Rom[address]
 	}
 
 	if address == 0xff44 {
@@ -91,19 +107,19 @@ func (mmu *MMU_struct) ReadByte(address uint16) uint8 {
 		return mmu.CPU.GetIF()
 	}
 
-	return mmu.memory[address]
+	return mmu.Memory[address]
 }
 
 func (mmu *MMU_struct) WriteByte(address uint16, n uint8) {
-	mmu.memory[address] = n
+	mmu.Memory[address] = n
 }
 
 func (mmu *MMU_struct) ReadWord(address uint16) uint16 {
-	var word uint16 = (uint16(mmu.memory[address+1]) << 8) + uint16(mmu.memory[address])
+	var word uint16 = (uint16(mmu.Memory[address+1]) << 8) + uint16(mmu.Memory[address])
 	return word
 }
 
 func (mmu *MMU_struct) WriteWord(address uint16, nn uint16) {
-	mmu.memory[address] = uint8(nn & 0xff)
-	mmu.memory[address+1] = uint8(nn >> 8)
+	mmu.Memory[address] = uint8(nn & 0xff)
+	mmu.Memory[address+1] = uint8(nn >> 8)
 }
