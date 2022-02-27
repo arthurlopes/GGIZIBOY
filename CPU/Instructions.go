@@ -23,6 +23,8 @@ func (cpu *CPU_struct) Innit_Instruction_maps() {
 	cpu.Instructions_maps.Instructions_map_uint8[0x28] = cpu.op_0x28
 	// CP
 	cpu.Instructions_maps.Instructions_map_uint8[0xfe] = cpu.op_0xfe
+	// Bitwise
+	cpu.Instructions_maps.Instructions_map_uint8[0xe6] = cpu.op_0xe6
 
 	// 16
 	//LD
@@ -30,6 +32,7 @@ func (cpu *CPU_struct) Innit_Instruction_maps() {
 	cpu.Instructions_maps.Instructions_map_uint16[0x21] = cpu.op_0x21
 	cpu.Instructions_maps.Instructions_map_uint16[0xea] = cpu.op_0xea
 	cpu.Instructions_maps.Instructions_map_uint16[0x11] = cpu.op_0x11
+	cpu.Instructions_maps.Instructions_map_uint16[0x01] = cpu.op_0x01
 	//JP
 	cpu.Instructions_maps.Instructions_map_uint16[0xc3] = cpu.op_0xc3
 	//CALL
@@ -49,8 +52,10 @@ func (cpu *CPU_struct) Innit_Instruction_maps() {
 	cpu.Instructions_maps.Instructions_map_[0x7c] = cpu.op_0x7c
 	cpu.Instructions_maps.Instructions_map_[0x7d] = cpu.op_0x7d
 	cpu.Instructions_maps.Instructions_map_[0x78] = cpu.op_0x78
+	cpu.Instructions_maps.Instructions_map_[0x47] = cpu.op_0x47
 	// Bitwise
 	cpu.Instructions_maps.Instructions_map_[0xaf] = cpu.op_0xaf
+	cpu.Instructions_maps.Instructions_map_[0xb1] = cpu.op_0xb1
 	// CP
 	cpu.Instructions_maps.Instructions_map_[0x2f] = cpu.op_0x2f
 	cpu.Instructions_maps.Instructions_map_[0xbe] = cpu.op_0xbe
@@ -60,6 +65,7 @@ func (cpu *CPU_struct) Innit_Instruction_maps() {
 	cpu.Instructions_maps.Instructions_map_[0x1d] = cpu.op_0x1d
 	cpu.Instructions_maps.Instructions_map_[0x3d] = cpu.op_0x3d
 	cpu.Instructions_maps.Instructions_map_[0x0d] = cpu.op_0x0d
+	cpu.Instructions_maps.Instructions_map_[0x0b] = cpu.op_0x0b
 	// INC
 	cpu.Instructions_maps.Instructions_map_[0x04] = cpu.op_0x04
 	cpu.Instructions_maps.Instructions_map_[0x0c] = cpu.op_0x0c
@@ -80,11 +86,14 @@ func (cpu *CPU_struct) Innit_Instruction_maps() {
 	cpu.Instructions_maps.Instructions_map_[0xc9] = cpu.op_0xc9
 	// ADD
 	cpu.Instructions_maps.Instructions_map_[0x86] = cpu.op_0x86
+	// DI
+	cpu.Instructions_maps.Instructions_map_[0xf3] = cpu.op_0xf3
 
 	// CB
 	cpu.Instructions_maps.Instructions_map_CB[0x11] = cpu.op_cb_0x11
 	cpu.Instructions_maps.Instructions_map_CB[0x07] = cpu.op_cb_0x07
 	cpu.Instructions_maps.Instructions_map_CB[0x7c] = cpu.op_cb_0x7c
+	cpu.Instructions_maps.Instructions_map_CB[0x87] = cpu.op_cb_0x87
 
 }
 
@@ -247,6 +256,13 @@ func (cpu *CPU_struct) op_0x4f() {
 	cpu.Cycle += 4
 }
 
+// 0x47 LD B,A
+func (cpu *CPU_struct) op_0x47() {
+	cpu.Registers.B = cpu.Registers.A
+
+	cpu.Cycle += 4
+}
+
 //  0x1a LD A,(DE)
 func (cpu *CPU_struct) op_0x1a() {
 	var address uint16 = (uint16(cpu.Registers.D) << 8) | uint16(cpu.Registers.E)
@@ -259,6 +275,14 @@ func (cpu *CPU_struct) op_0x1a() {
 func (cpu *CPU_struct) op_0x11(nn uint16) {
 	cpu.Registers.D = uint8(nn >> 8)
 	cpu.Registers.E = uint8(nn & 0xff)
+
+	cpu.Cycle += 12
+}
+
+// 0x01 LD BC,nn
+func (cpu *CPU_struct) op_0x01(nn uint16) {
+	cpu.Registers.B = uint8(nn >> 8)
+	cpu.Registers.C = uint8(nn & 0xff)
 
 	cpu.Cycle += 12
 }
@@ -311,6 +335,18 @@ func (cpu *CPU_struct) op_0xcd(nn uint16) {
 func (cpu *CPU_struct) op_0xaf() {
 	cpu.Registers.A = 0x00
 	cpu.Registers.F = 0x80
+
+	cpu.Cycle += 4
+}
+
+// 0xB1 OR C
+func (cpu *CPU_struct) op_0xb1() {
+	cpu.Registers.A |= cpu.Registers.C
+	cpu.Registers.F = 0x00
+
+	if cpu.Registers.A == 0 {
+		cpu.Registers.F = 0x80
+	}
 
 	cpu.Cycle += 4
 }
@@ -465,6 +501,16 @@ func (cpu *CPU_struct) op_0x0d() {
 	cpu.Cycle += 4
 }
 
+// 0x0B DEC BC
+func (cpu *CPU_struct) op_0x0b() {
+	var bc uint16 = (uint16(cpu.Registers.B) << 8) | uint16(cpu.Registers.C)
+	bc -= 1
+	cpu.Registers.B = uint8(bc >> 8)
+	cpu.Registers.B = uint8(bc & 0xff)
+
+	cpu.Cycle += 8
+}
+
 //0x04 INC B
 func (cpu *CPU_struct) op_0x04() {
 	cpu.Registers.B += 1
@@ -557,6 +603,14 @@ func (cpu *CPU_struct) op_cb_0x7c() {
 	cpu.Registers.F = cpu.Registers.F | 0x20                              //  Set H
 	cpu.Registers.F = cpu.Registers.F & 0x30                              //  Reset N and Z
 	cpu.Registers.F = cpu.Registers.F | ((cpu.Registers.H & 0x80) ^ 0x80) //  Set Z if bit is 0
+	cpu.Cycle += 8
+}
+
+// 0xcb 0x87 RES b, A
+func (cpu *CPU_struct) op_cb_0x87() {
+	cpu.Registers.A &= 0b11111110
+
+	// TODO review 4 or 8, is 0xCB included here?
 	cpu.Cycle += 8
 }
 
@@ -654,6 +708,8 @@ func (cpu *CPU_struct) op_0x13() {
 	cpu.Registers.D = uint8(de >> 8)
 	cpu.Registers.E = uint8(de & 0xff)
 
+	// TODO: optimize, add missing flag
+
 	cpu.Cycle += 8
 }
 
@@ -688,9 +744,29 @@ func (cpu *CPU_struct) op_0x86() {
 		cpu.Registers.F = cpu.Registers.F | 0x80
 	}
 
-	// TODO: optimize
+	// TODO: optimize, add missing flag
 	if cpu.Registers.A&0x08 < (cpu.Registers.A-1)&0x08 {
 		cpu.Registers.F = cpu.Registers.F | 0x20
+	}
+
+	cpu.Cycle += 8
+}
+
+// 0xf3 DI
+func (cpu *CPU_struct) op_0xf3() {
+	cpu.Registers.IE = 0
+
+	cpu.Cycle += 4
+}
+
+// 0xe6 AND #
+func (cpu *CPU_struct) op_0xe6(n uint8) {
+	cpu.Registers.A &= n
+
+	cpu.Registers.F = 0x20
+
+	if cpu.Registers.A == 0 {
+		cpu.Registers.F |= 0x80
 	}
 
 	cpu.Cycle += 8

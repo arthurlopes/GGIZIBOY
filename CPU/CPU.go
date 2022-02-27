@@ -67,6 +67,10 @@ func (cpu *CPU_struct) Run(limit int) {
 	for {
 		var next_instruction uint8 = cpu.MMU.ReadByte(cpu.Registers.PC)
 
+		if cpu.Registers.PC == 0x1F74 {
+			fmt.Printf("%X, %X, %X, %d %d\n", cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
+		}
+
 		if cpu.Registers.PC == 0x00FE {
 			fmt.Printf("%X, %X, %X, %d %d\n", cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
 			// cpu.MMU.DumpMemory()
@@ -78,9 +82,13 @@ func (cpu *CPU_struct) Run(limit int) {
 			next_instruction = cpu.MMU.ReadByte(cpu.Registers.PC)
 			// TODO: check if can simply skip cycle
 			cpu.Cycle += 4
-			var op_func func() = cpu.Instructions_maps.Instructions_map_CB[next_instruction]
-			op_func()
-			cpu.Registers.PC += 1
+			if op_func, ok := cpu.Instructions_maps.Instructions_map_CB[next_instruction]; ok {
+				op_func()
+				cpu.Registers.PC += 1
+			} else {
+				fmt.Printf("Instruction not implemented 0xCB 0x%X\n", next_instruction)
+				panic("CB Instruction not implemented")
+			}
 		} else {
 			if op_func, ok := cpu.Instructions_maps.Instructions_map_uint8[next_instruction]; ok {
 				cpu.Registers.PC += 1

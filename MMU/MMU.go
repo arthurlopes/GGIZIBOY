@@ -20,8 +20,8 @@ type ICPU interface {
 }
 
 type MMU_struct struct {
-	Memory            [0xffff]uint8
-	Rom               [0xffff]uint8
+	Memory            [0xffff + 1]uint8
+	Rom               [0xffff + 1]uint8
 	Bootstrap_path    string
 	ROM_path          string
 	bootstrap_enabled bool
