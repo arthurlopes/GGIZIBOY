@@ -67,11 +67,11 @@ func (cpu *CPU_struct) Run(limit int) {
 	for {
 		var next_instruction uint8 = cpu.MMU.ReadByte(cpu.Registers.PC)
 
-		// if cpu.Registers.PC == 0x00FE {
-		// 	fmt.Printf("%X, %X, %X, %d %d\n", cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
-		// 	cpu.MMU.DumpMemory()
-		// 	fmt.Scanln()
-		// }
+		if cpu.Registers.PC == 0x00FE {
+			fmt.Printf("%X, %X, %X, %d %d\n", cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
+			// cpu.MMU.DumpMemory()
+			// fmt.Scanln()
+		}
 
 		if next_instruction == 0xCB {
 			cpu.Registers.PC += 1
@@ -98,6 +98,9 @@ func (cpu *CPU_struct) Run(limit int) {
 				cpu.Registers.PC += 1
 
 				op_func()
+			} else {
+				fmt.Printf("Instruction not implemented 0x%X\n", next_instruction)
+				panic("Instruction not implemented")
 			}
 		}
 		cpu.GPU.Update_clock(cpu.Cycle)
@@ -110,13 +113,11 @@ func (cpu *CPU_struct) Run(limit int) {
 			break
 		}
 
+		// if cpu.Instructions_count%500000 == 0 { // && cpu.Registers.PC != 0x64 && cpu.Registers.PC != 0x66 && cpu.Registers.PC != 0x68 {
 		if cpu.Registers.PC != 0x64 && cpu.Registers.PC != 0x66 && cpu.Registers.PC != 0x68 {
 			fmt.Printf("%X, %X, %X, %d %d\n", cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
 		}
-		if cpu.Registers.PC > 0x100 {
-			break
-		}
-		// log.Printf("%d\n", Instructions_count)
+
 	}
 }
 

@@ -20,10 +20,11 @@ type ICPU interface {
 }
 
 type MMU_struct struct {
-	Memory         [0xffff]uint8
-	Rom            [0xffff]uint8
-	Bootstrap_path string
-	ROM_path       string
+	Memory            [0xffff]uint8
+	Rom               [0xffff]uint8
+	Bootstrap_path    string
+	ROM_path          string
+	bootstrap_enabled bool
 
 	GPU IGPU
 	CPU ICPU
@@ -44,6 +45,7 @@ func fileExists(filename string) bool {
 }
 
 func (mmu *MMU_struct) Innit() {
+	mmu.bootstrap_enabled = true
 	mmu.Bootstrap_path = "data/bootstrap/dmg_boot.bin"
 	mmu.ROM_path = "data/ROM/Pokemon - Blue Version (USA, Europe) (SGB Enhanced).gb"
 
@@ -83,7 +85,7 @@ func (mmu *MMU_struct) Innit() {
 }
 
 func (mmu *MMU_struct) ReadByte(address uint16) uint8 {
-	if address >= 0x0100 && address < 0x8000 {
+	if (address >= 0x0100 || !mmu.bootstrap_enabled) && address < 0x8000 {
 		return mmu.Rom[address]
 	}
 
@@ -113,11 +115,21 @@ func (mmu *MMU_struct) ReadByte(address uint16) uint8 {
 }
 
 func (mmu *MMU_struct) WriteByte(address uint16, n uint8) {
+	if address == 0xff50 && n > 0 {
+		mmu.bootstrap_enabled = false
+		return
+	}
 	mmu.Memory[address] = n
 }
 
 func (mmu *MMU_struct) ReadWord(address uint16) uint16 {
-	var word uint16 = (uint16(mmu.Memory[address+1]) << 8) + uint16(mmu.Memory[address])
+	var word uint16
+	if (address >= 0x0100 || !mmu.bootstrap_enabled) && address < 0x8000 {
+		word = (uint16(mmu.Rom[address+1]) << 8) + uint16(mmu.Rom[address])
+	} else {
+		word = (uint16(mmu.Memory[address+1]) << 8) + uint16(mmu.Memory[address])
+	}
+
 	return word
 }
 

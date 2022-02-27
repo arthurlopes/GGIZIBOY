@@ -124,6 +124,10 @@ func newPixel(x, y int, color uint8) *pixel {
 		} else {
 			points[i] = ((position + size) * 2) - 1
 		}
+
+		if i%3 == 1 {
+			points[i] *= -1
+		}
 	}
 
 	return &pixel{
@@ -232,8 +236,8 @@ func main() {
 	var gameboy = gameboy.GameboyFactory(hblank_channel)
 	go gameboy.Run(20000000)
 
-	var screen [][]*pixel
-	screen = makeScreen(gameboy.GPU.Background)
+	screen := makeScreen(gameboy.GPU.Background)
+	draw(screen, window, program)
 
 	for !window.ShouldClose() {
 		draw_flag := <-hblank_channel
@@ -242,5 +246,4 @@ func main() {
 			draw(screen, window, program)
 		}
 	}
-
 }

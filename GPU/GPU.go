@@ -75,7 +75,7 @@ func (gpu *GPU_struct) decode_tile(tile [16]uint8) []uint8 {
 			}
 			var r_pix uint8 = 0
 			if (tile[i+1] & (1 << (7 - j))) > 0 {
-				r_pix = 1
+				r_pix = 2
 			}
 			var pixel uint8 = l_pix + r_pix
 			tile_dec = append(tile_dec, pixel)
