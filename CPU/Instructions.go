@@ -17,6 +17,7 @@ func (cpu *CPU_struct) Innit_Instruction_maps() {
 	cpu.Instructions_maps.Instructions_map_uint8[0x0E] = cpu.op_0x0e
 	cpu.Instructions_maps.Instructions_map_uint8[0x16] = cpu.op_0x16
 	cpu.Instructions_maps.Instructions_map_uint8[0x1E] = cpu.op_0x1e
+	cpu.Instructions_maps.Instructions_map_uint8[0x26] = cpu.op_0x26
 	cpu.Instructions_maps.Instructions_map_uint8[0x2E] = cpu.op_0x2e
 	cpu.Instructions_maps.Instructions_map_uint8[0x3E] = cpu.op_0x3e
 	cpu.Instructions_maps.Instructions_map_uint8[0x36] = cpu.op_0x36
@@ -40,8 +41,11 @@ func (cpu *CPU_struct) Innit_Instruction_maps() {
 	cpu.Instructions_maps.Instructions_map_uint16[0xea] = cpu.op_0xea
 	cpu.Instructions_maps.Instructions_map_uint16[0x11] = cpu.op_0x11
 	cpu.Instructions_maps.Instructions_map_uint16[0x01] = cpu.op_0x01
+	cpu.Instructions_maps.Instructions_map_uint16[0xfa] = cpu.op_0xfa
 	//JP
 	cpu.Instructions_maps.Instructions_map_uint16[0xc3] = cpu.op_0xc3
+	cpu.Instructions_maps.Instructions_map_uint16[0xca] = cpu.op_0xca
+	cpu.Instructions_maps.Instructions_map_uint16[0xd2] = cpu.op_0xd2
 	//CALL
 	cpu.Instructions_maps.Instructions_map_uint16[0xcd] = cpu.op_0xcd
 
@@ -51,24 +55,38 @@ func (cpu *CPU_struct) Innit_Instruction_maps() {
 	cpu.Instructions_maps.Instructions_map_[0x32] = cpu.op_0x32
 	cpu.Instructions_maps.Instructions_map_[0xe2] = cpu.op_0xe2
 	cpu.Instructions_maps.Instructions_map_[0x57] = cpu.op_0x57
+	cpu.Instructions_maps.Instructions_map_[0x5f] = cpu.op_0x5f
 	cpu.Instructions_maps.Instructions_map_[0x67] = cpu.op_0x67
+	cpu.Instructions_maps.Instructions_map_[0x6f] = cpu.op_0x6f
 	cpu.Instructions_maps.Instructions_map_[0x77] = cpu.op_0x77
+	cpu.Instructions_maps.Instructions_map_[0x12] = cpu.op_0x12
 	cpu.Instructions_maps.Instructions_map_[0x02] = cpu.op_0x02
 	cpu.Instructions_maps.Instructions_map_[0x4f] = cpu.op_0x4f
 	cpu.Instructions_maps.Instructions_map_[0x1a] = cpu.op_0x1a
 	cpu.Instructions_maps.Instructions_map_[0x7b] = cpu.op_0x7b
 	cpu.Instructions_maps.Instructions_map_[0x7c] = cpu.op_0x7c
 	cpu.Instructions_maps.Instructions_map_[0x7d] = cpu.op_0x7d
+	cpu.Instructions_maps.Instructions_map_[0x7e] = cpu.op_0x7e
 	cpu.Instructions_maps.Instructions_map_[0x78] = cpu.op_0x78
+	cpu.Instructions_maps.Instructions_map_[0x79] = cpu.op_0x79
+	cpu.Instructions_maps.Instructions_map_[0x6b] = cpu.op_0x6b
+	cpu.Instructions_maps.Instructions_map_[0x62] = cpu.op_0x62
+	cpu.Instructions_maps.Instructions_map_[0x66] = cpu.op_0x66
+	cpu.Instructions_maps.Instructions_map_[0x7a] = cpu.op_0x7A
 	cpu.Instructions_maps.Instructions_map_[0x47] = cpu.op_0x47
-	cpu.Instructions_maps.Instructions_map_[0x2A] = cpu.op_0x2a
+	cpu.Instructions_maps.Instructions_map_[0x2a] = cpu.op_0x2a
 	// Bitwise
 	cpu.Instructions_maps.Instructions_map_[0xaf] = cpu.op_0xaf
+	cpu.Instructions_maps.Instructions_map_[0xab] = cpu.op_0xab
+	cpu.Instructions_maps.Instructions_map_[0xb0] = cpu.op_0xb0
 	cpu.Instructions_maps.Instructions_map_[0xb1] = cpu.op_0xb1
+	cpu.Instructions_maps.Instructions_map_[0xb6] = cpu.op_0xb6
 	cpu.Instructions_maps.Instructions_map_[0xa8] = cpu.op_0xa8
+	cpu.Instructions_maps.Instructions_map_[0xa7] = cpu.op_0xa7
 	// CP
 	cpu.Instructions_maps.Instructions_map_[0x2f] = cpu.op_0x2f
 	cpu.Instructions_maps.Instructions_map_[0xbe] = cpu.op_0xbe
+	cpu.Instructions_maps.Instructions_map_[0xb8] = cpu.op_0xb8
 	// DEC
 	cpu.Instructions_maps.Instructions_map_[0x05] = cpu.op_0x05
 	cpu.Instructions_maps.Instructions_map_[0x15] = cpu.op_0x15
@@ -76,6 +94,7 @@ func (cpu *CPU_struct) Innit_Instruction_maps() {
 	cpu.Instructions_maps.Instructions_map_[0x3d] = cpu.op_0x3d
 	cpu.Instructions_maps.Instructions_map_[0x0d] = cpu.op_0x0d
 	cpu.Instructions_maps.Instructions_map_[0x0b] = cpu.op_0x0b
+	cpu.Instructions_maps.Instructions_map_[0x2b] = cpu.op_0x2b
 	// INC
 	cpu.Instructions_maps.Instructions_map_[0x04] = cpu.op_0x04
 	cpu.Instructions_maps.Instructions_map_[0x0c] = cpu.op_0x0c
@@ -91,21 +110,34 @@ func (cpu *CPU_struct) Innit_Instruction_maps() {
 	cpu.Instructions_maps.Instructions_map_[0x00] = cpu.op_0x00
 	// PUSH/POP
 	cpu.Instructions_maps.Instructions_map_[0xc5] = cpu.op_0xc5
+	cpu.Instructions_maps.Instructions_map_[0xd5] = cpu.op_0xd5
+	cpu.Instructions_maps.Instructions_map_[0xe5] = cpu.op_0xe5
+	cpu.Instructions_maps.Instructions_map_[0xf5] = cpu.op_0xf5
 	cpu.Instructions_maps.Instructions_map_[0xc1] = cpu.op_0xc1
+	cpu.Instructions_maps.Instructions_map_[0xd1] = cpu.op_0xd1
+	cpu.Instructions_maps.Instructions_map_[0xe1] = cpu.op_0xe1
+	cpu.Instructions_maps.Instructions_map_[0xf1] = cpu.op_0xf1
 	// RL
 	cpu.Instructions_maps.Instructions_map_[0x17] = cpu.op_0x17
 	// RET
 	cpu.Instructions_maps.Instructions_map_[0xc9] = cpu.op_0xc9
+	cpu.Instructions_maps.Instructions_map_[0xc8] = cpu.op_0xc8
+	cpu.Instructions_maps.Instructions_map_[0xc0] = cpu.op_0xc0
 	// ADD
 	cpu.Instructions_maps.Instructions_map_[0x86] = cpu.op_0x86
+	cpu.Instructions_maps.Instructions_map_[0x87] = cpu.op_0x87
+	cpu.Instructions_maps.Instructions_map_[0x09] = cpu.op_0x09
 	// DI
 	cpu.Instructions_maps.Instructions_map_[0xf3] = cpu.op_0xf3
+	// JP
+	cpu.Instructions_maps.Instructions_map_[0xe9] = cpu.op_0xe9
 
 	// CB
 	cpu.Instructions_maps.Instructions_map_CB[0x11] = cpu.op_cb_0x11
 	cpu.Instructions_maps.Instructions_map_CB[0x07] = cpu.op_cb_0x07
 	cpu.Instructions_maps.Instructions_map_CB[0x7c] = cpu.op_cb_0x7c
 	cpu.Instructions_maps.Instructions_map_CB[0x87] = cpu.op_cb_0x87
+	cpu.Instructions_maps.Instructions_map_CB[0xcf] = cpu.op_cb_0xcf
 
 }
 
@@ -130,6 +162,12 @@ func (cpu *CPU_struct) op_0x16(n uint8) {
 // 0x1e - LD E,n
 func (cpu *CPU_struct) op_0x1e(n uint8) {
 	cpu.Registers.E = n
+	cpu.Cycle += 8
+}
+
+// 0x26 - LD H,n
+func (cpu *CPU_struct) op_0x26(n uint8) {
+	cpu.Registers.H = n
 	cpu.Cycle += 8
 }
 
@@ -165,10 +203,32 @@ func (cpu *CPU_struct) op_0x21(nn uint16) {
 	cpu.Cycle += 12
 }
 
+// 0xe9 - JP (HL)
+func (cpu *CPU_struct) op_0xe9() {
+	var address uint16 = (uint16(cpu.Registers.H) << 8) | uint16(cpu.Registers.L)
+
+	cpu.Registers.PC = address
+	cpu.Cycle += 4
+}
+
 // 0xc3 - JP nn
 func (cpu *CPU_struct) op_0xc3(nn uint16) {
 	cpu.Registers.PC = nn
 	cpu.Cycle += 12
+}
+
+// 0xca - JP Z, nn
+func (cpu *CPU_struct) op_0xca(nn uint16) {
+	if (cpu.Registers.F & Z_BIT) > 0 {
+		cpu.op_0xc3(nn)
+	}
+}
+
+// 0xd2 - JP NC, nn
+func (cpu *CPU_struct) op_0xd2(nn uint16) {
+	if (cpu.Registers.F & C_BIT) == 0 {
+		cpu.op_0xc3(nn)
+	}
 }
 
 // 0x18 - JR n
@@ -246,6 +306,13 @@ func (cpu *CPU_struct) op_0x57() {
 	cpu.Cycle += 4
 }
 
+// 0x5f LD E, A
+func (cpu *CPU_struct) op_0x5f() {
+	cpu.Registers.E = cpu.Registers.A
+
+	cpu.Cycle += 4
+}
+
 // 0x67 LD H, A
 func (cpu *CPU_struct) op_0x67() {
 	cpu.Registers.H = cpu.Registers.A
@@ -253,9 +320,24 @@ func (cpu *CPU_struct) op_0x67() {
 	cpu.Cycle += 4
 }
 
+// 0x6f LD L, A
+func (cpu *CPU_struct) op_0x6f() {
+	cpu.Registers.L = cpu.Registers.A
+
+	cpu.Cycle += 4
+}
+
 // 0x77 LD (HL),A
 func (cpu *CPU_struct) op_0x77() {
 	var address uint16 = (uint16(cpu.Registers.H) << 8) | uint16(cpu.Registers.L)
+	cpu.MMU.WriteByte(address, cpu.Registers.A)
+
+	cpu.Cycle += 8
+}
+
+// 0x12 LD (DE),A
+func (cpu *CPU_struct) op_0x12() {
+	var address uint16 = (uint16(cpu.Registers.D) << 8) | uint16(cpu.Registers.E)
 	cpu.MMU.WriteByte(address, cpu.Registers.A)
 
 	cpu.Cycle += 8
@@ -286,6 +368,14 @@ func (cpu *CPU_struct) op_0x47() {
 //  0x1a LD A,(DE)
 func (cpu *CPU_struct) op_0x1a() {
 	var address uint16 = (uint16(cpu.Registers.D) << 8) | uint16(cpu.Registers.E)
+	cpu.Registers.A = cpu.MMU.ReadByte(address)
+
+	cpu.Cycle += 8
+}
+
+//  0xfa LD A,(nn)
+func (cpu *CPU_struct) op_0xfa(nn uint16) {
+	var address uint16 = nn
 	cpu.Registers.A = cpu.MMU.ReadByte(address)
 
 	cpu.Cycle += 8
@@ -335,11 +425,55 @@ func (cpu *CPU_struct) op_0x7d() {
 	cpu.Cycle += 4
 }
 
+// 0x7e LD A, (HL)
+func (cpu *CPU_struct) op_0x7e() {
+	var address uint16 = (uint16(cpu.Registers.H) << 8) | uint16(cpu.Registers.L)
+	cpu.Registers.A = cpu.MMU.ReadByte(address)
+
+	cpu.Cycle += 8
+}
+
 // 0x78 LD A, B
 func (cpu *CPU_struct) op_0x78() {
 	cpu.Registers.A = cpu.Registers.B
 
 	cpu.Cycle += 4
+}
+
+// 0x79 LD A, C
+func (cpu *CPU_struct) op_0x79() {
+	cpu.Registers.A = cpu.Registers.C
+
+	cpu.Cycle += 4
+}
+
+// 0x7A LD A, D
+func (cpu *CPU_struct) op_0x7A() {
+	cpu.Registers.A = cpu.Registers.D
+
+	cpu.Cycle += 4
+}
+
+// 0x6b LD L, E
+func (cpu *CPU_struct) op_0x6b() {
+	cpu.Registers.L = cpu.Registers.E
+
+	cpu.Cycle += 4
+}
+
+// 0x62 LD H, D
+func (cpu *CPU_struct) op_0x62() {
+	cpu.Registers.H = cpu.Registers.D
+
+	cpu.Cycle += 4
+}
+
+// 0x66 LD H, (HL)
+func (cpu *CPU_struct) op_0x66() {
+	var address uint16 = (uint16(cpu.Registers.H) << 8) | uint16(cpu.Registers.L)
+	cpu.Registers.H = cpu.MMU.ReadByte(address)
+
+	cpu.Cycle += 8
 }
 
 // 0xcd CALL nn
@@ -370,6 +504,29 @@ func (cpu *CPU_struct) op_0xa8() {
 	cpu.Cycle += 4
 }
 
+// 0xab XOR E
+func (cpu *CPU_struct) op_0xab() {
+	cpu.Registers.A = cpu.Registers.A ^ cpu.Registers.E
+
+	if cpu.Registers.A == 0 {
+		cpu.Registers.F = Z_BIT
+	}
+
+	cpu.Cycle += 4
+}
+
+// 0xB0 OR B
+func (cpu *CPU_struct) op_0xb0() {
+	cpu.Registers.A |= cpu.Registers.B
+	cpu.Registers.F = 0
+
+	if cpu.Registers.A == 0 {
+		cpu.Registers.F = Z_BIT
+	}
+
+	cpu.Cycle += 4
+}
+
 // 0xB1 OR C
 func (cpu *CPU_struct) op_0xb1() {
 	cpu.Registers.A |= cpu.Registers.C
@@ -380,6 +537,20 @@ func (cpu *CPU_struct) op_0xb1() {
 	}
 
 	cpu.Cycle += 4
+}
+
+// 0xB6 OR (HL)
+func (cpu *CPU_struct) op_0xb6() {
+	var address uint16 = (uint16(cpu.Registers.H) << 8) | uint16(cpu.Registers.L)
+
+	cpu.Registers.A |= cpu.MMU.ReadByte(address)
+	cpu.Registers.F = 0
+
+	if cpu.Registers.A == 0 {
+		cpu.Registers.F = Z_BIT
+	}
+
+	cpu.Cycle += 8
 }
 
 // 0x2f CPL
@@ -433,6 +604,29 @@ func (cpu *CPU_struct) op_0xbe() {
 	}
 
 	cpu.Cycle += 8
+}
+
+// 0xb8 CP A,B
+// TODO : double check
+func (cpu *CPU_struct) op_0xb8() {
+	var n uint8 = cpu.Registers.B
+
+	cpu.Registers.F = 0
+	cpu.Registers.F = cpu.Registers.F | N_BIT
+
+	if cpu.Registers.A == n {
+		cpu.Registers.F = cpu.Registers.F | Z_BIT
+	}
+
+	if (cpu.Registers.A & 0x0f) < (n & 0x0f) {
+		cpu.Registers.F = cpu.Registers.F | H_BIT
+	}
+
+	if cpu.Registers.A < n {
+		cpu.Registers.F = cpu.Registers.F | C_BIT
+	}
+
+	cpu.Cycle += 4
 }
 
 // 0x05 DEC B
@@ -526,6 +720,16 @@ func (cpu *CPU_struct) op_0x0b() {
 	bc -= 1
 	cpu.Registers.B = uint8(bc >> 8)
 	cpu.Registers.C = uint8(bc & 0xff)
+
+	cpu.Cycle += 8
+}
+
+// 0x2B DEC HL
+func (cpu *CPU_struct) op_0x2b() {
+	var hl uint16 = (uint16(cpu.Registers.H) << 8) | uint16(cpu.Registers.L)
+	hl -= 1
+	cpu.Registers.H = uint8(hl >> 8)
+	cpu.Registers.L = uint8(hl & 0xff)
 
 	cpu.Cycle += 8
 }
@@ -630,6 +834,13 @@ func (cpu *CPU_struct) op_cb_0x7c() {
 	cpu.Cycle += 8
 }
 
+// 0xcb 0xcf SET 1, A
+func (cpu *CPU_struct) op_cb_0xcf() {
+	cpu.Registers.A |= 0b00000010
+
+	cpu.Cycle += 8
+}
+
 // 0xcb 0x87 RES b, A
 func (cpu *CPU_struct) op_cb_0x87() {
 	cpu.Registers.A &= 0b11111110
@@ -715,11 +926,68 @@ func (cpu *CPU_struct) op_0xc5() {
 	cpu.Cycle += 16
 }
 
+// 0xd5 PUSH DE
+func (cpu *CPU_struct) op_0xd5() {
+	var de uint16 = (uint16(cpu.Registers.E) << 8) | uint16(cpu.Registers.D)
+	cpu.Registers.SP -= 2
+	cpu.MMU.WriteWord(cpu.Registers.SP, de)
+
+	cpu.Cycle += 16
+}
+
+// 0xe5 PUSH HL
+func (cpu *CPU_struct) op_0xe5() {
+	var hl uint16 = (uint16(cpu.Registers.L) << 8) | uint16(cpu.Registers.H)
+	cpu.Registers.SP -= 2
+	cpu.MMU.WriteWord(cpu.Registers.SP, hl)
+
+	cpu.Cycle += 16
+}
+
+// 0xf5 PUSH AF
+func (cpu *CPU_struct) op_0xf5() {
+	var af uint16 = (uint16(cpu.Registers.F) << 8) | uint16(cpu.Registers.A)
+	cpu.Registers.SP -= 2
+	cpu.MMU.WriteWord(cpu.Registers.SP, af)
+
+	cpu.Cycle += 16
+}
+
 // 0xc1 POP BC
 func (cpu *CPU_struct) op_0xc1() {
 	var data uint16 = cpu.MMU.ReadWord(cpu.Registers.SP)
 	cpu.Registers.C = uint8(data >> 8)
 	cpu.Registers.B = uint8(data & 0xff)
+	cpu.Registers.SP += 2
+
+	cpu.Cycle += 12
+}
+
+// 0xd1 POP DE
+func (cpu *CPU_struct) op_0xd1() {
+	var data uint16 = cpu.MMU.ReadWord(cpu.Registers.SP)
+	cpu.Registers.E = uint8(data >> 8)
+	cpu.Registers.D = uint8(data & 0xff)
+	cpu.Registers.SP += 2
+
+	cpu.Cycle += 12
+}
+
+// 0xe1 POP HL
+func (cpu *CPU_struct) op_0xe1() {
+	var data uint16 = cpu.MMU.ReadWord(cpu.Registers.SP)
+	cpu.Registers.L = uint8(data >> 8)
+	cpu.Registers.H = uint8(data & 0xff)
+	cpu.Registers.SP += 2
+
+	cpu.Cycle += 12
+}
+
+// 0xf1 POP AF
+func (cpu *CPU_struct) op_0xf1() {
+	var data uint16 = cpu.MMU.ReadWord(cpu.Registers.SP)
+	cpu.Registers.F = uint8(data >> 8)
+	cpu.Registers.A = uint8(data & 0xff)
 	cpu.Registers.SP += 2
 
 	cpu.Cycle += 12
@@ -760,6 +1028,43 @@ func (cpu *CPU_struct) op_0xc9() {
 	var addr uint16 = cpu.MMU.ReadWord(cpu.Registers.SP)
 	cpu.Registers.SP += 2
 	cpu.Registers.PC = addr
+
+	cpu.Cycle += 8
+}
+
+// 0xc8 RET Z
+func (cpu *CPU_struct) op_0xc8() {
+	if (cpu.Registers.F & Z_BIT) > 0 {
+		cpu.op_0x09()
+	}
+}
+
+// 0xc0 RET NZ
+func (cpu *CPU_struct) op_0xc0() {
+	if (cpu.Registers.F & Z_BIT) == 0 {
+		cpu.op_0x09()
+	}
+}
+
+// 0x87 - ADD A, A
+func (cpu *CPU_struct) op_0x87() {
+	var n uint8 = cpu.Registers.A
+
+	old_a := cpu.Registers.A
+	cpu.Registers.A += n
+	cpu.Registers.F = 0
+
+	if cpu.Registers.A == 0 {
+		cpu.Registers.F |= Z_BIT
+	}
+
+	if ((old_a&0x0f)+(n&0x0f))&0xf0 != 0 {
+		cpu.Registers.F |= H_BIT
+	}
+
+	if ((uint16(old_a))+(uint16(n)))&0xff00 != 0 {
+		cpu.Registers.F |= C_BIT
+	}
 
 	cpu.Cycle += 8
 }
@@ -810,6 +1115,27 @@ func (cpu *CPU_struct) op_0xe8(n uint8) {
 	cpu.Cycle += 16
 }
 
+// 0x09 ADD HL, BC
+func (cpu *CPU_struct) op_0x09() {
+	var hl uint16 = (uint16(cpu.Registers.H) << 8) + uint16(cpu.Registers.L)
+	var bc uint16 = (uint16(cpu.Registers.B) << 8) + uint16(cpu.Registers.C)
+	var sum uint16 = hl + bc
+	cpu.Registers.H = uint8(sum >> 8)
+	cpu.Registers.L = uint8(sum & 0xff)
+
+	cpu.Registers.F &= Z_BIT
+
+	if ((hl&0x0fff)+(bc&0x0fff))&0xf000 != 0 {
+		cpu.Registers.F |= H_BIT
+	}
+
+	if (uint32(hl)+uint32(bc))&0xffff != 0 {
+		cpu.Registers.F |= C_BIT
+	}
+
+	cpu.Cycle += 8
+}
+
 // 0xf3 DI
 func (cpu *CPU_struct) op_0xf3() {
 	cpu.Registers.IME = 0
@@ -820,6 +1146,19 @@ func (cpu *CPU_struct) op_0xf3() {
 // 0xe6 AND #
 func (cpu *CPU_struct) op_0xe6(n uint8) {
 	cpu.Registers.A &= n
+
+	cpu.Registers.F = H_BIT
+
+	if cpu.Registers.A == 0 {
+		cpu.Registers.F |= Z_BIT
+	}
+
+	cpu.Cycle += 8
+}
+
+// 0xa7 AND #
+func (cpu *CPU_struct) op_0xa7() {
+	// cpu.Registers.A &= cpu.Registers.A
 
 	cpu.Registers.F = H_BIT
 
