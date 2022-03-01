@@ -28,8 +28,9 @@ type Registers_struct struct {
 	SP uint16
 	PC uint16
 
-	IE uint8
-	IF uint8
+	IME uint8
+	IE  uint8
+	IF  uint8
 }
 
 type Instructions_maps struct {
@@ -66,10 +67,6 @@ func (cpu *CPU_struct) Run(limit int) {
 	cpu.Instructions_count = 0
 	for {
 		var next_instruction uint8 = cpu.MMU.ReadByte(cpu.Registers.PC)
-
-		if cpu.Registers.PC == 0x1F74 {
-			fmt.Printf("%X, %X, %X, %d %d\n", cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
-		}
 
 		if cpu.Registers.PC == 0x00FE {
 			fmt.Printf("%X, %X, %X, %d %d\n", cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
@@ -114,7 +111,7 @@ func (cpu *CPU_struct) Run(limit int) {
 		cpu.GPU.Update_clock(cpu.Cycle)
 		cpu.GPU.Step()
 
-		// interruption()
+		cpu.interruption()
 
 		cpu.Instructions_count += 1
 		if limit > 0 && cpu.Instructions_count == limit {
@@ -126,6 +123,20 @@ func (cpu *CPU_struct) Run(limit int) {
 			fmt.Printf("%X, %X, %X, %d %d\n", cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
 		}
 
+	}
+}
+
+func (cpu *CPU_struct) interruption() {
+	if cpu.Registers.IME == 0 {
+		return
+	}
+
+	if cpu.Registers.IE != 0 {
+		cpu.Registers.IME = 0
+		if cpu.Registers.IF&0x01 != 0 {
+			// "call" 0x40
+			cpu.op_0xcd(0x40)
+		}
 	}
 }
 

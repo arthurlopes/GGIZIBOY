@@ -1,6 +1,7 @@
 package MMU
 
 import (
+	"bufio"
 	"encoding/binary"
 	"fmt"
 	"io/ioutil"
@@ -21,7 +22,7 @@ type ICPU interface {
 
 type MMU_struct struct {
 	Memory            [0xffff + 1]uint8
-	Rom               [0xffff + 1]uint8
+	Rom               []uint8
 	Bootstrap_path    string
 	ROM_path          string
 	bootstrap_enabled bool
@@ -47,7 +48,9 @@ func fileExists(filename string) bool {
 func (mmu *MMU_struct) Innit() {
 	mmu.bootstrap_enabled = true
 	mmu.Bootstrap_path = "data/bootstrap/dmg_boot.bin"
-	mmu.ROM_path = "data/ROM/Pokemon - Blue Version (USA, Europe) (SGB Enhanced).gb"
+	// mmu.ROM_path = "data/ROM/Pokemon - Blue Version (USA, Europe) (SGB Enhanced).gb"
+	// mmu.ROM_path = "data/ROM/Super Mario Land (JUE) (V1.1) [!].gb"
+	mmu.ROM_path = "data/ROM/ttt.gb"
 
 	if !fileExists(mmu.ROM_path) {
 		mmu.ROM_path = "../" + mmu.ROM_path
@@ -71,17 +74,38 @@ func (mmu *MMU_struct) Innit() {
 	}
 
 	// read ROM
-	rom_file, err := os.Open(mmu.ROM_path)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	defer rom_file.Close()
+	// rom_file, err := os.Open(mmu.ROM_path)
+	// if err != nil {
+	// 	log.Fatalln(err)
+	// }
+	// defer rom_file.Close()
 
-	memory_rom := mmu.Rom[:]
-	err = binary.Read(rom_file, binary.LittleEndian, &memory_rom)
+	// memory_rom := mmu.Rom[:]
+	// err = binary.Read(rom_file, binary.LittleEndian, &memory_rom)
+	// if err != nil {
+	// 	log.Fatalln(err)
+	// }
+	file, err := os.Open(mmu.ROM_path)
+
 	if err != nil {
-		log.Fatalln(err)
+		fmt.Println(err)
+		return
 	}
+	defer file.Close()
+
+	info, err := file.Stat()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// calculate the bytes size
+	var size int64 = info.Size()
+	mmu.Rom = make([]uint8, size)
+
+	// read into buffer
+	buffer := bufio.NewReader(file)
+	_, err = buffer.Read(mmu.Rom[:])
+
 }
 
 func (mmu *MMU_struct) ReadByte(address uint16) uint8 {
@@ -92,6 +116,11 @@ func (mmu *MMU_struct) ReadByte(address uint16) uint8 {
 	if address == 0xff44 {
 		return mmu.GPU.GetLine()
 	}
+
+	// if address >= 0xff00 {
+	// 	fmt.Println(address)
+	// }
+
 	if address == 0xff43 {
 		return mmu.GPU.GetScroll_x()
 	}
@@ -119,6 +148,27 @@ func (mmu *MMU_struct) WriteByte(address uint16, n uint8) {
 		mmu.bootstrap_enabled = false
 		return
 	}
+
+	// if address >= 0xff00 {
+	// 	fmt.Println(address, n)
+	// }
+
+	if address >= 0x8000 && address <= 0x9000 {
+		mmu.Memory[address] = n
+		return
+	}
+
+	if address >= 0x9000 && address <= 0x9bff {
+		mmu.Memory[address] = n
+		return
+	}
+
+	if address >= 0xFE00 && address <= 0xFE9F {
+		// fmt.Printf("address 0x%X, value 0x%X\n", address, n)
+		mmu.Memory[address] = n
+		return
+	}
+
 	mmu.Memory[address] = n
 }
 
@@ -148,7 +198,7 @@ func (mmu *MMU_struct) DumpMemory() {
 }
 
 func (mmu *MMU_struct) LoadDump() {
-	var dumpPath = "data/dumps/dump.bin"
+	var dumpPath = "data/dumps/dump_after_boot.bin"
 
 	if !fileExists(dumpPath) {
 		dumpPath = "../" + dumpPath
