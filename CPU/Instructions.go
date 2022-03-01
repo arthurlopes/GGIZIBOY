@@ -1,9 +1,9 @@
 package CPU
 
-const Z_BIT = 0x80
-const N_BIT = 0x40
-const H_BIT = 0x20
-const C_BIT = 0x10
+const Z_BIT uint8 = 0x80
+const N_BIT uint8 = 0x40
+const H_BIT uint8 = 0x20
+const C_BIT uint8 = 0x10
 
 func (cpu *CPU_struct) Innit_Instruction_maps() {
 	cpu.Instructions_maps.Instructions_map_uint8 = make(map[uint8]func(uint8))
@@ -621,11 +621,9 @@ func (cpu *CPU_struct) op_0x17() {
 
 // 0xcb 0x7c BIT 7, H
 func (cpu *CPU_struct) op_cb_0x7c() {
-	cpu.Registers.H |= 0b10000000
 	cpu.Registers.F &= C_BIT
 	cpu.Registers.F |= H_BIT
-
-	if cpu.Registers.H == 0 {
+	if (cpu.Registers.H & 0b10000000) == 0 {
 		cpu.Registers.F |= Z_BIT
 	}
 
