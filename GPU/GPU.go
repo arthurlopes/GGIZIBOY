@@ -1,7 +1,10 @@
 package GPU
 
+const V_BLANK_BIT uint8 = 0x01
+
 type ICPU interface {
 	SetIE(uint8)
+	SetIF(uint8)
 }
 
 type IMMU interface {
@@ -122,6 +125,27 @@ func (gpu *GPU_struct) Render_Background() [][]uint8 {
 	return gpu.Background
 }
 
+func (gpu *GPU_struct) Render_TileMap() [][]uint8 {
+	var tile_map = gpu.Create_tile_map()
+	var tile_i, tile_j, i, j uint8
+	for tile_idx := 0; tile_idx < 1024; tile_idx++ {
+		if tile, ok := tile_map[uint16(tile_idx)]; ok {
+			for i = 0; i < 8; i++ {
+				for j = 0; j < 8; j++ {
+					gpu.Background[tile_i+i][tile_j+j] = tile[8*i+j]
+				}
+			}
+		}
+
+		tile_j = (tile_j + 8) % 255
+		if tile_j == 0 {
+			tile_i = (tile_i + 8) % 255
+		}
+	}
+
+	return gpu.Background
+}
+
 func (gpu *GPU_struct) Step() {
 	// render_Screen()
 	// Scanline - OAM
@@ -135,7 +159,8 @@ func (gpu *GPU_struct) Step() {
 		if gpu.modeclock >= 172 {
 			gpu.modeclock = 0
 			gpu.mode = 0
-			// renderscan()
+			gpu.Render_Background()
+			// gpu.Render_TileMap()
 		}
 		// Hblank
 	} else if gpu.mode == 0 {
@@ -144,8 +169,12 @@ func (gpu *GPU_struct) Step() {
 			gpu.Line += 1
 			if gpu.Line == 143 {
 				gpu.mode = 1
-				// CPU.IE |= 0x01
-				gpu.Render_Background()
+				gpu.CPU.SetIE(V_BLANK_BIT)
+				gpu.CPU.SetIF(V_BLANK_BIT)
+
+				// gpu.Render_Background()
+				// // gpu.Render_TileMap()
+
 				gpu.hblank_channel <- true
 				// select {
 				// case gpu.hblank_channel <- true:

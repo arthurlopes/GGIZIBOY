@@ -76,6 +76,7 @@ func (cpu *CPU_struct) Run(limit int) {
 
 		if next_instruction == 0xCB {
 			cpu.Registers.PC += 1
+			// fmt.Printf("Instruction 0xCB\n")
 			next_instruction = cpu.MMU.ReadByte(cpu.Registers.PC)
 			// TODO: check if can simply skip cycle
 			cpu.Cycle += 4
@@ -118,24 +119,50 @@ func (cpu *CPU_struct) Run(limit int) {
 			break
 		}
 
-		// if cpu.Instructions_count%500000 == 0 { // && cpu.Registers.PC != 0x64 && cpu.Registers.PC != 0x66 && cpu.Registers.PC != 0x68 {
-		if cpu.Registers.PC != 0x64 && cpu.Registers.PC != 0x66 && cpu.Registers.PC != 0x68 {
-			fmt.Printf("%X, %X, %X, %d %d\n", cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
-		}
+		// if cpu.Registers.PC != 0x64 && cpu.Registers.PC != 0x66 && cpu.Registers.PC != 0x68 {
+		// 	fmt.Printf("%X, %X, %X, %d %d\n", cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
+		// }
 
 	}
 }
 
 func (cpu *CPU_struct) interruption() {
-	if cpu.Registers.IME == 0 {
+	if (cpu.Registers.IME & cpu.Registers.IE & cpu.Registers.IF) == 0 {
 		return
 	}
 
 	if cpu.Registers.IE != 0 {
 		cpu.Registers.IME = 0
-		if cpu.Registers.IF&0x01 != 0 {
+		// V BLANK
+		if (cpu.Registers.IF & 0x01) != 0 {
 			// "call" 0x40
+			fmt.Printf("V BLANK\n")
 			cpu.op_0xcd(0x40)
+			cpu.Registers.IF &= 0b11111110
+			// LCD status triggers
+		} else if (cpu.Registers.IF & 0x02) != 0 {
+			// "call" 0x48
+			fmt.Printf("LCD status triggers\n")
+			cpu.op_0xcd(0x48)
+			cpu.Registers.IF &= 0b11111101
+			// Timer overflow
+		} else if (cpu.Registers.IF & 0x04) != 0 {
+			// "call" 0x50
+			fmt.Printf("Timer overflow\n")
+			cpu.op_0xcd(0x50)
+			cpu.Registers.IF &= 0b11111011
+			// Serial link
+		} else if (cpu.Registers.IF & 0x08) != 0 {
+			// "call" 0x58
+			fmt.Printf("Serial link\n")
+			cpu.op_0xcd(0x58)
+			cpu.Registers.IF &= 0b11110111
+			// Joypad press
+		} else if (cpu.Registers.IF & 0x10) != 0 {
+			// "call" 0x60
+			fmt.Printf("Joypad press\n")
+			cpu.op_0xcd(0x60)
+			cpu.Registers.IF &= 0b11101111
 		}
 	}
 }
@@ -145,9 +172,13 @@ func (cpu *CPU_struct) GetIE() uint8 {
 }
 
 func (cpu *CPU_struct) SetIE(IE uint8) {
-	cpu.Registers.IE = IE
+	cpu.Registers.IE |= IE
 }
 
 func (cpu CPU_struct) GetIF() uint8 {
 	return cpu.Registers.IF
+}
+
+func (cpu *CPU_struct) SetIF(IF uint8) {
+	cpu.Registers.IF |= IF
 }
