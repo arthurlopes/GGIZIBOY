@@ -159,8 +159,8 @@ func (gpu *GPU_struct) Step() {
 		if gpu.modeclock >= 172 {
 			gpu.modeclock = 0
 			gpu.mode = 0
-			gpu.Render_Background()
-			// gpu.Render_TileMap()
+			// gpu.Render_Background()
+			gpu.Render_TileMap()
 		}
 		// Hblank
 	} else if gpu.mode == 0 {

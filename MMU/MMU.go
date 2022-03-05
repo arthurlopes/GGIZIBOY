@@ -18,6 +18,8 @@ type IGPU interface {
 type ICPU interface {
 	GetIE() uint8
 	GetIF() uint8
+	SetIE(uint8)
+	SetIF(uint8)
 }
 
 type MMU_struct struct {
@@ -51,6 +53,7 @@ func (mmu *MMU_struct) Innit() {
 	// mmu.ROM_path = "data/ROM/Pokemon - Blue Version (USA, Europe) (SGB Enhanced).gb"
 	// mmu.ROM_path = "data/ROM/Super Mario Land (JUE) (V1.1) [!].gb"
 	mmu.ROM_path = "data/ROM/ttt.gb"
+	// mmu.ROM_path = "data/ROM/Tetris.gb"
 
 	if !fileExists(mmu.ROM_path) {
 		mmu.ROM_path = "../" + mmu.ROM_path
@@ -105,6 +108,9 @@ func (mmu *MMU_struct) Innit() {
 	// read into buffer
 	buffer := bufio.NewReader(file)
 	_, err = buffer.Read(mmu.Rom[:])
+	if err != nil {
+		log.Fatalln(err)
+	}
 
 }
 
@@ -118,7 +124,7 @@ func (mmu *MMU_struct) ReadByte(address uint16) uint8 {
 	}
 
 	// if address >= 0xff00 {
-	// 	fmt.Println(address)
+	// 	fmt.Printf("Read 0x%X\n", address)
 	// }
 
 	if address == 0xff43 {
@@ -150,22 +156,35 @@ func (mmu *MMU_struct) WriteByte(address uint16, n uint8) {
 	}
 
 	// if address >= 0xff00 {
-	// 	fmt.Println(address, n)
+	// 	fmt.Printf("Write 0x%X 0x%X\n", address, n)
 	// }
 
-	if address >= 0x8000 && address <= 0x9000 {
+	// Tiles
+	if address >= 0x8000 && address <= 0x9000 && n != 0 {
+		fmt.Println(address, n)
 		mmu.Memory[address] = n
 		return
 	}
 
-	if address >= 0x9000 && address <= 0x9bff {
+	// Bg
+	if address >= 0x9000 && address <= 0x9bff && n != 0 {
 		mmu.Memory[address] = n
 		return
 	}
 
-	if address >= 0xFE00 && address <= 0xFE9F {
+	// OAM
+	if address >= 0xFE00 && address <= 0xFE9F && n != 0 {
 		// fmt.Printf("address 0x%X, value 0x%X\n", address, n)
 		mmu.Memory[address] = n
+		return
+	}
+
+	if address == 0xFFFF {
+		mmu.CPU.SetIE(n)
+		return
+	}
+	if address == 0xFF0F {
+		mmu.CPU.SetIF(n)
 		return
 	}
 

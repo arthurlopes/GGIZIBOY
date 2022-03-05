@@ -235,3 +235,51 @@ func TestPush_Pop(t *testing.T) {
 		t.Errorf("Issue on instruction 0xc1, %X, %X, %X", gb.CPU.Registers.PC, gb.CPU.Registers.SP, gb.MMU.ReadByte(gb.CPU.Registers.SP))
 	}
 }
+
+func TestSWAP(t *testing.T) {
+	ch := make(chan bool)
+	var gb = GameboyFactory(ch)
+
+	gb.CPU.Registers.PC = 0x0050
+	gb.CPU.Registers.SP = 0xef02
+	gb.CPU.Registers.A = 0x3A
+	gb.MMU.WriteByte(0x0050, 0xcb)
+	gb.MMU.WriteByte(0x0051, 0x37)
+
+	gb.Run(1)
+
+	if gb.CPU.Registers.A != 0xA3 {
+		t.Errorf("Issue on instruction 0xcb 0x37")
+	}
+}
+
+func TestINC_BC_overflow(t *testing.T) {
+	ch := make(chan bool)
+	var gb = GameboyFactory(ch)
+
+	gb.CPU.Registers.PC = 0x0050
+	gb.CPU.Registers.B = 0xff
+	gb.CPU.Registers.C = 0xff
+	gb.MMU.WriteByte(0x0050, 0x03)
+
+	gb.Run(1)
+
+	if gb.CPU.Registers.B != 0x00 || gb.CPU.Registers.C != 0x00 {
+		t.Errorf("Issue on instruction 0x03")
+	}
+}
+
+func TestINC_B_half_carry(t *testing.T) {
+	ch := make(chan bool)
+	var gb = GameboyFactory(ch)
+
+	gb.CPU.Registers.PC = 0x0050
+	gb.CPU.Registers.B = 0x1f
+	gb.MMU.WriteByte(0x0050, 0x04)
+
+	gb.Run(1)
+
+	if gb.CPU.Registers.B != 0x20 || (gb.CPU.Registers.F&0x20) == 0 {
+		t.Errorf("Issue on instruction 0x04")
+	}
+}
