@@ -52,8 +52,8 @@ func (mmu *MMU_struct) Innit() {
 	mmu.Bootstrap_path = "data/bootstrap/dmg_boot.bin"
 	// mmu.ROM_path = "data/ROM/Pokemon - Blue Version (USA, Europe) (SGB Enhanced).gb"
 	// mmu.ROM_path = "data/ROM/Super Mario Land (JUE) (V1.1) [!].gb"
-	mmu.ROM_path = "data/ROM/ttt.gb"
-	// mmu.ROM_path = "data/ROM/Tetris.gb"
+	// mmu.ROM_path = "data/ROM/ttt.gb"
+	mmu.ROM_path = "data/ROM/Tetris.gb"
 
 	if !fileExists(mmu.ROM_path) {
 		mmu.ROM_path = "../" + mmu.ROM_path
@@ -194,9 +194,9 @@ func (mmu *MMU_struct) WriteByte(address uint16, n uint8) {
 func (mmu *MMU_struct) ReadWord(address uint16) uint16 {
 	var word uint16
 	if (address >= 0x0100 || !mmu.bootstrap_enabled) && address < 0x8000 {
-		word = (uint16(mmu.Rom[address+1]) << 8) + uint16(mmu.Rom[address])
+		word = (uint16(mmu.Rom[address+1]) << 8) | uint16(mmu.Rom[address])
 	} else {
-		word = (uint16(mmu.Memory[address+1]) << 8) + uint16(mmu.Memory[address])
+		word = (uint16(mmu.Memory[address+1]) << 8) | uint16(mmu.Memory[address])
 	}
 
 	return word

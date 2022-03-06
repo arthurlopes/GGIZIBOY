@@ -289,6 +289,9 @@ func (cpu *CPU_struct) Innit_Instruction_maps() {
 	cpu.Instructions_maps.Instructions_map_[0x27] = cpu.op_0x27
 
 	// CB
+	// cpu.Instructions_maps.Instructions_map_CB[0x01] = cpu.op_cb_0x01
+	// cpu.Instructions_maps.Instructions_map_CB[0x02] = cpu.op_cb_0x02
+	// cpu.Instructions_maps.Instructions_map_CB[0x03] = cpu.op_cb_0x03
 	cpu.Instructions_maps.Instructions_map_CB[0x07] = cpu.op_cb_0x07
 	cpu.Instructions_maps.Instructions_map_CB[0x11] = cpu.op_cb_0x11
 	cpu.Instructions_maps.Instructions_map_CB[0x37] = cpu.op_cb_0x37
@@ -479,13 +482,13 @@ func (cpu *CPU_struct) op_0x33() {
 
 //0x04 INC B
 func (cpu *CPU_struct) op_0x04() {
-	cpu.Registers.B += 1
-	var r uint8 = cpu.Registers.B
+	var n uint8 = cpu.Registers.B
+	cpu.Registers.B++
 	cpu.Registers.F &= C_BIT
 
-	cpu.setZ(r)
+	cpu.setZ(n)
 
-	if ((r - 1) & 0x0f) == 0x0f {
+	if (n & 0x0f) == 0x0f {
 		cpu.Registers.F |= H_BIT
 	}
 
@@ -494,14 +497,13 @@ func (cpu *CPU_struct) op_0x04() {
 
 //0x14 INC D
 func (cpu *CPU_struct) op_0x14() {
-	cpu.Registers.D += 1
-	var r uint8 = cpu.Registers.D
-
+	var n uint8 = cpu.Registers.D
+	cpu.Registers.D++
 	cpu.Registers.F &= C_BIT
 
-	cpu.setZ(r)
+	cpu.setZ(n)
 
-	if ((r - 1) & 0x0f) == 0x0f {
+	if (n & 0x0f) == 0x0f {
 		cpu.Registers.F |= H_BIT
 	}
 
@@ -510,14 +512,13 @@ func (cpu *CPU_struct) op_0x14() {
 
 //0x24 INC H
 func (cpu *CPU_struct) op_0x24() {
-	cpu.Registers.H += 1
-	var r uint8 = cpu.Registers.H
-
+	var n uint8 = cpu.Registers.H
+	cpu.Registers.H++
 	cpu.Registers.F &= C_BIT
 
-	cpu.setZ(r)
+	cpu.setZ(n)
 
-	if ((r - 1) & 0x0f) == 0x0f {
+	if (n & 0x0f) == 0x0f {
 		cpu.Registers.F |= H_BIT
 	}
 
@@ -1052,7 +1053,7 @@ func (cpu *CPU_struct) op_0x1f() {
 // 0x2f CPL
 func (cpu *CPU_struct) op_0x2f() {
 	cpu.Registers.A = cpu.Registers.A ^ 0xff
-	cpu.Registers.F |= N_BIT | H_BIT
+	cpu.Registers.F |= (N_BIT | H_BIT)
 
 	cpu.Cycle += 4
 }
@@ -1342,7 +1343,7 @@ func (cpu *CPU_struct) op_0x67() {
 
 // 0x68 LD L, B
 func (cpu *CPU_struct) op_0x68() {
-	cpu.Registers.H = cpu.Registers.B
+	cpu.Registers.L = cpu.Registers.B
 
 	cpu.Cycle += 4
 }
@@ -1619,7 +1620,7 @@ func (cpu *CPU_struct) op_0x8d() {
 func (cpu *CPU_struct) op_0x8e() {
 	var address uint16 = cpu.getHL()
 
-	cpu.add(cpu.MMU.ReadByte(address))
+	cpu.adc(cpu.MMU.ReadByte(address))
 
 	cpu.Cycle += 4
 }
@@ -1636,11 +1637,11 @@ func (cpu *CPU_struct) sub(n uint8) {
 
 	cpu.setZ(cpu.Registers.A)
 
-	if (old & 0x0f) > (n & 0x0f) {
+	if (old & 0x0f) < (n & 0x0f) {
 		cpu.Registers.F |= H_BIT
 	}
 
-	if old > n {
+	if old < n {
 		cpu.Registers.F |= C_BIT
 	}
 
@@ -1906,7 +1907,7 @@ func (cpu *CPU_struct) op_0xb7() {
 func (cpu *CPU_struct) cp(n uint8) {
 	cpu.Registers.F = N_BIT
 
-	cpu.setZ(cpu.Registers.A)
+	cpu.setZ(cpu.Registers.A - n)
 
 	if (cpu.Registers.A & 0x0f) < (n & 0x0f) {
 		cpu.Registers.F |= H_BIT
@@ -2001,6 +2002,7 @@ func (cpu *CPU_struct) op_0xf0(n uint8) {
 // 0xc1 POP BC
 func (cpu *CPU_struct) op_0xc1() {
 	var data uint16 = cpu.MMU.ReadWord(cpu.Registers.SP)
+
 	cpu.setBC(data)
 	cpu.Registers.SP += 2
 
@@ -2010,6 +2012,7 @@ func (cpu *CPU_struct) op_0xc1() {
 // 0xd1 POP DE
 func (cpu *CPU_struct) op_0xd1() {
 	var data uint16 = cpu.MMU.ReadWord(cpu.Registers.SP)
+
 	cpu.setDE(data)
 	cpu.Registers.SP += 2
 
@@ -2019,6 +2022,7 @@ func (cpu *CPU_struct) op_0xd1() {
 // 0xe1 POP HL
 func (cpu *CPU_struct) op_0xe1() {
 	var data uint16 = cpu.MMU.ReadWord(cpu.Registers.SP)
+
 	cpu.setHL(data)
 	cpu.Registers.SP += 2
 
@@ -2028,6 +2032,7 @@ func (cpu *CPU_struct) op_0xe1() {
 // 0xf1 POP AF
 func (cpu *CPU_struct) op_0xf1() {
 	var data uint16 = cpu.MMU.ReadWord(cpu.Registers.SP)
+
 	cpu.setAF(data)
 	cpu.Registers.SP += 2
 
@@ -2053,14 +2058,14 @@ func (cpu *CPU_struct) op_0xd2(nn uint16) {
 	}
 }
 
-// 0xe2 LD (C),A
+// 0xe2 LD (C), A
 func (cpu *CPU_struct) op_0xe2() {
 	cpu.MMU.WriteByte(0xff00|uint16(cpu.Registers.C), cpu.Registers.A)
 
 	cpu.Cycle += 8
 }
 
-// 0xf2 LD (C),A
+// 0xf2 LD A, (C)
 func (cpu *CPU_struct) op_0xf2() {
 	cpu.Registers.A = cpu.MMU.ReadByte(0xff00 | uint16(cpu.Registers.C))
 
@@ -2088,14 +2093,14 @@ func (cpu *CPU_struct) op_0xc4(nn uint16) {
 
 // 0xd4 CALL NC, nn
 func (cpu *CPU_struct) op_0xd4(nn uint16) {
-	if (cpu.Registers.F & N_BIT) == 0 {
+	if (cpu.Registers.F & C_BIT) == 0 {
 		cpu.call(nn)
 	}
 }
 
 // 0xc5 PUSH BC
 func (cpu *CPU_struct) op_0xc5() {
-	var nn uint16 = (uint16(cpu.Registers.C) << 8) | uint16(cpu.Registers.B)
+	var nn uint16 = cpu.getBC()
 	cpu.Registers.SP -= 2
 	cpu.MMU.WriteWord(cpu.Registers.SP, nn)
 
@@ -2104,7 +2109,7 @@ func (cpu *CPU_struct) op_0xc5() {
 
 // 0xd5 PUSH DE
 func (cpu *CPU_struct) op_0xd5() {
-	var de uint16 = (uint16(cpu.Registers.E) << 8) | uint16(cpu.Registers.D)
+	var de uint16 = cpu.getDE()
 	cpu.Registers.SP -= 2
 	cpu.MMU.WriteWord(cpu.Registers.SP, de)
 
@@ -2113,7 +2118,7 @@ func (cpu *CPU_struct) op_0xd5() {
 
 // 0xe5 PUSH HL
 func (cpu *CPU_struct) op_0xe5() {
-	var hl uint16 = (uint16(cpu.Registers.L) << 8) | uint16(cpu.Registers.H)
+	var hl uint16 = cpu.getHL()
 	cpu.Registers.SP -= 2
 	cpu.MMU.WriteWord(cpu.Registers.SP, hl)
 
@@ -2122,7 +2127,7 @@ func (cpu *CPU_struct) op_0xe5() {
 
 // 0xf5 PUSH AF
 func (cpu *CPU_struct) op_0xf5() {
-	var af uint16 = (uint16(cpu.Registers.F) << 8) | uint16(cpu.Registers.A)
+	var af uint16 = cpu.getAF()
 	cpu.Registers.SP -= 2
 	cpu.MMU.WriteWord(cpu.Registers.SP, af)
 
@@ -2150,7 +2155,7 @@ func (cpu *CPU_struct) op_0xe6(n uint8) {
 	cpu.Cycle += 4
 }
 
-// 0xf6 AND #
+// 0xf6 OR #
 func (cpu *CPU_struct) op_0xf6(n uint8) {
 	cpu.or(n)
 
@@ -2194,7 +2199,7 @@ func (cpu *CPU_struct) op_0xc8() {
 
 // 0xd8 RET Z
 func (cpu *CPU_struct) op_0xd8() {
-	if (cpu.Registers.F & Z_BIT) > 0 {
+	if (cpu.Registers.F & C_BIT) > 0 {
 		cpu.ret()
 	}
 }
@@ -2363,14 +2368,6 @@ func (cpu *CPU_struct) op_0xff() {
 	cpu.rst(0x0038)
 }
 
-//===============================================================
-//===============================================================
-//===============================================================
-//===============================================================
-//===============================================================
-//===============================================================
-//===============================================================
-
 func (cpu *CPU_struct) call(nn uint16) {
 	cpu.MMU.WriteWord(cpu.Registers.SP-2, cpu.Registers.PC)
 	cpu.Registers.SP -= 2
@@ -2378,6 +2375,14 @@ func (cpu *CPU_struct) call(nn uint16) {
 
 	cpu.Cycle += 12
 }
+
+//===============================================================
+//===============================================================
+//===============================================================
+//===============================================================
+//===============================================================
+//===============================================================
+//===============================================================
 
 // 0xcb 0x11 RL  C
 func (cpu *CPU_struct) op_cb_0x11() {

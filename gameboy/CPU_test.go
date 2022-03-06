@@ -222,7 +222,7 @@ func TestPush_Pop(t *testing.T) {
 
 	gb.Run(1)
 
-	if gb.CPU.Registers.SP != 0xef00 || gb.MMU.ReadByte(0xef00) != 0x0066 || gb.MMU.ReadByte(0xef01) != 0x0044 {
+	if gb.CPU.Registers.SP != 0xef00 || gb.MMU.ReadByte(0xef00) != 0x0044 || gb.MMU.ReadByte(0xef01) != 0x0066 {
 		t.Errorf("Issue on instruction 0xc5, %X, %X, %X", gb.CPU.Registers.SP, gb.MMU.ReadByte(0xef00), gb.MMU.ReadByte(0xef01))
 	}
 
@@ -232,7 +232,7 @@ func TestPush_Pop(t *testing.T) {
 	gb.Run(1)
 
 	if gb.CPU.Registers.SP != 0xef02 || gb.CPU.Registers.B != 0x0066 || gb.CPU.Registers.C != 0x0044 {
-		t.Errorf("Issue on instruction 0xc1, %X, %X, %X", gb.CPU.Registers.PC, gb.CPU.Registers.SP, gb.MMU.ReadByte(gb.CPU.Registers.SP))
+		t.Errorf("Issue on instruction 0xc1, %X, %X, %X", gb.CPU.Registers.PC, gb.CPU.Registers.B, gb.CPU.Registers.C)
 	}
 }
 
@@ -281,5 +281,53 @@ func TestINC_B_half_carry(t *testing.T) {
 
 	if gb.CPU.Registers.B != 0x20 || (gb.CPU.Registers.F&0x20) == 0 {
 		t.Errorf("Issue on instruction 0x04")
+	}
+}
+func TestLD_nn(t *testing.T) {
+	ch := make(chan bool)
+	var gb = GameboyFactory(ch)
+
+	gb.CPU.Registers.PC = 0x0050
+	gb.MMU.WriteByte(0x0050, 0x01)
+	gb.MMU.WriteByte(0x0051, 0x34)
+	gb.MMU.WriteByte(0x0052, 0x12)
+
+	gb.Run(1)
+
+	if (gb.CPU.Registers.B != 0x12) || (gb.CPU.Registers.C != 0x34) {
+		t.Errorf("Issue on instruction 0x01")
+	}
+}
+
+func TestLD_nn_address(t *testing.T) {
+	ch := make(chan bool)
+	var gb = GameboyFactory(ch)
+
+	gb.CPU.Registers.PC = 0x0050
+	gb.CPU.Registers.A = 0x50
+	gb.CPU.Registers.B = 0x82
+	gb.CPU.Registers.C = 0x34
+	gb.MMU.WriteByte(0x0050, 0x02)
+
+	gb.Run(1)
+
+	if gb.MMU.ReadByte(0x8234) != 0x50 {
+		t.Errorf("Issue on instruction 0x01")
+	}
+}
+
+func TestCP(t *testing.T) {
+	ch := make(chan bool)
+	var gb = GameboyFactory(ch)
+
+	gb.CPU.Registers.PC = 0x0050
+	gb.CPU.Registers.A = 0xff
+	gb.CPU.Registers.B = 0xff
+	gb.MMU.WriteByte(0x0050, 0xb8)
+
+	gb.Run(1)
+
+	if (gb.CPU.Registers.F & 0x80) == 0x00 {
+		t.Errorf("Issue on instruction 0xb8")
 	}
 }
