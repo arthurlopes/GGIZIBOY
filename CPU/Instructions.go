@@ -11,6 +11,523 @@ func (cpu *CPU_struct) Innit_Instruction_maps() {
 	cpu.Instructions_maps.Instructions_map_ = make(map[uint8]func())
 	cpu.Instructions_maps.Instructions_map_CB = make(map[uint8]func())
 
+	cpu.Instructions_maps.Instructions_map_str = make(map[uint8]string)
+	cpu.Instructions_maps.Instructions_map_CB_str = make(map[uint8]string)
+
+	cpu.Instructions_maps.Instructions_map_str[0x00] = "NOP"
+	cpu.Instructions_maps.Instructions_map_str[0x01] = "LD BC, d16"
+	cpu.Instructions_maps.Instructions_map_str[0x02] = "LD BC, A"
+	cpu.Instructions_maps.Instructions_map_str[0x03] = "INC BC"
+	cpu.Instructions_maps.Instructions_map_str[0x04] = "INC B"
+	cpu.Instructions_maps.Instructions_map_str[0x05] = "DEC B"
+	cpu.Instructions_maps.Instructions_map_str[0x06] = "LD B, d8"
+	cpu.Instructions_maps.Instructions_map_str[0x07] = "RLCA"
+	cpu.Instructions_maps.Instructions_map_str[0x08] = "LD a16, SP"
+	cpu.Instructions_maps.Instructions_map_str[0x09] = "ADD HL, BC"
+	cpu.Instructions_maps.Instructions_map_str[0x0A] = "LD A, BC"
+	cpu.Instructions_maps.Instructions_map_str[0x0B] = "DEC BC"
+	cpu.Instructions_maps.Instructions_map_str[0x0C] = "INC C"
+	cpu.Instructions_maps.Instructions_map_str[0x0D] = "DEC C"
+	cpu.Instructions_maps.Instructions_map_str[0x0E] = "LD C, d8"
+	cpu.Instructions_maps.Instructions_map_str[0x0F] = "RRCA"
+	cpu.Instructions_maps.Instructions_map_str[0x10] = "STOP d8"
+	cpu.Instructions_maps.Instructions_map_str[0x11] = "LD DE, d16"
+	cpu.Instructions_maps.Instructions_map_str[0x12] = "LD DE, A"
+	cpu.Instructions_maps.Instructions_map_str[0x13] = "INC DE"
+	cpu.Instructions_maps.Instructions_map_str[0x14] = "INC D"
+	cpu.Instructions_maps.Instructions_map_str[0x15] = "DEC D"
+	cpu.Instructions_maps.Instructions_map_str[0x16] = "LD D, d8"
+	cpu.Instructions_maps.Instructions_map_str[0x17] = "RLA"
+	cpu.Instructions_maps.Instructions_map_str[0x18] = "JR r8"
+	cpu.Instructions_maps.Instructions_map_str[0x19] = "ADD HL, DE"
+	cpu.Instructions_maps.Instructions_map_str[0x1A] = "LD A, DE"
+	cpu.Instructions_maps.Instructions_map_str[0x1B] = "DEC DE"
+	cpu.Instructions_maps.Instructions_map_str[0x1C] = "INC E"
+	cpu.Instructions_maps.Instructions_map_str[0x1D] = "DEC E"
+	cpu.Instructions_maps.Instructions_map_str[0x1E] = "LD E, d8"
+	cpu.Instructions_maps.Instructions_map_str[0x1F] = "RRA"
+	cpu.Instructions_maps.Instructions_map_str[0x20] = "JR NZ, r8"
+	cpu.Instructions_maps.Instructions_map_str[0x21] = "LD HL, d16"
+	cpu.Instructions_maps.Instructions_map_str[0x22] = "LD HL, A"
+	cpu.Instructions_maps.Instructions_map_str[0x23] = "INC HL"
+	cpu.Instructions_maps.Instructions_map_str[0x24] = "INC H"
+	cpu.Instructions_maps.Instructions_map_str[0x25] = "DEC H"
+	cpu.Instructions_maps.Instructions_map_str[0x26] = "LD H, d8"
+	cpu.Instructions_maps.Instructions_map_str[0x27] = "DAA"
+	cpu.Instructions_maps.Instructions_map_str[0x28] = "JR Z, r8"
+	cpu.Instructions_maps.Instructions_map_str[0x29] = "ADD HL, HL"
+	cpu.Instructions_maps.Instructions_map_str[0x2A] = "LD A, HL"
+	cpu.Instructions_maps.Instructions_map_str[0x2B] = "DEC HL"
+	cpu.Instructions_maps.Instructions_map_str[0x2C] = "INC L"
+	cpu.Instructions_maps.Instructions_map_str[0x2D] = "DEC L"
+	cpu.Instructions_maps.Instructions_map_str[0x2E] = "LD L, d8"
+	cpu.Instructions_maps.Instructions_map_str[0x2F] = "CPL"
+	cpu.Instructions_maps.Instructions_map_str[0x30] = "JR NC, r8"
+	cpu.Instructions_maps.Instructions_map_str[0x31] = "LD SP, d16"
+	cpu.Instructions_maps.Instructions_map_str[0x32] = "LD HL, A"
+	cpu.Instructions_maps.Instructions_map_str[0x33] = "INC SP"
+	cpu.Instructions_maps.Instructions_map_str[0x34] = "INC HL"
+	cpu.Instructions_maps.Instructions_map_str[0x35] = "DEC HL"
+	cpu.Instructions_maps.Instructions_map_str[0x36] = "LD HL, d8"
+	cpu.Instructions_maps.Instructions_map_str[0x37] = "SCF"
+	cpu.Instructions_maps.Instructions_map_str[0x38] = "JR C, r8"
+	cpu.Instructions_maps.Instructions_map_str[0x39] = "ADD HL, SP"
+	cpu.Instructions_maps.Instructions_map_str[0x3A] = "LD A, HL"
+	cpu.Instructions_maps.Instructions_map_str[0x3B] = "DEC SP"
+	cpu.Instructions_maps.Instructions_map_str[0x3C] = "INC A"
+	cpu.Instructions_maps.Instructions_map_str[0x3D] = "DEC A"
+	cpu.Instructions_maps.Instructions_map_str[0x3E] = "LD A, d8"
+	cpu.Instructions_maps.Instructions_map_str[0x3F] = "CCF"
+	cpu.Instructions_maps.Instructions_map_str[0x40] = "LD B, B"
+	cpu.Instructions_maps.Instructions_map_str[0x41] = "LD B, C"
+	cpu.Instructions_maps.Instructions_map_str[0x42] = "LD B, D"
+	cpu.Instructions_maps.Instructions_map_str[0x43] = "LD B, E"
+	cpu.Instructions_maps.Instructions_map_str[0x44] = "LD B, H"
+	cpu.Instructions_maps.Instructions_map_str[0x45] = "LD B, L"
+	cpu.Instructions_maps.Instructions_map_str[0x46] = "LD B, HL"
+	cpu.Instructions_maps.Instructions_map_str[0x47] = "LD B, A"
+	cpu.Instructions_maps.Instructions_map_str[0x48] = "LD C, B"
+	cpu.Instructions_maps.Instructions_map_str[0x49] = "LD C, C"
+	cpu.Instructions_maps.Instructions_map_str[0x4A] = "LD C, D"
+	cpu.Instructions_maps.Instructions_map_str[0x4B] = "LD C, E"
+	cpu.Instructions_maps.Instructions_map_str[0x4C] = "LD C, H"
+	cpu.Instructions_maps.Instructions_map_str[0x4D] = "LD C, L"
+	cpu.Instructions_maps.Instructions_map_str[0x4E] = "LD C, HL"
+	cpu.Instructions_maps.Instructions_map_str[0x4F] = "LD C, A"
+	cpu.Instructions_maps.Instructions_map_str[0x50] = "LD D, B"
+	cpu.Instructions_maps.Instructions_map_str[0x51] = "LD D, C"
+	cpu.Instructions_maps.Instructions_map_str[0x52] = "LD D, D"
+	cpu.Instructions_maps.Instructions_map_str[0x53] = "LD D, E"
+	cpu.Instructions_maps.Instructions_map_str[0x54] = "LD D, H"
+	cpu.Instructions_maps.Instructions_map_str[0x55] = "LD D, L"
+	cpu.Instructions_maps.Instructions_map_str[0x56] = "LD D, HL"
+	cpu.Instructions_maps.Instructions_map_str[0x57] = "LD D, A"
+	cpu.Instructions_maps.Instructions_map_str[0x58] = "LD E, B"
+	cpu.Instructions_maps.Instructions_map_str[0x59] = "LD E, C"
+	cpu.Instructions_maps.Instructions_map_str[0x5A] = "LD E, D"
+	cpu.Instructions_maps.Instructions_map_str[0x5B] = "LD E, E"
+	cpu.Instructions_maps.Instructions_map_str[0x5C] = "LD E, H"
+	cpu.Instructions_maps.Instructions_map_str[0x5D] = "LD E, L"
+	cpu.Instructions_maps.Instructions_map_str[0x5E] = "LD E, HL"
+	cpu.Instructions_maps.Instructions_map_str[0x5F] = "LD E, A"
+	cpu.Instructions_maps.Instructions_map_str[0x60] = "LD H, B"
+	cpu.Instructions_maps.Instructions_map_str[0x61] = "LD H, C"
+	cpu.Instructions_maps.Instructions_map_str[0x62] = "LD H, D"
+	cpu.Instructions_maps.Instructions_map_str[0x63] = "LD H, E"
+	cpu.Instructions_maps.Instructions_map_str[0x64] = "LD H, H"
+	cpu.Instructions_maps.Instructions_map_str[0x65] = "LD H, L"
+	cpu.Instructions_maps.Instructions_map_str[0x66] = "LD H, HL"
+	cpu.Instructions_maps.Instructions_map_str[0x67] = "LD H, A"
+	cpu.Instructions_maps.Instructions_map_str[0x68] = "LD L, B"
+	cpu.Instructions_maps.Instructions_map_str[0x69] = "LD L, C"
+	cpu.Instructions_maps.Instructions_map_str[0x6A] = "LD L, D"
+	cpu.Instructions_maps.Instructions_map_str[0x6B] = "LD L, E"
+	cpu.Instructions_maps.Instructions_map_str[0x6C] = "LD L, H"
+	cpu.Instructions_maps.Instructions_map_str[0x6D] = "LD L, L"
+	cpu.Instructions_maps.Instructions_map_str[0x6E] = "LD L, HL"
+	cpu.Instructions_maps.Instructions_map_str[0x6F] = "LD L, A"
+	cpu.Instructions_maps.Instructions_map_str[0x70] = "LD HL, B"
+	cpu.Instructions_maps.Instructions_map_str[0x71] = "LD HL, C"
+	cpu.Instructions_maps.Instructions_map_str[0x72] = "LD HL, D"
+	cpu.Instructions_maps.Instructions_map_str[0x73] = "LD HL, E"
+	cpu.Instructions_maps.Instructions_map_str[0x74] = "LD HL, H"
+	cpu.Instructions_maps.Instructions_map_str[0x75] = "LD HL, L"
+	cpu.Instructions_maps.Instructions_map_str[0x76] = "HALT"
+	cpu.Instructions_maps.Instructions_map_str[0x77] = "LD HL, A"
+	cpu.Instructions_maps.Instructions_map_str[0x78] = "LD A, B"
+	cpu.Instructions_maps.Instructions_map_str[0x79] = "LD A, C"
+	cpu.Instructions_maps.Instructions_map_str[0x7A] = "LD A, D"
+	cpu.Instructions_maps.Instructions_map_str[0x7B] = "LD A, E"
+	cpu.Instructions_maps.Instructions_map_str[0x7C] = "LD A, H"
+	cpu.Instructions_maps.Instructions_map_str[0x7D] = "LD A, L"
+	cpu.Instructions_maps.Instructions_map_str[0x7E] = "LD A, HL"
+	cpu.Instructions_maps.Instructions_map_str[0x7F] = "LD A, A"
+	cpu.Instructions_maps.Instructions_map_str[0x80] = "ADD A, B"
+	cpu.Instructions_maps.Instructions_map_str[0x81] = "ADD A, C"
+	cpu.Instructions_maps.Instructions_map_str[0x82] = "ADD A, D"
+	cpu.Instructions_maps.Instructions_map_str[0x83] = "ADD A, E"
+	cpu.Instructions_maps.Instructions_map_str[0x84] = "ADD A, H"
+	cpu.Instructions_maps.Instructions_map_str[0x85] = "ADD A, L"
+	cpu.Instructions_maps.Instructions_map_str[0x86] = "ADD A, HL"
+	cpu.Instructions_maps.Instructions_map_str[0x87] = "ADD A, A"
+	cpu.Instructions_maps.Instructions_map_str[0x88] = "ADC A, B"
+	cpu.Instructions_maps.Instructions_map_str[0x89] = "ADC A, C"
+	cpu.Instructions_maps.Instructions_map_str[0x8A] = "ADC A, D"
+	cpu.Instructions_maps.Instructions_map_str[0x8B] = "ADC A, E"
+	cpu.Instructions_maps.Instructions_map_str[0x8C] = "ADC A, H"
+	cpu.Instructions_maps.Instructions_map_str[0x8D] = "ADC A, L"
+	cpu.Instructions_maps.Instructions_map_str[0x8E] = "ADC A, HL"
+	cpu.Instructions_maps.Instructions_map_str[0x8F] = "ADC A, A"
+	cpu.Instructions_maps.Instructions_map_str[0x90] = "SUB B"
+	cpu.Instructions_maps.Instructions_map_str[0x91] = "SUB C"
+	cpu.Instructions_maps.Instructions_map_str[0x92] = "SUB D"
+	cpu.Instructions_maps.Instructions_map_str[0x93] = "SUB E"
+	cpu.Instructions_maps.Instructions_map_str[0x94] = "SUB H"
+	cpu.Instructions_maps.Instructions_map_str[0x95] = "SUB L"
+	cpu.Instructions_maps.Instructions_map_str[0x96] = "SUB HL"
+	cpu.Instructions_maps.Instructions_map_str[0x97] = "SUB A"
+	cpu.Instructions_maps.Instructions_map_str[0x98] = "SBC A, B"
+	cpu.Instructions_maps.Instructions_map_str[0x99] = "SBC A, C"
+	cpu.Instructions_maps.Instructions_map_str[0x9A] = "SBC A, D"
+	cpu.Instructions_maps.Instructions_map_str[0x9B] = "SBC A, E"
+	cpu.Instructions_maps.Instructions_map_str[0x9C] = "SBC A, H"
+	cpu.Instructions_maps.Instructions_map_str[0x9D] = "SBC A, L"
+	cpu.Instructions_maps.Instructions_map_str[0x9E] = "SBC A, HL"
+	cpu.Instructions_maps.Instructions_map_str[0x9F] = "SBC A, A"
+	cpu.Instructions_maps.Instructions_map_str[0xA0] = "AND B"
+	cpu.Instructions_maps.Instructions_map_str[0xA1] = "AND C"
+	cpu.Instructions_maps.Instructions_map_str[0xA2] = "AND D"
+	cpu.Instructions_maps.Instructions_map_str[0xA3] = "AND E"
+	cpu.Instructions_maps.Instructions_map_str[0xA4] = "AND H"
+	cpu.Instructions_maps.Instructions_map_str[0xA5] = "AND L"
+	cpu.Instructions_maps.Instructions_map_str[0xA6] = "AND HL"
+	cpu.Instructions_maps.Instructions_map_str[0xA7] = "AND A"
+	cpu.Instructions_maps.Instructions_map_str[0xA8] = "XOR B"
+	cpu.Instructions_maps.Instructions_map_str[0xA9] = "XOR C"
+	cpu.Instructions_maps.Instructions_map_str[0xAA] = "XOR D"
+	cpu.Instructions_maps.Instructions_map_str[0xAB] = "XOR E"
+	cpu.Instructions_maps.Instructions_map_str[0xAC] = "XOR H"
+	cpu.Instructions_maps.Instructions_map_str[0xAD] = "XOR L"
+	cpu.Instructions_maps.Instructions_map_str[0xAE] = "XOR HL"
+	cpu.Instructions_maps.Instructions_map_str[0xAF] = "XOR A"
+	cpu.Instructions_maps.Instructions_map_str[0xB0] = "OR B"
+	cpu.Instructions_maps.Instructions_map_str[0xB1] = "OR C"
+	cpu.Instructions_maps.Instructions_map_str[0xB2] = "OR D"
+	cpu.Instructions_maps.Instructions_map_str[0xB3] = "OR E"
+	cpu.Instructions_maps.Instructions_map_str[0xB4] = "OR H"
+	cpu.Instructions_maps.Instructions_map_str[0xB5] = "OR L"
+	cpu.Instructions_maps.Instructions_map_str[0xB6] = "OR HL"
+	cpu.Instructions_maps.Instructions_map_str[0xB7] = "OR A"
+	cpu.Instructions_maps.Instructions_map_str[0xB8] = "CP B"
+	cpu.Instructions_maps.Instructions_map_str[0xB9] = "CP C"
+	cpu.Instructions_maps.Instructions_map_str[0xBA] = "CP D"
+	cpu.Instructions_maps.Instructions_map_str[0xBB] = "CP E"
+	cpu.Instructions_maps.Instructions_map_str[0xBC] = "CP H"
+	cpu.Instructions_maps.Instructions_map_str[0xBD] = "CP L"
+	cpu.Instructions_maps.Instructions_map_str[0xBE] = "CP HL"
+	cpu.Instructions_maps.Instructions_map_str[0xBF] = "CP A"
+	cpu.Instructions_maps.Instructions_map_str[0xC0] = "RET NZ"
+	cpu.Instructions_maps.Instructions_map_str[0xC1] = "POP BC"
+	cpu.Instructions_maps.Instructions_map_str[0xC2] = "JP NZ, a16"
+	cpu.Instructions_maps.Instructions_map_str[0xC3] = "JP a16"
+	cpu.Instructions_maps.Instructions_map_str[0xC4] = "CALL NZ, a16"
+	cpu.Instructions_maps.Instructions_map_str[0xC5] = "PUSH BC"
+	cpu.Instructions_maps.Instructions_map_str[0xC6] = "ADD A, d8"
+	cpu.Instructions_maps.Instructions_map_str[0xC7] = "RST 00H"
+	cpu.Instructions_maps.Instructions_map_str[0xC8] = "RET Z"
+	cpu.Instructions_maps.Instructions_map_str[0xC9] = "RET"
+	cpu.Instructions_maps.Instructions_map_str[0xCA] = "JP Z, a16"
+	cpu.Instructions_maps.Instructions_map_str[0xCB] = "PREFIX"
+	cpu.Instructions_maps.Instructions_map_str[0xCC] = "CALL Z, a16"
+	cpu.Instructions_maps.Instructions_map_str[0xCD] = "CALL a16"
+	cpu.Instructions_maps.Instructions_map_str[0xCE] = "ADC A, d8"
+	cpu.Instructions_maps.Instructions_map_str[0xCF] = "RST 08H"
+	cpu.Instructions_maps.Instructions_map_str[0xD0] = "RET NC"
+	cpu.Instructions_maps.Instructions_map_str[0xD1] = "POP DE"
+	cpu.Instructions_maps.Instructions_map_str[0xD2] = "JP NC, a16"
+	cpu.Instructions_maps.Instructions_map_str[0xD3] = "ILLEGAL_D3"
+	cpu.Instructions_maps.Instructions_map_str[0xD4] = "CALL NC, a16"
+	cpu.Instructions_maps.Instructions_map_str[0xD5] = "PUSH DE"
+	cpu.Instructions_maps.Instructions_map_str[0xD6] = "SUB d8"
+	cpu.Instructions_maps.Instructions_map_str[0xD7] = "RST 10H"
+	cpu.Instructions_maps.Instructions_map_str[0xD8] = "RET C"
+	cpu.Instructions_maps.Instructions_map_str[0xD9] = "RETI"
+	cpu.Instructions_maps.Instructions_map_str[0xDA] = "JP C, a16"
+	cpu.Instructions_maps.Instructions_map_str[0xDB] = "ILLEGAL_DB"
+	cpu.Instructions_maps.Instructions_map_str[0xDC] = "CALL C, a16"
+	cpu.Instructions_maps.Instructions_map_str[0xDD] = "ILLEGAL_DD"
+	cpu.Instructions_maps.Instructions_map_str[0xDE] = "SBC A, d8"
+	cpu.Instructions_maps.Instructions_map_str[0xDF] = "RST 18H"
+	cpu.Instructions_maps.Instructions_map_str[0xE0] = "LDH a8, A"
+	cpu.Instructions_maps.Instructions_map_str[0xE1] = "POP HL"
+	cpu.Instructions_maps.Instructions_map_str[0xE2] = "LD C, A"
+	cpu.Instructions_maps.Instructions_map_str[0xE3] = "ILLEGAL_E3"
+	cpu.Instructions_maps.Instructions_map_str[0xE4] = "ILLEGAL_E4"
+	cpu.Instructions_maps.Instructions_map_str[0xE5] = "PUSH HL"
+	cpu.Instructions_maps.Instructions_map_str[0xE6] = "AND d8"
+	cpu.Instructions_maps.Instructions_map_str[0xE7] = "RST 20H"
+	cpu.Instructions_maps.Instructions_map_str[0xE8] = "ADD SP, r8"
+	cpu.Instructions_maps.Instructions_map_str[0xE9] = "JP HL"
+	cpu.Instructions_maps.Instructions_map_str[0xEA] = "LD a16, A"
+	cpu.Instructions_maps.Instructions_map_str[0xEB] = "ILLEGAL_EB"
+	cpu.Instructions_maps.Instructions_map_str[0xEC] = "ILLEGAL_EC"
+	cpu.Instructions_maps.Instructions_map_str[0xED] = "ILLEGAL_ED"
+	cpu.Instructions_maps.Instructions_map_str[0xEE] = "XOR d8"
+	cpu.Instructions_maps.Instructions_map_str[0xEF] = "RST 28H"
+	cpu.Instructions_maps.Instructions_map_str[0xF0] = "LDH A, a8"
+	cpu.Instructions_maps.Instructions_map_str[0xF1] = "POP AF"
+	cpu.Instructions_maps.Instructions_map_str[0xF2] = "LD A, C"
+	cpu.Instructions_maps.Instructions_map_str[0xF3] = "DI"
+	cpu.Instructions_maps.Instructions_map_str[0xF4] = "ILLEGAL_F4"
+	cpu.Instructions_maps.Instructions_map_str[0xF5] = "PUSH AF"
+	cpu.Instructions_maps.Instructions_map_str[0xF6] = "OR d8"
+	cpu.Instructions_maps.Instructions_map_str[0xF7] = "RST 30H"
+	cpu.Instructions_maps.Instructions_map_str[0xF8] = "LD"
+	cpu.Instructions_maps.Instructions_map_str[0xF9] = "LD SP, HL"
+	cpu.Instructions_maps.Instructions_map_str[0xFA] = "LD A, a16"
+	cpu.Instructions_maps.Instructions_map_str[0xFB] = "EI"
+	cpu.Instructions_maps.Instructions_map_str[0xFC] = "ILLEGAL_FC"
+	cpu.Instructions_maps.Instructions_map_str[0xFD] = "ILLEGAL_FD"
+	cpu.Instructions_maps.Instructions_map_str[0xFE] = "CP d8"
+	cpu.Instructions_maps.Instructions_map_str[0xFF] = "RST 38H"
+
+	cpu.Instructions_maps.Instructions_map_CB_str[0x00] = "RLC B"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x01] = "RLC C"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x02] = "RLC D"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x03] = "RLC E"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x04] = "RLC H"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x05] = "RLC L"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x06] = "RLC HL"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x07] = "RLC A"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x08] = "RRC B"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x09] = "RRC C"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x0A] = "RRC D"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x0B] = "RRC E"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x0C] = "RRC H"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x0D] = "RRC L"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x0E] = "RRC HL"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x0F] = "RRC A"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x10] = "RL B"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x11] = "RL C"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x12] = "RL D"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x13] = "RL E"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x14] = "RL H"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x15] = "RL L"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x16] = "RL HL"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x17] = "RL A"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x18] = "RR B"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x19] = "RR C"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x1A] = "RR D"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x1B] = "RR E"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x1C] = "RR H"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x1D] = "RR L"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x1E] = "RR HL"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x1F] = "RR A"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x20] = "SLA B"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x21] = "SLA C"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x22] = "SLA D"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x23] = "SLA E"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x24] = "SLA H"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x25] = "SLA L"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x26] = "SLA HL"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x27] = "SLA A"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x28] = "SRA B"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x29] = "SRA C"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x2A] = "SRA D"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x2B] = "SRA E"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x2C] = "SRA H"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x2D] = "SRA L"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x2E] = "SRA HL"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x2F] = "SRA A"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x30] = "SWAP B"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x31] = "SWAP C"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x32] = "SWAP D"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x33] = "SWAP E"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x34] = "SWAP H"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x35] = "SWAP L"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x36] = "SWAP HL"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x37] = "SWAP A"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x38] = "SRL B"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x39] = "SRL C"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x3A] = "SRL D"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x3B] = "SRL E"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x3C] = "SRL H"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x3D] = "SRL L"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x3E] = "SRL HL"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x3F] = "SRL A"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x40] = "BIT 0, B"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x41] = "BIT 0, C"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x42] = "BIT 0, D"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x43] = "BIT 0, E"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x44] = "BIT 0, H"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x45] = "BIT 0, L"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x46] = "BIT 0, HL"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x47] = "BIT 0, A"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x48] = "BIT 1, B"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x49] = "BIT 1, C"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x4A] = "BIT 1, D"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x4B] = "BIT 1, E"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x4C] = "BIT 1, H"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x4D] = "BIT 1, L"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x4E] = "BIT 1, HL"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x4F] = "BIT 1, A"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x50] = "BIT 2, B"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x51] = "BIT 2, C"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x52] = "BIT 2, D"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x53] = "BIT 2, E"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x54] = "BIT 2, H"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x55] = "BIT 2, L"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x56] = "BIT 2, HL"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x57] = "BIT 2, A"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x58] = "BIT 3, B"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x59] = "BIT 3, C"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x5A] = "BIT 3, D"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x5B] = "BIT 3, E"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x5C] = "BIT 3, H"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x5D] = "BIT 3, L"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x5E] = "BIT 3, HL"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x5F] = "BIT 3, A"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x60] = "BIT 4, B"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x61] = "BIT 4, C"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x62] = "BIT 4, D"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x63] = "BIT 4, E"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x64] = "BIT 4, H"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x65] = "BIT 4, L"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x66] = "BIT 4, HL"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x67] = "BIT 4, A"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x68] = "BIT 5, B"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x69] = "BIT 5, C"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x6A] = "BIT 5, D"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x6B] = "BIT 5, E"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x6C] = "BIT 5, H"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x6D] = "BIT 5, L"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x6E] = "BIT 5, HL"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x6F] = "BIT 5, A"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x70] = "BIT 6, B"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x71] = "BIT 6, C"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x72] = "BIT 6, D"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x73] = "BIT 6, E"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x74] = "BIT 6, H"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x75] = "BIT 6, L"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x76] = "BIT 6, HL"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x77] = "BIT 6, A"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x78] = "BIT 7, B"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x79] = "BIT 7, C"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x7A] = "BIT 7, D"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x7B] = "BIT 7, E"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x7C] = "BIT 7, H"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x7D] = "BIT 7, L"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x7E] = "BIT 7, HL"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x7F] = "BIT 7, A"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x80] = "RES 0, B"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x81] = "RES 0, C"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x82] = "RES 0, D"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x83] = "RES 0, E"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x84] = "RES 0, H"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x85] = "RES 0, L"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x86] = "RES 0, HL"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x87] = "RES 0, A"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x88] = "RES 1, B"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x89] = "RES 1, C"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x8A] = "RES 1, D"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x8B] = "RES 1, E"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x8C] = "RES 1, H"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x8D] = "RES 1, L"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x8E] = "RES 1, HL"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x8F] = "RES 1, A"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x90] = "RES 2, B"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x91] = "RES 2, C"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x92] = "RES 2, D"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x93] = "RES 2, E"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x94] = "RES 2, H"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x95] = "RES 2, L"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x96] = "RES 2, HL"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x97] = "RES 2, A"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x98] = "RES 3, B"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x99] = "RES 3, C"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x9A] = "RES 3, D"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x9B] = "RES 3, E"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x9C] = "RES 3, H"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x9D] = "RES 3, L"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x9E] = "RES 3, HL"
+	cpu.Instructions_maps.Instructions_map_CB_str[0x9F] = "RES 3, A"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xA0] = "RES 4, B"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xA1] = "RES 4, C"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xA2] = "RES 4, D"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xA3] = "RES 4, E"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xA4] = "RES 4, H"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xA5] = "RES 4, L"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xA6] = "RES 4, HL"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xA7] = "RES 4, A"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xA8] = "RES 5, B"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xA9] = "RES 5, C"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xAA] = "RES 5, D"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xAB] = "RES 5, E"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xAC] = "RES 5, H"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xAD] = "RES 5, L"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xAE] = "RES 5, HL"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xAF] = "RES 5, A"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xB0] = "RES 6, B"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xB1] = "RES 6, C"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xB2] = "RES 6, D"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xB3] = "RES 6, E"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xB4] = "RES 6, H"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xB5] = "RES 6, L"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xB6] = "RES 6, HL"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xB7] = "RES 6, A"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xB8] = "RES 7, B"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xB9] = "RES 7, C"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xBA] = "RES 7, D"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xBB] = "RES 7, E"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xBC] = "RES 7, H"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xBD] = "RES 7, L"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xBE] = "RES 7, HL"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xBF] = "RES 7, A"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xC0] = "SET 0, B"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xC1] = "SET 0, C"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xC2] = "SET 0, D"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xC3] = "SET 0, E"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xC4] = "SET 0, H"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xC5] = "SET 0, L"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xC6] = "SET 0, HL"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xC7] = "SET 0, A"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xC8] = "SET 1, B"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xC9] = "SET 1, C"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xCA] = "SET 1, D"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xCB] = "SET 1, E"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xCC] = "SET 1, H"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xCD] = "SET 1, L"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xCE] = "SET 1, HL"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xCF] = "SET 1, A"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xD0] = "SET 2, B"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xD1] = "SET 2, C"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xD2] = "SET 2, D"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xD3] = "SET 2, E"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xD4] = "SET 2, H"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xD5] = "SET 2, L"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xD6] = "SET 2, HL"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xD7] = "SET 2, A"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xD8] = "SET 3, B"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xD9] = "SET 3, C"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xDA] = "SET 3, D"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xDB] = "SET 3, E"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xDC] = "SET 3, H"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xDD] = "SET 3, L"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xDE] = "SET 3, HL"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xDF] = "SET 3, A"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xE0] = "SET 4, B"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xE1] = "SET 4, C"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xE2] = "SET 4, D"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xE3] = "SET 4, E"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xE4] = "SET 4, H"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xE5] = "SET 4, L"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xE6] = "SET 4, HL"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xE7] = "SET 4, A"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xE8] = "SET 5, B"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xE9] = "SET 5, C"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xEA] = "SET 5, D"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xEB] = "SET 5, E"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xEC] = "SET 5, H"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xED] = "SET 5, L"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xEE] = "SET 5, HL"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xEF] = "SET 5, A"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xF0] = "SET 6, B"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xF1] = "SET 6, C"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xF2] = "SET 6, D"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xF3] = "SET 6, E"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xF4] = "SET 6, H"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xF5] = "SET 6, L"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xF6] = "SET 6, HL"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xF7] = "SET 6, A"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xF8] = "SET 7, B"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xF9] = "SET 7, C"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xFA] = "SET 7, D"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xFB] = "SET 7, E"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xFC] = "SET 7, H"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xFD] = "SET 7, L"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xFE] = "SET 7, HL"
+	cpu.Instructions_maps.Instructions_map_CB_str[0xFF] = "SET 7, A"
+
 	// 8
 	// LD
 	cpu.Instructions_maps.Instructions_map_uint8[0x06] = cpu.op_0x06
@@ -215,6 +732,7 @@ func (cpu *CPU_struct) Innit_Instruction_maps() {
 	// NOP
 	cpu.Instructions_maps.Instructions_map_[0x00] = cpu.op_0x00
 	// HALT
+	cpu.Instructions_maps.Instructions_map_[0x10] = cpu.op_0x10
 	cpu.Instructions_maps.Instructions_map_[0x76] = cpu.op_0x76
 	// PUSH/POP
 	cpu.Instructions_maps.Instructions_map_[0xc1] = cpu.op_0xc1
@@ -289,20 +807,136 @@ func (cpu *CPU_struct) Innit_Instruction_maps() {
 	cpu.Instructions_maps.Instructions_map_[0x27] = cpu.op_0x27
 
 	// CB
-	// cpu.Instructions_maps.Instructions_map_CB[0x01] = cpu.op_cb_0x01
-	// cpu.Instructions_maps.Instructions_map_CB[0x02] = cpu.op_cb_0x02
-	// cpu.Instructions_maps.Instructions_map_CB[0x03] = cpu.op_cb_0x03
+	cpu.Instructions_maps.Instructions_map_CB[0x00] = cpu.op_cb_0x00
+	cpu.Instructions_maps.Instructions_map_CB[0x01] = cpu.op_cb_0x01
+	cpu.Instructions_maps.Instructions_map_CB[0x02] = cpu.op_cb_0x02
+	cpu.Instructions_maps.Instructions_map_CB[0x03] = cpu.op_cb_0x03
+	cpu.Instructions_maps.Instructions_map_CB[0x04] = cpu.op_cb_0x04
+	cpu.Instructions_maps.Instructions_map_CB[0x05] = cpu.op_cb_0x05
+	cpu.Instructions_maps.Instructions_map_CB[0x06] = cpu.op_cb_0x06
 	cpu.Instructions_maps.Instructions_map_CB[0x07] = cpu.op_cb_0x07
+	cpu.Instructions_maps.Instructions_map_CB[0x08] = cpu.op_cb_0x08
+	cpu.Instructions_maps.Instructions_map_CB[0x09] = cpu.op_cb_0x09
+	cpu.Instructions_maps.Instructions_map_CB[0x0a] = cpu.op_cb_0x0a
+	cpu.Instructions_maps.Instructions_map_CB[0x0b] = cpu.op_cb_0x0b
+	cpu.Instructions_maps.Instructions_map_CB[0x0c] = cpu.op_cb_0x0c
+	cpu.Instructions_maps.Instructions_map_CB[0x0d] = cpu.op_cb_0x0d
+	cpu.Instructions_maps.Instructions_map_CB[0x0e] = cpu.op_cb_0x0e
+	cpu.Instructions_maps.Instructions_map_CB[0x0f] = cpu.op_cb_0x0f
+	cpu.Instructions_maps.Instructions_map_CB[0x10] = cpu.op_cb_0x10
 	cpu.Instructions_maps.Instructions_map_CB[0x11] = cpu.op_cb_0x11
+	cpu.Instructions_maps.Instructions_map_CB[0x12] = cpu.op_cb_0x12
+	cpu.Instructions_maps.Instructions_map_CB[0x13] = cpu.op_cb_0x13
+	cpu.Instructions_maps.Instructions_map_CB[0x14] = cpu.op_cb_0x14
+	cpu.Instructions_maps.Instructions_map_CB[0x15] = cpu.op_cb_0x15
+	cpu.Instructions_maps.Instructions_map_CB[0x16] = cpu.op_cb_0x16
+	cpu.Instructions_maps.Instructions_map_CB[0x17] = cpu.op_cb_0x17
+	cpu.Instructions_maps.Instructions_map_CB[0x18] = cpu.op_cb_0x18
+	cpu.Instructions_maps.Instructions_map_CB[0x19] = cpu.op_cb_0x19
+	cpu.Instructions_maps.Instructions_map_CB[0x1a] = cpu.op_cb_0x1a
+	cpu.Instructions_maps.Instructions_map_CB[0x1b] = cpu.op_cb_0x1b
+	cpu.Instructions_maps.Instructions_map_CB[0x1c] = cpu.op_cb_0x1c
+	cpu.Instructions_maps.Instructions_map_CB[0x1d] = cpu.op_cb_0x1d
+	cpu.Instructions_maps.Instructions_map_CB[0x1e] = cpu.op_cb_0x1e
+	cpu.Instructions_maps.Instructions_map_CB[0x1f] = cpu.op_cb_0x1f
+	cpu.Instructions_maps.Instructions_map_CB[0x20] = cpu.op_cb_0x20
+	cpu.Instructions_maps.Instructions_map_CB[0x21] = cpu.op_cb_0x21
+	cpu.Instructions_maps.Instructions_map_CB[0x22] = cpu.op_cb_0x22
+	cpu.Instructions_maps.Instructions_map_CB[0x23] = cpu.op_cb_0x23
+	cpu.Instructions_maps.Instructions_map_CB[0x24] = cpu.op_cb_0x24
+	cpu.Instructions_maps.Instructions_map_CB[0x25] = cpu.op_cb_0x25
+	cpu.Instructions_maps.Instructions_map_CB[0x26] = cpu.op_cb_0x26
+	cpu.Instructions_maps.Instructions_map_CB[0x27] = cpu.op_cb_0x27
+	cpu.Instructions_maps.Instructions_map_CB[0x28] = cpu.op_cb_0x28
+	cpu.Instructions_maps.Instructions_map_CB[0x29] = cpu.op_cb_0x29
+	cpu.Instructions_maps.Instructions_map_CB[0x2a] = cpu.op_cb_0x2a
+	cpu.Instructions_maps.Instructions_map_CB[0x2b] = cpu.op_cb_0x2b
+	cpu.Instructions_maps.Instructions_map_CB[0x2c] = cpu.op_cb_0x2c
+	cpu.Instructions_maps.Instructions_map_CB[0x2d] = cpu.op_cb_0x2d
+	cpu.Instructions_maps.Instructions_map_CB[0x2e] = cpu.op_cb_0x2e
+	cpu.Instructions_maps.Instructions_map_CB[0x2f] = cpu.op_cb_0x2f
+	cpu.Instructions_maps.Instructions_map_CB[0x30] = cpu.op_cb_0x30
+	cpu.Instructions_maps.Instructions_map_CB[0x31] = cpu.op_cb_0x31
+	cpu.Instructions_maps.Instructions_map_CB[0x32] = cpu.op_cb_0x32
+	cpu.Instructions_maps.Instructions_map_CB[0x33] = cpu.op_cb_0x33
+	cpu.Instructions_maps.Instructions_map_CB[0x34] = cpu.op_cb_0x34
+	cpu.Instructions_maps.Instructions_map_CB[0x35] = cpu.op_cb_0x35
+	cpu.Instructions_maps.Instructions_map_CB[0x36] = cpu.op_cb_0x36
 	cpu.Instructions_maps.Instructions_map_CB[0x37] = cpu.op_cb_0x37
 	cpu.Instructions_maps.Instructions_map_CB[0x38] = cpu.op_cb_0x38
+	cpu.Instructions_maps.Instructions_map_CB[0x39] = cpu.op_cb_0x39
+	cpu.Instructions_maps.Instructions_map_CB[0x3a] = cpu.op_cb_0x3a
+	cpu.Instructions_maps.Instructions_map_CB[0x3b] = cpu.op_cb_0x3b
+	cpu.Instructions_maps.Instructions_map_CB[0x3c] = cpu.op_cb_0x3c
+	cpu.Instructions_maps.Instructions_map_CB[0x3d] = cpu.op_cb_0x3d
+	cpu.Instructions_maps.Instructions_map_CB[0x3e] = cpu.op_cb_0x3e
+	cpu.Instructions_maps.Instructions_map_CB[0x3f] = cpu.op_cb_0x3f
+	cpu.Instructions_maps.Instructions_map_CB[0x40] = cpu.op_cb_0x40
+	cpu.Instructions_maps.Instructions_map_CB[0x41] = cpu.op_cb_0x41
+	cpu.Instructions_maps.Instructions_map_CB[0x42] = cpu.op_cb_0x42
+	cpu.Instructions_maps.Instructions_map_CB[0x43] = cpu.op_cb_0x43
+	cpu.Instructions_maps.Instructions_map_CB[0x44] = cpu.op_cb_0x44
+	cpu.Instructions_maps.Instructions_map_CB[0x45] = cpu.op_cb_0x45
+	cpu.Instructions_maps.Instructions_map_CB[0x46] = cpu.op_cb_0x46
 	cpu.Instructions_maps.Instructions_map_CB[0x47] = cpu.op_cb_0x47
+	cpu.Instructions_maps.Instructions_map_CB[0x48] = cpu.op_cb_0x48
+	cpu.Instructions_maps.Instructions_map_CB[0x49] = cpu.op_cb_0x49
+	cpu.Instructions_maps.Instructions_map_CB[0x4a] = cpu.op_cb_0x4a
+	cpu.Instructions_maps.Instructions_map_CB[0x4b] = cpu.op_cb_0x4b
+	cpu.Instructions_maps.Instructions_map_CB[0x4c] = cpu.op_cb_0x4c
+	cpu.Instructions_maps.Instructions_map_CB[0x4d] = cpu.op_cb_0x4d
+	cpu.Instructions_maps.Instructions_map_CB[0x4e] = cpu.op_cb_0x4e
+	cpu.Instructions_maps.Instructions_map_CB[0x4f] = cpu.op_cb_0x4f
+	cpu.Instructions_maps.Instructions_map_CB[0x50] = cpu.op_cb_0x50
+	cpu.Instructions_maps.Instructions_map_CB[0x51] = cpu.op_cb_0x51
+	cpu.Instructions_maps.Instructions_map_CB[0x52] = cpu.op_cb_0x52
+	cpu.Instructions_maps.Instructions_map_CB[0x53] = cpu.op_cb_0x53
+	cpu.Instructions_maps.Instructions_map_CB[0x54] = cpu.op_cb_0x54
+	cpu.Instructions_maps.Instructions_map_CB[0x55] = cpu.op_cb_0x55
+	cpu.Instructions_maps.Instructions_map_CB[0x56] = cpu.op_cb_0x56
+	cpu.Instructions_maps.Instructions_map_CB[0x57] = cpu.op_cb_0x57
+	cpu.Instructions_maps.Instructions_map_CB[0x58] = cpu.op_cb_0x58
+	cpu.Instructions_maps.Instructions_map_CB[0x59] = cpu.op_cb_0x59
+	cpu.Instructions_maps.Instructions_map_CB[0x5a] = cpu.op_cb_0x5a
+	cpu.Instructions_maps.Instructions_map_CB[0x5b] = cpu.op_cb_0x5b
+	cpu.Instructions_maps.Instructions_map_CB[0x5c] = cpu.op_cb_0x5c
+	cpu.Instructions_maps.Instructions_map_CB[0x5d] = cpu.op_cb_0x5d
+	cpu.Instructions_maps.Instructions_map_CB[0x5e] = cpu.op_cb_0x5e
+	cpu.Instructions_maps.Instructions_map_CB[0x5f] = cpu.op_cb_0x5f
+	cpu.Instructions_maps.Instructions_map_CB[0x60] = cpu.op_cb_0x60
+	cpu.Instructions_maps.Instructions_map_CB[0x61] = cpu.op_cb_0x61
+	cpu.Instructions_maps.Instructions_map_CB[0x62] = cpu.op_cb_0x62
+	cpu.Instructions_maps.Instructions_map_CB[0x63] = cpu.op_cb_0x63
+	cpu.Instructions_maps.Instructions_map_CB[0x64] = cpu.op_cb_0x64
+	cpu.Instructions_maps.Instructions_map_CB[0x65] = cpu.op_cb_0x65
+	cpu.Instructions_maps.Instructions_map_CB[0x66] = cpu.op_cb_0x66
+	cpu.Instructions_maps.Instructions_map_CB[0x67] = cpu.op_cb_0x67
+	cpu.Instructions_maps.Instructions_map_CB[0x68] = cpu.op_cb_0x68
+	cpu.Instructions_maps.Instructions_map_CB[0x69] = cpu.op_cb_0x69
+	cpu.Instructions_maps.Instructions_map_CB[0x6a] = cpu.op_cb_0x6a
+	cpu.Instructions_maps.Instructions_map_CB[0x6b] = cpu.op_cb_0x6b
+	cpu.Instructions_maps.Instructions_map_CB[0x6c] = cpu.op_cb_0x6c
+	cpu.Instructions_maps.Instructions_map_CB[0x6d] = cpu.op_cb_0x6d
+	cpu.Instructions_maps.Instructions_map_CB[0x6e] = cpu.op_cb_0x6e
 	cpu.Instructions_maps.Instructions_map_CB[0x6f] = cpu.op_cb_0x6f
-	cpu.Instructions_maps.Instructions_map_CB[0x7c] = cpu.op_cb_0x7c
+	cpu.Instructions_maps.Instructions_map_CB[0x70] = cpu.op_cb_0x70
+	cpu.Instructions_maps.Instructions_map_CB[0x71] = cpu.op_cb_0x71
+	cpu.Instructions_maps.Instructions_map_CB[0x72] = cpu.op_cb_0x72
+	cpu.Instructions_maps.Instructions_map_CB[0x73] = cpu.op_cb_0x73
+	cpu.Instructions_maps.Instructions_map_CB[0x74] = cpu.op_cb_0x74
+	cpu.Instructions_maps.Instructions_map_CB[0x75] = cpu.op_cb_0x75
+	cpu.Instructions_maps.Instructions_map_CB[0x76] = cpu.op_cb_0x76
 	cpu.Instructions_maps.Instructions_map_CB[0x77] = cpu.op_cb_0x77
+	cpu.Instructions_maps.Instructions_map_CB[0x78] = cpu.op_cb_0x78
+	cpu.Instructions_maps.Instructions_map_CB[0x79] = cpu.op_cb_0x79
+	cpu.Instructions_maps.Instructions_map_CB[0x7a] = cpu.op_cb_0x7a
+	cpu.Instructions_maps.Instructions_map_CB[0x7b] = cpu.op_cb_0x7b
+	cpu.Instructions_maps.Instructions_map_CB[0x7c] = cpu.op_cb_0x7c
+	cpu.Instructions_maps.Instructions_map_CB[0x7d] = cpu.op_cb_0x7d
+	cpu.Instructions_maps.Instructions_map_CB[0x7e] = cpu.op_cb_0x7e
+	cpu.Instructions_maps.Instructions_map_CB[0x7f] = cpu.op_cb_0x7f
 	cpu.Instructions_maps.Instructions_map_CB[0x87] = cpu.op_cb_0x87
 	cpu.Instructions_maps.Instructions_map_CB[0xcf] = cpu.op_cb_0xcf
-
 }
 
 func (cpu *CPU_struct) getAF() uint16 {
@@ -323,7 +957,7 @@ func (cpu *CPU_struct) getHL() uint16 {
 
 func (cpu *CPU_struct) setAF(nn uint16) {
 	cpu.Registers.A = uint8(nn >> 8)
-	cpu.Registers.F = uint8(nn & 0xff)
+	cpu.Registers.F = uint8(nn & 0xf0)
 }
 
 func (cpu *CPU_struct) setBC(nn uint16) {
@@ -355,7 +989,9 @@ func (cpu *CPU_struct) op_0x00() {
 
 // 0x10 - STOP
 func (cpu *CPU_struct) op_0x10() {
-	panic("Not implemented")
+	cpu.Registers.Halt = 1
+	cpu.Registers.IME = 1
+	cpu.Cycle += 4
 }
 
 // 0x20 - JP NZ, *
@@ -480,134 +1116,82 @@ func (cpu *CPU_struct) op_0x33() {
 	cpu.Cycle += 8
 }
 
-//0x04 INC B
-func (cpu *CPU_struct) op_0x04() {
-	var n uint8 = cpu.Registers.B
-	cpu.Registers.B++
+func (cpu *CPU_struct) inc(n *uint8) {
+	*n += 1
 	cpu.Registers.F &= C_BIT
 
-	cpu.setZ(n)
+	cpu.setZ(*n)
 
-	if (n & 0x0f) == 0x0f {
+	if (((*n - 1) & 0x0f) + (1 & 0x0f)) > 0x0f {
 		cpu.Registers.F |= H_BIT
 	}
 
 	cpu.Cycle += 4
+}
+
+//0x04 INC B
+func (cpu *CPU_struct) op_0x04() {
+	cpu.inc(&cpu.Registers.B)
 }
 
 //0x14 INC D
 func (cpu *CPU_struct) op_0x14() {
-	var n uint8 = cpu.Registers.D
-	cpu.Registers.D++
-	cpu.Registers.F &= C_BIT
-
-	cpu.setZ(n)
-
-	if (n & 0x0f) == 0x0f {
-		cpu.Registers.F |= H_BIT
-	}
-
-	cpu.Cycle += 4
+	cpu.inc(&cpu.Registers.D)
 }
 
 //0x24 INC H
 func (cpu *CPU_struct) op_0x24() {
-	var n uint8 = cpu.Registers.H
-	cpu.Registers.H++
-	cpu.Registers.F &= C_BIT
-
-	cpu.setZ(n)
-
-	if (n & 0x0f) == 0x0f {
-		cpu.Registers.F |= H_BIT
-	}
-
-	cpu.Cycle += 4
+	cpu.inc(&cpu.Registers.H)
 }
 
 //0x34 INC (HL)
 func (cpu *CPU_struct) op_0x34() {
 	var address uint16 = cpu.getHL()
 	var n uint8 = cpu.MMU.ReadByte(address)
-	n++
+	cpu.inc(&n)
 	cpu.MMU.WriteByte(address, n)
 
+	cpu.Cycle += 4
+}
+
+func (cpu *CPU_struct) dec(n *uint8) {
+	*n -= 1
 	cpu.Registers.F &= C_BIT
+	cpu.Registers.F |= N_BIT
 
-	cpu.setZ(n)
+	cpu.setZ(*n)
 
-	if ((n - 1) & 0x0f) == 0x0f {
+	if ((int8(*n+1) & 0xF) - (1 & 0xF)) < 0 {
+		// if ((*n + 1) & 0x0f) == 0x00 {
 		cpu.Registers.F |= H_BIT
 	}
 
-	cpu.Cycle += 12
+	cpu.Cycle += 4
 }
 
 // 0x05 DEC B
 func (cpu *CPU_struct) op_0x05() {
-	cpu.Registers.B -= 1
-	var r uint8 = cpu.Registers.B
-	cpu.Registers.F &= C_BIT
-	cpu.Registers.F |= N_BIT
-
-	cpu.setZ(r)
-
-	if ((r + 1) & 0x0f) != 0x00 {
-		cpu.Registers.F |= H_BIT
-	}
-
-	cpu.Cycle += 4
+	cpu.dec(&cpu.Registers.B)
 }
 
 // 0x15 DEC D
 func (cpu *CPU_struct) op_0x15() {
-	cpu.Registers.D -= 1
-	var r uint8 = cpu.Registers.D
-	cpu.Registers.F &= C_BIT
-	cpu.Registers.F |= N_BIT
-
-	cpu.setZ(r)
-
-	if ((r + 1) & 0x0f) != 0x00 {
-		cpu.Registers.F |= H_BIT
-	}
-
-	cpu.Cycle += 4
+	cpu.dec(&cpu.Registers.D)
 }
 
 // 0x25 DEC H
 func (cpu *CPU_struct) op_0x25() {
-	cpu.Registers.H -= 1
-	var r uint8 = cpu.Registers.H
-	cpu.Registers.F &= C_BIT
-	cpu.Registers.F |= N_BIT
-
-	cpu.setZ(r)
-
-	if ((r + 1) & 0x0f) != 0x00 {
-		cpu.Registers.F |= H_BIT
-	}
-
-	cpu.Cycle += 4
+	cpu.dec(&cpu.Registers.H)
 }
 
 // 0x35 DEC (HL)
 func (cpu *CPU_struct) op_0x35() {
 	var address uint16 = cpu.getHL()
 	var n uint8 = cpu.MMU.ReadByte(address)
-	n--
+	cpu.dec(&n)
 	cpu.MMU.WriteByte(address, n)
 
-	cpu.Registers.F &= C_BIT
-	cpu.Registers.F |= N_BIT
-
-	cpu.setZ(n)
-
-	if ((n + 1) & 0x0f) != 0x00 {
-		cpu.Registers.F |= H_BIT
-	}
-
-	cpu.Cycle += 12
+	cpu.Cycle += 4
 }
 
 // 0x06 - LD B,n
@@ -639,6 +1223,18 @@ func (cpu *CPU_struct) op_0x36(n uint8) {
 	cpu.Cycle += 12
 }
 
+func (cpu *CPU_struct) rlca() {
+	cpu.Registers.F = 0
+	// bit 7 from A to carry
+	cpu.Registers.F |= ((cpu.Registers.A & 0x80) >> 3)
+
+	cpu.Registers.A = (cpu.Registers.A << 1) | (cpu.Registers.A >> 7)
+
+	// cpu.setZ(cpu.Registers.A)
+
+	cpu.Cycle += 8
+}
+
 func (cpu *CPU_struct) rla() {
 	var carry uint8 = cpu.Registers.F & C_BIT
 	cpu.Registers.F = 0
@@ -650,14 +1246,14 @@ func (cpu *CPU_struct) rla() {
 		cpu.Registers.A |= 0x01
 	}
 
-	cpu.setZ(cpu.Registers.A)
+	// cpu.setZ(cpu.Registers.A)
 
 	cpu.Cycle += 8
 }
 
-// 0x07 RLA
+// 0x07 RLCA
 func (cpu *CPU_struct) op_0x07() {
-	cpu.rla()
+	cpu.rlca()
 }
 
 // 0x17 RLA
@@ -726,6 +1322,8 @@ func (cpu *CPU_struct) op_0x18(n uint8) {
 func (cpu *CPU_struct) op_0x28(n uint8) {
 	if (cpu.Registers.F & Z_BIT) != 0 {
 		cpu.jr(n)
+		cpu.Cycle += 12
+		return
 	}
 
 	cpu.Cycle += 8
@@ -735,81 +1333,52 @@ func (cpu *CPU_struct) op_0x28(n uint8) {
 func (cpu *CPU_struct) op_0x38(n uint8) {
 	if (cpu.Registers.F & C_BIT) != 0 {
 		cpu.jr(n)
+		cpu.Cycle += 12
+		return
 	}
+
+	cpu.Cycle += 8
+}
+
+func (cpu *CPU_struct) add_nn(nn uint16) {
+	var hl uint16 = cpu.getHL()
+	cpu.setHL(hl + nn)
+
+	cpu.Registers.F &= Z_BIT
+
+	if ((hl & 0x0fff) + (nn & 0x0fff)) > 0xfff {
+		cpu.Registers.F |= H_BIT
+	}
+
+	if (uint32(hl) + uint32(nn)) > 0xffff {
+		cpu.Registers.F |= C_BIT
+	}
+
+	cpu.Cycle += 8
 }
 
 // 0x09 ADD HL, BC
 func (cpu *CPU_struct) op_0x09() {
-	var hl uint16 = cpu.getHL()
-	var bc uint16 = cpu.getBC()
-	cpu.setHL(hl + bc)
-
-	cpu.Registers.F &= Z_BIT
-
-	if (((hl & 0x0fff) + (bc & 0x0fff)) & 0xf000) != 0 {
-		cpu.Registers.F |= H_BIT
-	}
-
-	if ((uint32(hl) + uint32(bc)) & 0xf0000) != 0 {
-		cpu.Registers.F |= C_BIT
-	}
-
-	cpu.Cycle += 8
+	var nn uint16 = cpu.getBC()
+	cpu.add_nn(nn)
 }
 
 // 0x19 ADD HL, DE
 func (cpu *CPU_struct) op_0x19() {
-	var hl uint16 = cpu.getHL()
-	var de uint16 = cpu.getDE()
-	cpu.setHL(hl + de)
-
-	cpu.Registers.F &= Z_BIT
-
-	if (((hl & 0x0fff) + (de & 0x0fff)) & 0xf000) != 0 {
-		cpu.Registers.F |= H_BIT
-	}
-
-	if ((uint32(hl) + uint32(de)) & 0xf0000) != 0 {
-		cpu.Registers.F |= C_BIT
-	}
-
-	cpu.Cycle += 8
+	var nn uint16 = cpu.getDE()
+	cpu.add_nn(nn)
 }
 
 // 0x29 ADD HL, HL
 func (cpu *CPU_struct) op_0x29() {
-	var hl uint16 = cpu.getHL()
-	cpu.setHL(hl + hl)
-
-	cpu.Registers.F &= Z_BIT
-
-	if (((hl & 0x0fff) + (hl & 0x0fff)) & 0xf000) != 0 {
-		cpu.Registers.F |= H_BIT
-	}
-
-	if ((uint32(hl) + uint32(hl)) & 0xf0000) != 0 {
-		cpu.Registers.F |= C_BIT
-	}
-
-	cpu.Cycle += 8
+	var nn uint16 = cpu.getHL()
+	cpu.add_nn(nn)
 }
 
 // 0x39 ADD HL, SP
 func (cpu *CPU_struct) op_0x39() {
-	var hl uint16 = cpu.getHL()
-	cpu.setHL(hl + cpu.Registers.SP)
-
-	cpu.Registers.F &= Z_BIT
-
-	if (((hl & 0x0fff) + (cpu.Registers.SP & 0x0fff)) & 0xf000) != 0 {
-		cpu.Registers.F |= H_BIT
-	}
-
-	if ((uint32(hl) + uint32(cpu.Registers.SP)) & 0xf0000) != 0 {
-		cpu.Registers.F |= C_BIT
-	}
-
-	cpu.Cycle += 8
+	var nn uint16 = cpu.Registers.SP
+	cpu.add_nn(nn)
 }
 
 //  0x0a LD A,(BC)
@@ -886,118 +1455,42 @@ func (cpu *CPU_struct) op_0x3b() {
 
 //0x0c INC C
 func (cpu *CPU_struct) op_0x0c() {
-	cpu.Registers.C += 1
-	cpu.Registers.F &= C_BIT
-
-	cpu.setZ(cpu.Registers.C)
-
-	if ((cpu.Registers.C - 1) & 0x0f) == 0x0f {
-		cpu.Registers.F |= H_BIT
-	}
-
-	cpu.Cycle += 4
+	cpu.inc(&cpu.Registers.C)
 }
 
 //0x1c INC E
 func (cpu *CPU_struct) op_0x1c() {
-	cpu.Registers.E += 1
-	cpu.Registers.F &= C_BIT
-
-	cpu.setZ(cpu.Registers.E)
-
-	if ((cpu.Registers.E - 1) & 0x0f) == 0x0f {
-		cpu.Registers.F |= H_BIT
-	}
-
-	cpu.Cycle += 4
+	cpu.inc(&cpu.Registers.E)
 }
 
 //0x2c INC L
 func (cpu *CPU_struct) op_0x2c() {
-	cpu.Registers.L += 1
-	cpu.Registers.F &= C_BIT
-
-	cpu.setZ(cpu.Registers.L)
-
-	if ((cpu.Registers.L - 1) & 0x0f) == 0x0f {
-		cpu.Registers.F |= H_BIT
-	}
-
-	cpu.Cycle += 4
+	cpu.inc(&cpu.Registers.L)
 }
 
 //0x3c INC A
 func (cpu *CPU_struct) op_0x3c() {
-	cpu.Registers.A += 1
-	cpu.Registers.F &= C_BIT
-
-	cpu.setZ(cpu.Registers.A)
-
-	if ((cpu.Registers.A - 1) & 0x0f) == 0x0f {
-		cpu.Registers.F |= H_BIT
-	}
-
-	cpu.Cycle += 4
+	cpu.inc(&cpu.Registers.A)
 }
 
 // 0x0d DEC C
 func (cpu *CPU_struct) op_0x0d() {
-	cpu.Registers.C -= 1
-	cpu.Registers.F &= C_BIT
-	cpu.Registers.F |= N_BIT
-
-	cpu.setZ(cpu.Registers.C)
-
-	if ((cpu.Registers.C + 1) & 0xf) != 0 {
-		cpu.Registers.F |= H_BIT
-	}
-
-	cpu.Cycle += 4
+	cpu.dec(&cpu.Registers.C)
 }
 
 // 0x1D DEC E
 func (cpu *CPU_struct) op_0x1d() {
-	cpu.Registers.E -= 1
-	cpu.Registers.F &= C_BIT
-	cpu.Registers.F |= N_BIT
-
-	cpu.setZ(cpu.Registers.E)
-
-	if ((cpu.Registers.E + 1) & 0xf) != 0 {
-		cpu.Registers.F |= H_BIT
-	}
-
-	cpu.Cycle += 4
+	cpu.dec(&cpu.Registers.E)
 }
 
 // 0x2D DEC L
 func (cpu *CPU_struct) op_0x2d() {
-	cpu.Registers.L -= 1
-	cpu.Registers.F &= C_BIT
-	cpu.Registers.F |= N_BIT
-
-	cpu.setZ(cpu.Registers.L)
-
-	if ((cpu.Registers.L + 1) & 0xf) != 0 {
-		cpu.Registers.F |= H_BIT
-	}
-
-	cpu.Cycle += 4
+	cpu.dec(&cpu.Registers.L)
 }
 
 // 0x3d DEC A
 func (cpu *CPU_struct) op_0x3d() {
-	cpu.Registers.A -= 1
-	cpu.Registers.F &= C_BIT
-	cpu.Registers.F |= N_BIT
-
-	cpu.setZ(cpu.Registers.A)
-
-	if ((cpu.Registers.A + 1) & 0xf) != 0 {
-		cpu.Registers.F |= H_BIT
-	}
-
-	cpu.Cycle += 4
+	cpu.dec(&cpu.Registers.A)
 }
 
 // 0x0e - LD C,n
@@ -1028,12 +1521,29 @@ func (cpu *CPU_struct) op_0x3e(n uint8) {
 	cpu.Cycle += 8
 }
 
-func (cpu *CPU_struct) rra() {
+func (cpu *CPU_struct) rrca() {
 	cpu.Registers.F = 0
-	// First bit from A on carry
+	// bit 0 from A to carry
+	cpu.Registers.F |= ((cpu.Registers.A & 0x01) << 4)
+
+	cpu.Registers.A = (cpu.Registers.A >> 1) | ((cpu.Registers.A & 0x01) << 7)
+
+	// cpu.setZ(cpu.Registers.A)
+
+	cpu.Cycle += 8
+}
+
+func (cpu *CPU_struct) rra() {
+	var carry uint8 = cpu.Registers.F & C_BIT
+	cpu.Registers.F = 0
+	// bit 0 from A to carry
 	cpu.Registers.F |= ((cpu.Registers.A & 0x01) << 4)
 
 	cpu.Registers.A = cpu.Registers.A >> 1
+
+	if carry != 0 {
+		cpu.Registers.A |= 0x80
+	}
 
 	cpu.setZ(cpu.Registers.A)
 
@@ -1042,7 +1552,7 @@ func (cpu *CPU_struct) rra() {
 
 // 0x0f RRCA
 func (cpu *CPU_struct) op_0x0f() {
-	cpu.rra()
+	cpu.rrca()
 }
 
 // 0x1f RRA
@@ -1521,11 +2031,11 @@ func (cpu *CPU_struct) add(n uint8) {
 
 	cpu.setZ(cpu.Registers.A)
 
-	if (((old_a & 0x0f) + (n & 0x0f)) & 0xf0) != 0 {
+	if ((old_a & 0x0f) + (n & 0x0f)) > 0x0f {
 		cpu.Registers.F |= H_BIT
 	}
 
-	if (((uint16(old_a)) + (uint16(n))) & 0xff00) != 0 {
+	if ((uint16(old_a)) + (uint16(n))) > 0xff {
 		cpu.Registers.F |= C_BIT
 	}
 
@@ -2197,7 +2707,7 @@ func (cpu *CPU_struct) op_0xc8() {
 	}
 }
 
-// 0xd8 RET Z
+// 0xd8 RET C
 func (cpu *CPU_struct) op_0xd8() {
 	if (cpu.Registers.F & C_BIT) > 0 {
 		cpu.ret()
@@ -2205,17 +2715,16 @@ func (cpu *CPU_struct) op_0xd8() {
 }
 
 // 0xE8 ADD SP, n
-// TODO double check
 func (cpu *CPU_struct) op_0xe8(n uint8) {
 	old_sp := cpu.Registers.SP
-	cpu.Registers.SP = uint16(int16(cpu.Registers.SP) + int16(n))
+	cpu.Registers.SP = uint16(int16(cpu.Registers.SP) + int16(int8(n)))
 	cpu.Registers.F = 0
 
-	if (int16(n) > 0) && ((((old_sp & 0x0f) + (uint16(n) & 0x0f)) & 0xf0) != 0) {
+	if (((int16(old_sp & 0x0f)) + (int16(int8(n)) & 0x0f)) & 0xf0) != 0 {
 		cpu.Registers.F |= H_BIT
 	}
 
-	if (int16(n) > 0) && ((((old_sp & 0x00ff) + (uint16(n) & 0x00ff)) & 0xff00) != 0) {
+	if (((int32(old_sp & 0x0ff)) + (int32(int8(n)) & 0xff)) & 0xf00) != 0 {
 		cpu.Registers.F |= C_BIT
 	}
 
@@ -2223,21 +2732,20 @@ func (cpu *CPU_struct) op_0xe8(n uint8) {
 }
 
 // LDHL SP, n
-// TODO double check
 func (cpu *CPU_struct) op_0xf8(n uint8) {
-	cpu.setHL(uint16(int16(cpu.Registers.SP) + int16(n)))
-
+	old_sp := cpu.Registers.SP
+	cpu.setHL(uint16(int16(cpu.Registers.SP) + int16(int8(n))))
 	cpu.Registers.F = 0
 
-	if (int16(n) > 0) && ((((cpu.Registers.SP & 0x0f) + (uint16(n) & 0x0f)) & 0xf0) != 0) {
+	if (((int16(old_sp & 0x0f)) + (int16(int8(n)) & 0x0f)) & 0xf0) != 0 {
 		cpu.Registers.F |= H_BIT
 	}
 
-	if (int16(n) > 0) && ((((cpu.Registers.SP & 0x00ff) + (uint16(n) & 0x00ff)) & 0xff00) != 0) {
+	if (((int32(old_sp & 0x0ff)) + (int32(int8(n)) & 0xff)) & 0xf00) != 0 {
 		cpu.Registers.F |= C_BIT
 	}
 
-	cpu.Cycle += 12
+	cpu.Cycle += 16
 }
 
 // 0xc9 RET
@@ -2384,86 +2892,845 @@ func (cpu *CPU_struct) call(nn uint16) {
 //===============================================================
 //===============================================================
 
-// 0xcb 0x11 RL  C
-func (cpu *CPU_struct) op_cb_0x11() {
-	var carry uint8 = cpu.Registers.F & C_BIT
+func (cpu *CPU_struct) rlc(n *uint8) {
+	// var carry uint8 = cpu.Registers.F & C_BIT
 	cpu.Registers.F = 0
-	cpu.Registers.F |= ((cpu.Registers.C & 0x80) >> 3)
+	// bit 7 from A to carry
+	cpu.Registers.F |= ((*n & 0x80) >> 3)
 
-	cpu.Registers.C = (cpu.Registers.C << 1) & 0xff
-	if carry != 0 {
-		cpu.Registers.C |= 0x01
-	}
+	*n = (*n << 1) | (*n >> 7)
+	// if carry != 0 {
+	// 	*n |= 0x01
+	// }
 
-	if cpu.Registers.C == 0 {
-		cpu.Registers.F |= Z_BIT
-	}
+	cpu.setZ(*n)
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0x00 RLC B
+func (cpu *CPU_struct) op_cb_0x00() {
+	cpu.rlc(&cpu.Registers.B)
+}
+
+// 0xcb 0x01 RLC C
+func (cpu *CPU_struct) op_cb_0x01() {
+	cpu.rlc(&cpu.Registers.C)
+}
+
+// 0xcb 0x02 RLC D
+func (cpu *CPU_struct) op_cb_0x02() {
+	cpu.rlc(&cpu.Registers.D)
+}
+
+// 0xcb 0x03 RLC E
+func (cpu *CPU_struct) op_cb_0x03() {
+	cpu.rlc(&cpu.Registers.D)
+}
+
+// 0xcb 0x04 RLC H
+func (cpu *CPU_struct) op_cb_0x04() {
+	cpu.rlc(&cpu.Registers.H)
+}
+
+// 0xcb 0x05 RLC L
+func (cpu *CPU_struct) op_cb_0x05() {
+	cpu.rlc(&cpu.Registers.L)
+}
+
+// 0xcb 0x06 RLC C
+func (cpu *CPU_struct) op_cb_0x06() {
+	var address uint16 = cpu.getHL()
+	var n uint8 = cpu.MMU.ReadByte(address)
+	cpu.rlc(&n)
+	cpu.MMU.WriteByte(address, n)
 
 	cpu.Cycle += 8
 }
 
 // 0xcb 0x07 RLC A
 func (cpu *CPU_struct) op_cb_0x07() {
-	cpu.rla()
+	cpu.rlc(&cpu.Registers.A)
+}
+
+// TODO: double check if carry will go to bit 7
+func (cpu *CPU_struct) rrc(n *uint8) {
+	// var carry uint8 = cpu.Registers.F & C_BIT
+	cpu.Registers.F = 0
+	// bit 0 from n to carry
+	cpu.Registers.F |= ((*n & 0x01) << 4)
+
+	*n = (*n >> 1) | (*n << 7)
+	// if carry != 0 {
+	// 	*n |= 0x80
+	// }
+
+	cpu.setZ(*n)
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0x08 RRC B
+func (cpu *CPU_struct) op_cb_0x08() {
+	cpu.rrc(&cpu.Registers.B)
+}
+
+// 0xcb 0x09 RRC C
+func (cpu *CPU_struct) op_cb_0x09() {
+	cpu.rrc(&cpu.Registers.C)
+}
+
+// 0xcb 0x0a RRC D
+func (cpu *CPU_struct) op_cb_0x0a() {
+	cpu.rrc(&cpu.Registers.D)
+}
+
+// 0xcb 0x0b RRC E
+func (cpu *CPU_struct) op_cb_0x0b() {
+	cpu.rrc(&cpu.Registers.E)
+}
+
+// 0xcb 0x0c RRC H
+func (cpu *CPU_struct) op_cb_0x0c() {
+	cpu.rrc(&cpu.Registers.H)
+}
+
+// 0xcb 0x0d RRC L
+func (cpu *CPU_struct) op_cb_0x0d() {
+	cpu.rrc(&cpu.Registers.L)
+}
+
+// 0xcb 0x0e RRC (HL)
+func (cpu *CPU_struct) op_cb_0x0e() {
+	var address uint16 = cpu.getHL()
+	var n uint8 = cpu.MMU.ReadByte(address)
+	cpu.rrc(&n)
+	cpu.MMU.WriteByte(address, n)
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0x0f RRC A
+func (cpu *CPU_struct) op_cb_0x0f() {
+	cpu.rrc(&cpu.Registers.A)
+}
+
+func (cpu *CPU_struct) rl(n *uint8) {
+	var carry uint8 = cpu.Registers.F & C_BIT
+	cpu.Registers.F = 0
+	// bit 7 from A to carry
+	cpu.Registers.F |= ((*n & 0x80) >> 3)
+
+	*n = (*n << 1)
+	if carry != 0 {
+		*n |= 0x01
+	}
+
+	cpu.setZ(*n)
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0x10 RL B
+func (cpu *CPU_struct) op_cb_0x10() {
+	cpu.rl(&cpu.Registers.B)
+}
+
+// 0xcb 0x11 RL C
+func (cpu *CPU_struct) op_cb_0x11() {
+	cpu.rl(&cpu.Registers.C)
+}
+
+// 0xcb 0x12 RL D
+func (cpu *CPU_struct) op_cb_0x12() {
+	cpu.rl(&cpu.Registers.D)
+}
+
+// 0xcb 0x13 RL E
+func (cpu *CPU_struct) op_cb_0x13() {
+	cpu.rl(&cpu.Registers.D)
+}
+
+// 0xcb 0x14 RL H
+func (cpu *CPU_struct) op_cb_0x14() {
+	cpu.rl(&cpu.Registers.H)
+}
+
+// 0xcb 0x15 RL L
+func (cpu *CPU_struct) op_cb_0x15() {
+	cpu.rl(&cpu.Registers.L)
+}
+
+// 0xcb 0x16 RL C
+func (cpu *CPU_struct) op_cb_0x16() {
+	var address uint16 = cpu.getHL()
+	var n uint8 = cpu.MMU.ReadByte(address)
+	cpu.rl(&n)
+	cpu.MMU.WriteByte(address, n)
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0x17 RL A
+func (cpu *CPU_struct) op_cb_0x17() {
+	cpu.rl(&cpu.Registers.A)
+}
+
+// TODO: double check if carry will go to bit 7
+func (cpu *CPU_struct) rr(n *uint8) {
+	var carry uint8 = cpu.Registers.F & C_BIT
+	cpu.Registers.F = 0
+	// bit 0 from n to carry
+	cpu.Registers.F |= ((*n & 0x01) << 4)
+
+	*n = (*n >> 1)
+	if carry != 0 {
+		*n |= 0x80
+	}
+
+	cpu.setZ(*n)
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0x18 RR B
+func (cpu *CPU_struct) op_cb_0x18() {
+	cpu.rr(&cpu.Registers.B)
+}
+
+// 0xcb 0x19 RR C
+func (cpu *CPU_struct) op_cb_0x19() {
+	cpu.rr(&cpu.Registers.C)
+}
+
+// 0xcb 0x1a RR D
+func (cpu *CPU_struct) op_cb_0x1a() {
+	cpu.rr(&cpu.Registers.D)
+}
+
+// 0xcb 0x1b RR E
+func (cpu *CPU_struct) op_cb_0x1b() {
+	cpu.rr(&cpu.Registers.E)
+}
+
+// 0xcb 0x1c RR H
+func (cpu *CPU_struct) op_cb_0x1c() {
+	cpu.rr(&cpu.Registers.H)
+}
+
+// 0xcb 0x1d RR L
+func (cpu *CPU_struct) op_cb_0x1d() {
+	cpu.rr(&cpu.Registers.L)
+}
+
+// 0xcb 0x1e RR (HL)
+func (cpu *CPU_struct) op_cb_0x1e() {
+	var address uint16 = cpu.getHL()
+	var n uint8 = cpu.MMU.ReadByte(address)
+	cpu.rr(&n)
+	cpu.MMU.WriteByte(address, n)
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0x1f RR A
+func (cpu *CPU_struct) op_cb_0x1f() {
+	cpu.rr(&cpu.Registers.A)
+}
+
+func (cpu *CPU_struct) sla(n *uint8) {
+	cpu.Registers.F = 0
+	// bit 7 from A to carry
+	cpu.Registers.F |= ((*n & 0x80) >> 3)
+
+	*n = (*n << 1)
+
+	cpu.setZ(*n)
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0x20 SLA B
+func (cpu *CPU_struct) op_cb_0x20() {
+	cpu.sla(&cpu.Registers.B)
+}
+
+// 0xcb 0x21 SLA C
+func (cpu *CPU_struct) op_cb_0x21() {
+	cpu.sla(&cpu.Registers.C)
+}
+
+// 0xcb 0x22 SLA D
+func (cpu *CPU_struct) op_cb_0x22() {
+	cpu.sla(&cpu.Registers.D)
+}
+
+// 0xcb 0x23 SLA E
+func (cpu *CPU_struct) op_cb_0x23() {
+	cpu.sla(&cpu.Registers.D)
+}
+
+// 0xcb 0x24 SLA H
+func (cpu *CPU_struct) op_cb_0x24() {
+	cpu.sla(&cpu.Registers.H)
+}
+
+// 0xcb 0x25 SLA L
+func (cpu *CPU_struct) op_cb_0x25() {
+	cpu.sla(&cpu.Registers.L)
+}
+
+// 0xcb 0x26 SLA C
+func (cpu *CPU_struct) op_cb_0x26() {
+	var address uint16 = cpu.getHL()
+	var n uint8 = cpu.MMU.ReadByte(address)
+	cpu.sla(&n)
+	cpu.MMU.WriteByte(address, n)
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0x27 SLA A
+func (cpu *CPU_struct) op_cb_0x27() {
+	cpu.sla(&cpu.Registers.A)
+}
+
+func (cpu *CPU_struct) sra(n *uint8) {
+	cpu.Registers.F = 0
+	// bit 0 from n to carry
+	cpu.Registers.F |= ((*n & 0x01) << 4)
+
+	*n = (*n >> 1) | (*n & 0x80)
+
+	cpu.setZ(*n)
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0x28 SRA B
+func (cpu *CPU_struct) op_cb_0x28() {
+	cpu.sra(&cpu.Registers.B)
+}
+
+// 0xcb 0x29 SRA C
+func (cpu *CPU_struct) op_cb_0x29() {
+	cpu.sra(&cpu.Registers.C)
+}
+
+// 0xcb 0x2a SRA D
+func (cpu *CPU_struct) op_cb_0x2a() {
+	cpu.sra(&cpu.Registers.D)
+}
+
+// 0xcb 0x2b SRA E
+func (cpu *CPU_struct) op_cb_0x2b() {
+	cpu.sra(&cpu.Registers.E)
+}
+
+// 0xcb 0x2c SRA H
+func (cpu *CPU_struct) op_cb_0x2c() {
+	cpu.sra(&cpu.Registers.H)
+}
+
+// 0xcb 0x2d SRA L
+func (cpu *CPU_struct) op_cb_0x2d() {
+	cpu.sra(&cpu.Registers.L)
+}
+
+// 0xcb 0x2e SRA (HL)
+func (cpu *CPU_struct) op_cb_0x2e() {
+	var address uint16 = cpu.getHL()
+	var n uint8 = cpu.MMU.ReadByte(address)
+	cpu.sra(&n)
+	cpu.MMU.WriteByte(address, n)
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0x2f SRA A
+func (cpu *CPU_struct) op_cb_0x2f() {
+	cpu.sra(&cpu.Registers.A)
+}
+
+func (cpu *CPU_struct) swap(n *uint8) {
+	*n = (*n << 4) | (*n >> 4)
+
+	cpu.Registers.F = 0
+	cpu.setZ(*n)
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0x30 SWAP B
+func (cpu *CPU_struct) op_cb_0x30() {
+	cpu.swap(&cpu.Registers.B)
+}
+
+// 0xcb 0x31 SWAP C
+func (cpu *CPU_struct) op_cb_0x31() {
+	cpu.swap(&cpu.Registers.C)
+}
+
+// 0xcb 0x32 SWAP D
+func (cpu *CPU_struct) op_cb_0x32() {
+	cpu.swap(&cpu.Registers.D)
+}
+
+// 0xcb 0x33 SWAP E
+func (cpu *CPU_struct) op_cb_0x33() {
+	cpu.swap(&cpu.Registers.D)
+}
+
+// 0xcb 0x34 SWAP H
+func (cpu *CPU_struct) op_cb_0x34() {
+	cpu.swap(&cpu.Registers.H)
+}
+
+// 0xcb 0x35 SWAP L
+func (cpu *CPU_struct) op_cb_0x35() {
+	cpu.swap(&cpu.Registers.L)
+}
+
+// 0xcb 0x36 SWAP C
+func (cpu *CPU_struct) op_cb_0x36() {
+	var address uint16 = cpu.getHL()
+	var n uint8 = cpu.MMU.ReadByte(address)
+	cpu.swap(&n)
+	cpu.MMU.WriteByte(address, n)
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0x37 SWAP A
+func (cpu *CPU_struct) op_cb_0x37() {
+	cpu.swap(&cpu.Registers.A)
+}
+
+func (cpu *CPU_struct) srl(n *uint8) {
+	cpu.Registers.F = 0
+	// bit 0 from n to carry
+	cpu.Registers.F |= ((*n & 0x01) << 4)
+
+	*n = (*n >> 1)
+
+	cpu.setZ(*n)
+
+	cpu.Cycle += 8
 }
 
 // 0xcb 0x38 SRL B
 func (cpu *CPU_struct) op_cb_0x38() {
-	cpu.Registers.F = 0
-	cpu.Registers.F |= ((cpu.Registers.B & 0x01) << 4)
+	cpu.srl(&cpu.Registers.B)
+}
 
-	cpu.Registers.B = cpu.Registers.B >> 1
+// 0xcb 0x39 SRL C
+func (cpu *CPU_struct) op_cb_0x39() {
+	cpu.srl(&cpu.Registers.C)
+}
 
-	if cpu.Registers.B == 0 {
-		cpu.Registers.F |= Z_BIT
-	}
+// 0xcb 0x3a SRL D
+func (cpu *CPU_struct) op_cb_0x3a() {
+	cpu.srl(&cpu.Registers.D)
+}
+
+// 0xcb 0x3b SRL E
+func (cpu *CPU_struct) op_cb_0x3b() {
+	cpu.srl(&cpu.Registers.E)
+}
+
+// 0xcb 0x3c SRL H
+func (cpu *CPU_struct) op_cb_0x3c() {
+	cpu.srl(&cpu.Registers.H)
+}
+
+// 0xcb 0x3d SRL L
+func (cpu *CPU_struct) op_cb_0x3d() {
+	cpu.srl(&cpu.Registers.L)
+}
+
+// 0xcb 0x3e SRL (HL)
+func (cpu *CPU_struct) op_cb_0x3e() {
+	var address uint16 = cpu.getHL()
+	var n uint8 = cpu.MMU.ReadByte(address)
+	cpu.srl(&n)
+	cpu.MMU.WriteByte(address, n)
 
 	cpu.Cycle += 8
 }
 
-// 0xcb 0x7c BIT 7, H
-func (cpu *CPU_struct) op_cb_0x7c() {
+// 0xcb 0x3f SRL A
+func (cpu *CPU_struct) op_cb_0x3f() {
+	cpu.srl(&cpu.Registers.A)
+}
+
+func (cpu *CPU_struct) bit(n uint8, mask uint8) {
 	cpu.Registers.F &= C_BIT
 	cpu.Registers.F |= H_BIT
-	if (cpu.Registers.H & 0b10000000) == 0 {
-		cpu.Registers.F |= Z_BIT
-	}
+
+	cpu.setZ(n & mask)
 
 	cpu.Cycle += 8
 }
 
-// 0xcb 0x6f BIT 5, A
-func (cpu *CPU_struct) op_cb_0x6f() {
-	cpu.Registers.F &= C_BIT
-	cpu.Registers.F |= H_BIT
-	if (cpu.Registers.A & 0b00100000) == 0 {
-		cpu.Registers.F |= Z_BIT
-	}
-
-	cpu.Cycle += 8
+// 0xcb 0x40 BIT 0, B
+func (cpu *CPU_struct) op_cb_0x40() {
+	cpu.bit(cpu.Registers.B, 0b00000001)
 }
 
-// 0xcb 0x77 BIT 6, A
-func (cpu *CPU_struct) op_cb_0x77() {
-	cpu.Registers.F &= C_BIT
-	cpu.Registers.F |= H_BIT
-	if (cpu.Registers.A & 0b01000000) == 0 {
-		cpu.Registers.F |= Z_BIT
-	}
+// 0xcb 0x41 BIT 0, C
+func (cpu *CPU_struct) op_cb_0x41() {
+	cpu.bit(cpu.Registers.C, 0b00000001)
+}
+
+// 0xcb 0x42 BIT 0, D
+func (cpu *CPU_struct) op_cb_0x42() {
+	cpu.bit(cpu.Registers.D, 0b00000001)
+}
+
+// 0xcb 0x43 BIT 0, E
+func (cpu *CPU_struct) op_cb_0x43() {
+	cpu.bit(cpu.Registers.D, 0b00000001)
+}
+
+// 0xcb 0x44 BIT 0, H
+func (cpu *CPU_struct) op_cb_0x44() {
+	cpu.bit(cpu.Registers.H, 0b00000001)
+}
+
+// 0xcb 0x45 BIT 0, L
+func (cpu *CPU_struct) op_cb_0x45() {
+	cpu.bit(cpu.Registers.L, 0b00000001)
+}
+
+// 0xcb 0x46 BIT 0, (HL)
+func (cpu *CPU_struct) op_cb_0x46() {
+	var address uint16 = cpu.getHL()
+	var n uint8 = cpu.MMU.ReadByte(address)
+	cpu.bit(n, 0b00000001)
 
 	cpu.Cycle += 8
 }
 
 // 0xcb 0x47 BIT 0, A
 func (cpu *CPU_struct) op_cb_0x47() {
-	cpu.Registers.F &= C_BIT
-	cpu.Registers.F |= H_BIT
-	if (cpu.Registers.A & 0b00000001) == 0 {
-		cpu.Registers.F |= Z_BIT
-	}
+	cpu.bit(cpu.Registers.A, 0b00000001)
+}
+
+// 0xcb 0x48 BIT 1, B
+func (cpu *CPU_struct) op_cb_0x48() {
+	cpu.bit(cpu.Registers.B, 0b00000010)
+}
+
+// 0xcb 0x49 BIT 1, C
+func (cpu *CPU_struct) op_cb_0x49() {
+	cpu.bit(cpu.Registers.C, 0b00000010)
+}
+
+// 0xcb 0x4a BIT 1, D
+func (cpu *CPU_struct) op_cb_0x4a() {
+	cpu.bit(cpu.Registers.D, 0b00000010)
+}
+
+// 0xcb 0x4b BIT 1, E
+func (cpu *CPU_struct) op_cb_0x4b() {
+	cpu.bit(cpu.Registers.D, 0b00000010)
+}
+
+// 0xcb 0x4c BIT 1, H
+func (cpu *CPU_struct) op_cb_0x4c() {
+	cpu.bit(cpu.Registers.H, 0b00000010)
+}
+
+// 0xcb 0x4d BIT 1, L
+func (cpu *CPU_struct) op_cb_0x4d() {
+	cpu.bit(cpu.Registers.L, 0b00000010)
+}
+
+// 0xcb 0x4e BIT 1, (HL)
+func (cpu *CPU_struct) op_cb_0x4e() {
+	var address uint16 = cpu.getHL()
+	var n uint8 = cpu.MMU.ReadByte(address)
+	cpu.bit(n, 0b00000010)
 
 	cpu.Cycle += 8
 }
+
+// 0xcb 0x4f BIT 1, A
+func (cpu *CPU_struct) op_cb_0x4f() {
+	cpu.bit(cpu.Registers.A, 0b00000010)
+}
+
+// 0xcb 0x50 BIT 2, B
+func (cpu *CPU_struct) op_cb_0x50() {
+	cpu.bit(cpu.Registers.B, 0b00000100)
+}
+
+// 0xcb 0x51 BIT 2, C
+func (cpu *CPU_struct) op_cb_0x51() {
+	cpu.bit(cpu.Registers.C, 0b00000100)
+}
+
+// 0xcb 0x52 BIT 2, D
+func (cpu *CPU_struct) op_cb_0x52() {
+	cpu.bit(cpu.Registers.D, 0b00000100)
+}
+
+// 0xcb 0x53 BIT 2, E
+func (cpu *CPU_struct) op_cb_0x53() {
+	cpu.bit(cpu.Registers.D, 0b00000100)
+}
+
+// 0xcb 0x54 BIT 2, H
+func (cpu *CPU_struct) op_cb_0x54() {
+	cpu.bit(cpu.Registers.H, 0b00000100)
+}
+
+// 0xcb 0x55 BIT 2, L
+func (cpu *CPU_struct) op_cb_0x55() {
+	cpu.bit(cpu.Registers.L, 0b00000100)
+}
+
+// 0xcb 0x56 BIT 2, (HL)
+func (cpu *CPU_struct) op_cb_0x56() {
+	var address uint16 = cpu.getHL()
+	var n uint8 = cpu.MMU.ReadByte(address)
+	cpu.bit(n, 0b00000100)
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0x57 BIT 2, A
+func (cpu *CPU_struct) op_cb_0x57() {
+	cpu.bit(cpu.Registers.A, 0b00000100)
+}
+
+// 0xcb 0x58 BIT 3, B
+func (cpu *CPU_struct) op_cb_0x58() {
+	cpu.bit(cpu.Registers.B, 0b00001000)
+}
+
+// 0xcb 0x59 BIT 3, C
+func (cpu *CPU_struct) op_cb_0x59() {
+	cpu.bit(cpu.Registers.C, 0b00001000)
+}
+
+// 0xcb 0x5a BIT 3, D
+func (cpu *CPU_struct) op_cb_0x5a() {
+	cpu.bit(cpu.Registers.D, 0b00001000)
+}
+
+// 0xcb 0x5b BIT 3, E
+func (cpu *CPU_struct) op_cb_0x5b() {
+	cpu.bit(cpu.Registers.D, 0b00001000)
+}
+
+// 0xcb 0x5c BIT 3, H
+func (cpu *CPU_struct) op_cb_0x5c() {
+	cpu.bit(cpu.Registers.H, 0b00001000)
+}
+
+// 0xcb 0x5d BIT 3, L
+func (cpu *CPU_struct) op_cb_0x5d() {
+	cpu.bit(cpu.Registers.L, 0b00001000)
+}
+
+// 0xcb 0x5e BIT 3, (HL)
+func (cpu *CPU_struct) op_cb_0x5e() {
+	var address uint16 = cpu.getHL()
+	var n uint8 = cpu.MMU.ReadByte(address)
+	cpu.bit(n, 0b00001000)
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0x5f BIT 3, A
+func (cpu *CPU_struct) op_cb_0x5f() {
+	cpu.bit(cpu.Registers.A, 0b00001000)
+}
+
+// 0xcb 0x60 BIT 4, B
+func (cpu *CPU_struct) op_cb_0x60() {
+	cpu.bit(cpu.Registers.B, 0b00010000)
+}
+
+// 0xcb 0x61 BIT 4, C
+func (cpu *CPU_struct) op_cb_0x61() {
+	cpu.bit(cpu.Registers.C, 0b00010000)
+}
+
+// 0xcb 0x62 BIT 4, D
+func (cpu *CPU_struct) op_cb_0x62() {
+	cpu.bit(cpu.Registers.D, 0b00010000)
+}
+
+// 0xcb 0x63 BIT 4, E
+func (cpu *CPU_struct) op_cb_0x63() {
+	cpu.bit(cpu.Registers.D, 0b00010000)
+}
+
+// 0xcb 0x64 BIT 4, H
+func (cpu *CPU_struct) op_cb_0x64() {
+	cpu.bit(cpu.Registers.H, 0b00010000)
+}
+
+// 0xcb 0x65 BIT 4, L
+func (cpu *CPU_struct) op_cb_0x65() {
+	cpu.bit(cpu.Registers.L, 0b00010000)
+}
+
+// 0xcb 0x66 BIT 4, (HL)
+func (cpu *CPU_struct) op_cb_0x66() {
+	var address uint16 = cpu.getHL()
+	var n uint8 = cpu.MMU.ReadByte(address)
+	cpu.bit(n, 0b00010000)
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0x67 BIT 4, A
+func (cpu *CPU_struct) op_cb_0x67() {
+	cpu.bit(cpu.Registers.A, 0b00010000)
+}
+
+// 0xcb 0x68 BIT 5, B
+func (cpu *CPU_struct) op_cb_0x68() {
+	cpu.bit(cpu.Registers.B, 0b00100000)
+}
+
+// 0xcb 0x69 BIT 5, C
+func (cpu *CPU_struct) op_cb_0x69() {
+	cpu.bit(cpu.Registers.C, 0b00100000)
+}
+
+// 0xcb 0x6a BIT 5, D
+func (cpu *CPU_struct) op_cb_0x6a() {
+	cpu.bit(cpu.Registers.D, 0b00100000)
+}
+
+// 0xcb 0x6b BIT 5, E
+func (cpu *CPU_struct) op_cb_0x6b() {
+	cpu.bit(cpu.Registers.D, 0b00100000)
+}
+
+// 0xcb 0x6c BIT 5, H
+func (cpu *CPU_struct) op_cb_0x6c() {
+	cpu.bit(cpu.Registers.H, 0b00100000)
+}
+
+// 0xcb 0x6d BIT 5, L
+func (cpu *CPU_struct) op_cb_0x6d() {
+	cpu.bit(cpu.Registers.L, 0b00100000)
+}
+
+// 0xcb 0x6e BIT 5, (HL)
+func (cpu *CPU_struct) op_cb_0x6e() {
+	var address uint16 = cpu.getHL()
+	var n uint8 = cpu.MMU.ReadByte(address)
+	cpu.bit(n, 0b00100000)
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0x6f BIT 5, A
+func (cpu *CPU_struct) op_cb_0x6f() {
+	cpu.bit(cpu.Registers.A, 0b00100000)
+}
+
+// 0xcb 0x70 BIT 6, B
+func (cpu *CPU_struct) op_cb_0x70() {
+	cpu.bit(cpu.Registers.B, 0b01000000)
+}
+
+// 0xcb 0x71 BIT 6, C
+func (cpu *CPU_struct) op_cb_0x71() {
+	cpu.bit(cpu.Registers.C, 0b01000000)
+}
+
+// 0xcb 0x72 BIT 6, D
+func (cpu *CPU_struct) op_cb_0x72() {
+	cpu.bit(cpu.Registers.D, 0b01000000)
+}
+
+// 0xcb 0x73 BIT 6, E
+func (cpu *CPU_struct) op_cb_0x73() {
+	cpu.bit(cpu.Registers.D, 0b01000000)
+}
+
+// 0xcb 0x74 BIT 6, H
+func (cpu *CPU_struct) op_cb_0x74() {
+	cpu.bit(cpu.Registers.H, 0b01000000)
+}
+
+// 0xcb 0x75 BIT 6, L
+func (cpu *CPU_struct) op_cb_0x75() {
+	cpu.bit(cpu.Registers.L, 0b01000000)
+}
+
+// 0xcb 0x76 BIT 6, (HL)
+func (cpu *CPU_struct) op_cb_0x76() {
+	var address uint16 = cpu.getHL()
+	var n uint8 = cpu.MMU.ReadByte(address)
+	cpu.bit(n, 0b01000000)
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0x77 BIT 6, A
+func (cpu *CPU_struct) op_cb_0x77() {
+	cpu.bit(cpu.Registers.A, 0b01000000)
+}
+
+// 0xcb 0x78 BIT 6, B
+func (cpu *CPU_struct) op_cb_0x78() {
+	cpu.bit(cpu.Registers.B, 0b01000000)
+}
+
+// 0xcb 0x79 BIT 7, C
+func (cpu *CPU_struct) op_cb_0x79() {
+	cpu.bit(cpu.Registers.C, 0b10000000)
+}
+
+// 0xcb 0x7a BIT 7, D
+func (cpu *CPU_struct) op_cb_0x7a() {
+	cpu.bit(cpu.Registers.D, 0b10000000)
+}
+
+// 0xcb 0x7b BIT 7, E
+func (cpu *CPU_struct) op_cb_0x7b() {
+	cpu.bit(cpu.Registers.D, 0b10000000)
+}
+
+// 0xcb 0x7c BIT 7, H
+func (cpu *CPU_struct) op_cb_0x7c() {
+	cpu.bit(cpu.Registers.H, 0b10000000)
+}
+
+// 0xcb 0x7d BIT 7, L
+func (cpu *CPU_struct) op_cb_0x7d() {
+	cpu.bit(cpu.Registers.L, 0b10000000)
+}
+
+// 0xcb 0x7e BIT 7, (HL)
+func (cpu *CPU_struct) op_cb_0x7e() {
+	var address uint16 = cpu.getHL()
+	var n uint8 = cpu.MMU.ReadByte(address)
+	cpu.bit(n, 0b10000000)
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0x7f BIT 7, A
+func (cpu *CPU_struct) op_cb_0x7f() {
+	cpu.bit(cpu.Registers.A, 0b10000000)
+}
+
+//===============================================================
+//===============================================================
+//===============================================================
+//===============================================================
+//===============================================================
+//===============================================================
+//===============================================================
 
 // 0xcb 0xcf SET 1, A
 func (cpu *CPU_struct) op_cb_0xcf() {
@@ -2477,17 +3744,5 @@ func (cpu *CPU_struct) op_cb_0x87() {
 	cpu.Registers.A &= 0b11111110
 
 	// TODO review 4 or 8, is 0xCB included here?
-	cpu.Cycle += 8
-}
-
-// 0xcb 0x37 SWAP A
-func (cpu *CPU_struct) op_cb_0x37() {
-	cpu.Registers.A = (cpu.Registers.A << 4) | (cpu.Registers.A >> 4)
-
-	cpu.Registers.F = 0
-	if cpu.Registers.A == 0 {
-		cpu.Registers.F |= Z_BIT
-	}
-
 	cpu.Cycle += 8
 }

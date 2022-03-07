@@ -40,6 +40,8 @@ type Instructions_maps struct {
 	Instructions_map_uint16 map[uint8]func(uint16)
 	Instructions_map_       map[uint8]func()
 	Instructions_map_CB     map[uint8]func()
+	Instructions_map_str    map[uint8]string
+	Instructions_map_CB_str map[uint8]string
 }
 
 type CPU_struct struct {
@@ -77,15 +79,27 @@ func (cpu *CPU_struct) Run(limit int) {
 		}
 
 		var next_instruction uint8 = cpu.MMU.ReadByte(cpu.Registers.PC)
+		var next_instruction_str string
+		if next_instruction == 0xCB {
+			next_instruction_str = cpu.Instructions_maps.Instructions_map_CB_str[cpu.MMU.ReadByte(cpu.Registers.PC+1)]
+		} else {
+			next_instruction_str = cpu.Instructions_maps.Instructions_map_str[next_instruction]
+		}
 
-		if cpu.Registers.PC == 0x1fd3 {
-			fmt.Printf("%X, %X, %X, %d %d\n", cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
+		if cpu.Registers.PC == 0xC325 {
+			fmt.Printf("%s, %X, %X, %X, %d %d\n", next_instruction_str, cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
 			// cpu.MMU.DumpMemory()
 			// fmt.Scanln()
 		}
 
-		if cpu.Registers.PC == 0x00FE {
-			fmt.Printf("%X, %X, %X, %d %d\n", cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
+		if cpu.Registers.PC == 0xC063 {
+			fmt.Printf("%s, %X, %X, %X, %d %d\n", next_instruction_str, cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
+			// cpu.MMU.DumpMemory()
+			// fmt.Scanln()
+		}
+
+		if next_instruction == 0x55 {
+			fmt.Printf("%s, %X, %X, %X, %d %d\n", next_instruction_str, cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
 			// cpu.MMU.DumpMemory()
 			// fmt.Scanln()
 		}
@@ -95,7 +109,7 @@ func (cpu *CPU_struct) Run(limit int) {
 			// fmt.Printf("Instruction 0xCB\n")
 			next_instruction = cpu.MMU.ReadByte(cpu.Registers.PC)
 			// TODO: check if can simply skip cycle
-			cpu.Cycle += 4
+			// cpu.Cycle += 4
 			if op_func, ok := cpu.Instructions_maps.Instructions_map_CB[next_instruction]; ok {
 				op_func()
 				cpu.Registers.PC += 1
@@ -122,6 +136,7 @@ func (cpu *CPU_struct) Run(limit int) {
 				op_func()
 			} else {
 				fmt.Printf("Instruction not implemented 0x%X\n", next_instruction)
+				fmt.Scan()
 				panic("Instruction not implemented")
 			}
 		}
@@ -135,9 +150,8 @@ func (cpu *CPU_struct) Run(limit int) {
 			break
 		}
 
-		// fmt.Printf("%X, %X, %X, %d %d\n", cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
 		// if cpu.Registers.PC != 0x64 && cpu.Registers.PC != 0x66 && cpu.Registers.PC != 0x68 {
-		// 	fmt.Printf("%X, %X, %X, %d %d\n", cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
+		// 	fmt.Printf("%s, %X, %X, %X, %d %d\n", next_instruction_str, cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
 		// }
 
 	}
