@@ -159,8 +159,6 @@ func (gpu *GPU_struct) Step() {
 		if gpu.modeclock >= 172 {
 			gpu.modeclock = 0
 			gpu.mode = 0
-			// gpu.Render_Background()
-			gpu.Render_TileMap()
 		}
 		// Hblank
 	} else if gpu.mode == 0 {
@@ -172,8 +170,8 @@ func (gpu *GPU_struct) Step() {
 				gpu.CPU.SetIE(V_BLANK_BIT)
 				gpu.CPU.SetIF(V_BLANK_BIT)
 
-				// gpu.Render_Background()
-				// // gpu.Render_TileMap()
+				gpu.Render_Background()
+				// gpu.Render_TileMap()
 
 				gpu.hblank_channel <- true
 				// select {
