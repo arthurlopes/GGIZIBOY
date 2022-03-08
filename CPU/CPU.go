@@ -115,6 +115,7 @@ func (cpu *CPU_struct) Run(limit int) {
 				cpu.Registers.PC += 1
 			} else {
 				fmt.Printf("Instruction not implemented 0xCB 0x%X\n", next_instruction)
+				fmt.Scan()
 				panic("CB Instruction not implemented")
 			}
 		} else {

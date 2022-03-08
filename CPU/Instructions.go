@@ -2024,14 +2024,14 @@ func (cpu *CPU_struct) op_0x7f() {
 	cpu.Cycle += 4
 }
 
-func (cpu *CPU_struct) add(n uint8) {
+func (cpu *CPU_struct) add(n uint8, carry uint8) {
 	old_a := cpu.Registers.A
-	cpu.Registers.A += n
+	cpu.Registers.A += n + carry
 	cpu.Registers.F = 0
 
 	cpu.setZ(cpu.Registers.A)
 
-	if ((old_a & 0x0f) + (n & 0x0f)) > 0x0f {
+	if ((old_a & 0x0f) + (n & 0x0f) + carry) > 0x0f {
 		cpu.Registers.F |= H_BIT
 	}
 
@@ -2044,46 +2044,46 @@ func (cpu *CPU_struct) add(n uint8) {
 
 // 0x80 - ADD A, B
 func (cpu *CPU_struct) op_0x80() {
-	cpu.add(cpu.Registers.B)
+	cpu.add(cpu.Registers.B, 0)
 }
 
 // 0x81 - ADD A, C
 func (cpu *CPU_struct) op_0x81() {
-	cpu.add(cpu.Registers.C)
+	cpu.add(cpu.Registers.C, 0)
 }
 
 // 0x82 - ADD A, D
 func (cpu *CPU_struct) op_0x82() {
-	cpu.add(cpu.Registers.D)
+	cpu.add(cpu.Registers.D, 0)
 }
 
 // 0x83 - ADD A, E
 func (cpu *CPU_struct) op_0x83() {
-	cpu.add(cpu.Registers.E)
+	cpu.add(cpu.Registers.E, 0)
 }
 
 // 0x84 - ADD A, H
 func (cpu *CPU_struct) op_0x84() {
-	cpu.add(cpu.Registers.H)
+	cpu.add(cpu.Registers.H, 0)
 }
 
 // 0x85 - ADD A, L
 func (cpu *CPU_struct) op_0x85() {
-	cpu.add(cpu.Registers.L)
+	cpu.add(cpu.Registers.L, 0)
 }
 
 // 0x86 - ADD A, (HL)
 func (cpu *CPU_struct) op_0x86() {
 	var address uint16 = cpu.getHL()
 
-	cpu.add(cpu.MMU.ReadByte(address))
+	cpu.add(cpu.MMU.ReadByte(address), 0)
 
 	cpu.Cycle += 4
 }
 
 // 0x87 - ADD A, A
 func (cpu *CPU_struct) op_0x87() {
-	cpu.add(cpu.Registers.A)
+	cpu.add(cpu.Registers.A, 0)
 }
 
 func (cpu *CPU_struct) adc(n uint8) {
@@ -2093,7 +2093,7 @@ func (cpu *CPU_struct) adc(n uint8) {
 		carry += 1
 	}
 
-	cpu.add(n + carry)
+	cpu.add(n, carry)
 }
 
 // 0x88 - ADC A, B
@@ -2140,18 +2140,18 @@ func (cpu *CPU_struct) op_0x8f() {
 	cpu.adc(cpu.Registers.A)
 }
 
-func (cpu *CPU_struct) sub(n uint8) {
+func (cpu *CPU_struct) sub(n uint8, carry uint8) {
 	old := cpu.Registers.A
-	cpu.Registers.A = cpu.Registers.A - n
+	cpu.Registers.A = cpu.Registers.A - n - carry
 	cpu.Registers.F = N_BIT
 
 	cpu.setZ(cpu.Registers.A)
 
-	if (old & 0x0f) < (n & 0x0f) {
+	if (old & 0x0f) < ((n & 0x0f) + carry) {
 		cpu.Registers.F |= H_BIT
 	}
 
-	if old < n {
+	if uint32(old) < uint32(n+carry) {
 		cpu.Registers.F |= C_BIT
 	}
 
@@ -2160,46 +2160,46 @@ func (cpu *CPU_struct) sub(n uint8) {
 
 // 0x90 - SUB A, B
 func (cpu *CPU_struct) op_0x90() {
-	cpu.sub(cpu.Registers.B)
+	cpu.sub(cpu.Registers.B, 0)
 }
 
 // 0x91 - SUB A, C
 func (cpu *CPU_struct) op_0x91() {
-	cpu.sub(cpu.Registers.C)
+	cpu.sub(cpu.Registers.C, 0)
 }
 
 // 0x92 - SUB A, D
 func (cpu *CPU_struct) op_0x92() {
-	cpu.sub(cpu.Registers.D)
+	cpu.sub(cpu.Registers.D, 0)
 }
 
 // 0x93 - SUB A, E
 func (cpu *CPU_struct) op_0x93() {
-	cpu.sub(cpu.Registers.E)
+	cpu.sub(cpu.Registers.E, 0)
 }
 
 // 0x94 - SUB A, H
 func (cpu *CPU_struct) op_0x94() {
-	cpu.sub(cpu.Registers.H)
+	cpu.sub(cpu.Registers.H, 0)
 }
 
 // 0x95 - SUB A, L
 func (cpu *CPU_struct) op_0x95() {
-	cpu.sub(cpu.Registers.L)
+	cpu.sub(cpu.Registers.L, 0)
 }
 
 // 0x96 - SUB A, (HL)
 func (cpu *CPU_struct) op_0x96() {
 	var address uint16 = cpu.getHL()
 
-	cpu.sub(cpu.MMU.ReadByte(address))
+	cpu.sub(cpu.MMU.ReadByte(address), 0)
 
 	cpu.Cycle += 4
 }
 
 // 0x97 - SUB A, A
 func (cpu *CPU_struct) op_0x97() {
-	cpu.sub(cpu.Registers.A)
+	cpu.sub(cpu.Registers.A, 0)
 }
 
 func (cpu *CPU_struct) sbc(n uint8) {
@@ -2209,7 +2209,7 @@ func (cpu *CPU_struct) sbc(n uint8) {
 		carry += 1
 	}
 
-	cpu.sub(n + carry)
+	cpu.sub(n, carry)
 }
 
 // 0x98 - SBC A, B
@@ -2646,14 +2646,14 @@ func (cpu *CPU_struct) op_0xf5() {
 
 // 0xc6 ADD #
 func (cpu *CPU_struct) op_0xc6(n uint8) {
-	cpu.add(n)
+	cpu.add(n, 0)
 
 	cpu.Cycle += 4
 }
 
 // 0xd6 SUB #
 func (cpu *CPU_struct) op_0xd6(n uint8) {
-	cpu.sub(n)
+	cpu.sub(n, 0)
 
 	cpu.Cycle += 4
 }
@@ -2925,7 +2925,7 @@ func (cpu *CPU_struct) op_cb_0x02() {
 
 // 0xcb 0x03 RLC E
 func (cpu *CPU_struct) op_cb_0x03() {
-	cpu.rlc(&cpu.Registers.D)
+	cpu.rlc(&cpu.Registers.E)
 }
 
 // 0xcb 0x04 RLC H
@@ -3048,7 +3048,7 @@ func (cpu *CPU_struct) op_cb_0x12() {
 
 // 0xcb 0x13 RL E
 func (cpu *CPU_struct) op_cb_0x13() {
-	cpu.rl(&cpu.Registers.D)
+	cpu.rl(&cpu.Registers.E)
 }
 
 // 0xcb 0x14 RL H
@@ -3167,7 +3167,7 @@ func (cpu *CPU_struct) op_cb_0x22() {
 
 // 0xcb 0x23 SLA E
 func (cpu *CPU_struct) op_cb_0x23() {
-	cpu.sla(&cpu.Registers.D)
+	cpu.sla(&cpu.Registers.E)
 }
 
 // 0xcb 0x24 SLA H
@@ -3278,7 +3278,7 @@ func (cpu *CPU_struct) op_cb_0x32() {
 
 // 0xcb 0x33 SWAP E
 func (cpu *CPU_struct) op_cb_0x33() {
-	cpu.swap(&cpu.Registers.D)
+	cpu.swap(&cpu.Registers.E)
 }
 
 // 0xcb 0x34 SWAP H
@@ -3389,7 +3389,7 @@ func (cpu *CPU_struct) op_cb_0x42() {
 
 // 0xcb 0x43 BIT 0, E
 func (cpu *CPU_struct) op_cb_0x43() {
-	cpu.bit(cpu.Registers.D, 0b00000001)
+	cpu.bit(cpu.Registers.E, 0b00000001)
 }
 
 // 0xcb 0x44 BIT 0, H
@@ -3433,7 +3433,7 @@ func (cpu *CPU_struct) op_cb_0x4a() {
 
 // 0xcb 0x4b BIT 1, E
 func (cpu *CPU_struct) op_cb_0x4b() {
-	cpu.bit(cpu.Registers.D, 0b00000010)
+	cpu.bit(cpu.Registers.E, 0b00000010)
 }
 
 // 0xcb 0x4c BIT 1, H
@@ -3477,7 +3477,7 @@ func (cpu *CPU_struct) op_cb_0x52() {
 
 // 0xcb 0x53 BIT 2, E
 func (cpu *CPU_struct) op_cb_0x53() {
-	cpu.bit(cpu.Registers.D, 0b00000100)
+	cpu.bit(cpu.Registers.E, 0b00000100)
 }
 
 // 0xcb 0x54 BIT 2, H
@@ -3521,7 +3521,7 @@ func (cpu *CPU_struct) op_cb_0x5a() {
 
 // 0xcb 0x5b BIT 3, E
 func (cpu *CPU_struct) op_cb_0x5b() {
-	cpu.bit(cpu.Registers.D, 0b00001000)
+	cpu.bit(cpu.Registers.E, 0b00001000)
 }
 
 // 0xcb 0x5c BIT 3, H
@@ -3565,7 +3565,7 @@ func (cpu *CPU_struct) op_cb_0x62() {
 
 // 0xcb 0x63 BIT 4, E
 func (cpu *CPU_struct) op_cb_0x63() {
-	cpu.bit(cpu.Registers.D, 0b00010000)
+	cpu.bit(cpu.Registers.E, 0b00010000)
 }
 
 // 0xcb 0x64 BIT 4, H
@@ -3609,7 +3609,7 @@ func (cpu *CPU_struct) op_cb_0x6a() {
 
 // 0xcb 0x6b BIT 5, E
 func (cpu *CPU_struct) op_cb_0x6b() {
-	cpu.bit(cpu.Registers.D, 0b00100000)
+	cpu.bit(cpu.Registers.E, 0b00100000)
 }
 
 // 0xcb 0x6c BIT 5, H
@@ -3653,7 +3653,7 @@ func (cpu *CPU_struct) op_cb_0x72() {
 
 // 0xcb 0x73 BIT 6, E
 func (cpu *CPU_struct) op_cb_0x73() {
-	cpu.bit(cpu.Registers.D, 0b01000000)
+	cpu.bit(cpu.Registers.E, 0b01000000)
 }
 
 // 0xcb 0x74 BIT 6, H
@@ -3697,7 +3697,7 @@ func (cpu *CPU_struct) op_cb_0x7a() {
 
 // 0xcb 0x7b BIT 7, E
 func (cpu *CPU_struct) op_cb_0x7b() {
-	cpu.bit(cpu.Registers.D, 0b10000000)
+	cpu.bit(cpu.Registers.E, 0b10000000)
 }
 
 // 0xcb 0x7c BIT 7, H
