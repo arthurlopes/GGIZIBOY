@@ -1557,7 +1557,17 @@ func (cpu *CPU_struct) op_0x0f() {
 
 // 0x1f RRA
 func (cpu *CPU_struct) op_0x1f() {
-	cpu.rra()
+	var carry uint8 = cpu.Registers.F & C_BIT
+	cpu.Registers.F = 0
+	// bit 0 from n to carry
+	cpu.Registers.F |= ((cpu.Registers.A & 0x01) << 4)
+
+	cpu.Registers.A = (cpu.Registers.A >> 1)
+	if carry != 0 {
+		cpu.Registers.A |= 0x80
+	}
+
+	cpu.Cycle += 8
 }
 
 // 0x2f CPL
@@ -1570,8 +1580,9 @@ func (cpu *CPU_struct) op_0x2f() {
 
 // 0x3f CCF
 func (cpu *CPU_struct) op_0x3f() {
+	var carry uint8 = cpu.Registers.F & C_BIT
 	cpu.Registers.F &= Z_BIT
-	cpu.Registers.F ^= C_BIT
+	cpu.Registers.F |= carry ^ C_BIT
 
 	cpu.Cycle += 4
 }
@@ -2035,7 +2046,7 @@ func (cpu *CPU_struct) add(n uint8, carry uint8) {
 		cpu.Registers.F |= H_BIT
 	}
 
-	if ((uint16(old_a)) + (uint16(n))) > 0xff {
+	if (uint16(old_a) + uint16(n) + uint16(carry)) > 0xff {
 		cpu.Registers.F |= C_BIT
 	}
 
@@ -2151,7 +2162,7 @@ func (cpu *CPU_struct) sub(n uint8, carry uint8) {
 		cpu.Registers.F |= H_BIT
 	}
 
-	if uint32(old) < uint32(n+carry) {
+	if uint32(old) < uint32(n)+uint32(carry) {
 		cpu.Registers.F |= C_BIT
 	}
 
