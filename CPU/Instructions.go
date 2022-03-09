@@ -935,8 +935,134 @@ func (cpu *CPU_struct) Innit_Instruction_maps() {
 	cpu.Instructions_maps.Instructions_map_CB[0x7d] = cpu.op_cb_0x7d
 	cpu.Instructions_maps.Instructions_map_CB[0x7e] = cpu.op_cb_0x7e
 	cpu.Instructions_maps.Instructions_map_CB[0x7f] = cpu.op_cb_0x7f
+	cpu.Instructions_maps.Instructions_map_CB[0x80] = cpu.op_cb_0x80
+	cpu.Instructions_maps.Instructions_map_CB[0x81] = cpu.op_cb_0x81
+	cpu.Instructions_maps.Instructions_map_CB[0x82] = cpu.op_cb_0x82
+	cpu.Instructions_maps.Instructions_map_CB[0x83] = cpu.op_cb_0x83
+	cpu.Instructions_maps.Instructions_map_CB[0x84] = cpu.op_cb_0x84
+	cpu.Instructions_maps.Instructions_map_CB[0x85] = cpu.op_cb_0x85
+	cpu.Instructions_maps.Instructions_map_CB[0x86] = cpu.op_cb_0x86
 	cpu.Instructions_maps.Instructions_map_CB[0x87] = cpu.op_cb_0x87
+	cpu.Instructions_maps.Instructions_map_CB[0x88] = cpu.op_cb_0x88
+	cpu.Instructions_maps.Instructions_map_CB[0x89] = cpu.op_cb_0x89
+	cpu.Instructions_maps.Instructions_map_CB[0x8a] = cpu.op_cb_0x8a
+	cpu.Instructions_maps.Instructions_map_CB[0x8b] = cpu.op_cb_0x8b
+	cpu.Instructions_maps.Instructions_map_CB[0x8c] = cpu.op_cb_0x8c
+	cpu.Instructions_maps.Instructions_map_CB[0x8d] = cpu.op_cb_0x8d
+	cpu.Instructions_maps.Instructions_map_CB[0x8e] = cpu.op_cb_0x8e
+	cpu.Instructions_maps.Instructions_map_CB[0x8f] = cpu.op_cb_0x8f
+	cpu.Instructions_maps.Instructions_map_CB[0x90] = cpu.op_cb_0x90
+	cpu.Instructions_maps.Instructions_map_CB[0x91] = cpu.op_cb_0x91
+	cpu.Instructions_maps.Instructions_map_CB[0x92] = cpu.op_cb_0x92
+	cpu.Instructions_maps.Instructions_map_CB[0x93] = cpu.op_cb_0x93
+	cpu.Instructions_maps.Instructions_map_CB[0x94] = cpu.op_cb_0x94
+	cpu.Instructions_maps.Instructions_map_CB[0x95] = cpu.op_cb_0x95
+	cpu.Instructions_maps.Instructions_map_CB[0x96] = cpu.op_cb_0x96
+	cpu.Instructions_maps.Instructions_map_CB[0x97] = cpu.op_cb_0x97
+	cpu.Instructions_maps.Instructions_map_CB[0x98] = cpu.op_cb_0x98
+	cpu.Instructions_maps.Instructions_map_CB[0x99] = cpu.op_cb_0x99
+	cpu.Instructions_maps.Instructions_map_CB[0x9a] = cpu.op_cb_0x9a
+	cpu.Instructions_maps.Instructions_map_CB[0x9b] = cpu.op_cb_0x9b
+	cpu.Instructions_maps.Instructions_map_CB[0x9c] = cpu.op_cb_0x9c
+	cpu.Instructions_maps.Instructions_map_CB[0x9d] = cpu.op_cb_0x9d
+	cpu.Instructions_maps.Instructions_map_CB[0x9e] = cpu.op_cb_0x9e
+	cpu.Instructions_maps.Instructions_map_CB[0x9f] = cpu.op_cb_0x9f
+	cpu.Instructions_maps.Instructions_map_CB[0xa0] = cpu.op_cb_0xa0
+	cpu.Instructions_maps.Instructions_map_CB[0xa1] = cpu.op_cb_0xa1
+	cpu.Instructions_maps.Instructions_map_CB[0xa2] = cpu.op_cb_0xa2
+	cpu.Instructions_maps.Instructions_map_CB[0xa3] = cpu.op_cb_0xa3
+	cpu.Instructions_maps.Instructions_map_CB[0xa4] = cpu.op_cb_0xa4
+	cpu.Instructions_maps.Instructions_map_CB[0xa5] = cpu.op_cb_0xa5
+	cpu.Instructions_maps.Instructions_map_CB[0xa6] = cpu.op_cb_0xa6
+	cpu.Instructions_maps.Instructions_map_CB[0xa7] = cpu.op_cb_0xa7
+	cpu.Instructions_maps.Instructions_map_CB[0xa8] = cpu.op_cb_0xa8
+	cpu.Instructions_maps.Instructions_map_CB[0xa9] = cpu.op_cb_0xa9
+	cpu.Instructions_maps.Instructions_map_CB[0xaa] = cpu.op_cb_0xaa
+	cpu.Instructions_maps.Instructions_map_CB[0xab] = cpu.op_cb_0xab
+	cpu.Instructions_maps.Instructions_map_CB[0xac] = cpu.op_cb_0xac
+	cpu.Instructions_maps.Instructions_map_CB[0xad] = cpu.op_cb_0xad
+	cpu.Instructions_maps.Instructions_map_CB[0xae] = cpu.op_cb_0xae
+	cpu.Instructions_maps.Instructions_map_CB[0xaf] = cpu.op_cb_0xaf
+	cpu.Instructions_maps.Instructions_map_CB[0xb0] = cpu.op_cb_0xb0
+	cpu.Instructions_maps.Instructions_map_CB[0xb1] = cpu.op_cb_0xb1
+	cpu.Instructions_maps.Instructions_map_CB[0xb2] = cpu.op_cb_0xb2
+	cpu.Instructions_maps.Instructions_map_CB[0xb3] = cpu.op_cb_0xb3
+	cpu.Instructions_maps.Instructions_map_CB[0xb4] = cpu.op_cb_0xb4
+	cpu.Instructions_maps.Instructions_map_CB[0xb5] = cpu.op_cb_0xb5
+	cpu.Instructions_maps.Instructions_map_CB[0xb6] = cpu.op_cb_0xb6
+	cpu.Instructions_maps.Instructions_map_CB[0xb7] = cpu.op_cb_0xb7
+	cpu.Instructions_maps.Instructions_map_CB[0xb8] = cpu.op_cb_0xb8
+	cpu.Instructions_maps.Instructions_map_CB[0xb9] = cpu.op_cb_0xb9
+	cpu.Instructions_maps.Instructions_map_CB[0xba] = cpu.op_cb_0xba
+	cpu.Instructions_maps.Instructions_map_CB[0xbb] = cpu.op_cb_0xbb
+	cpu.Instructions_maps.Instructions_map_CB[0xbc] = cpu.op_cb_0xbc
+	cpu.Instructions_maps.Instructions_map_CB[0xbd] = cpu.op_cb_0xbd
+	cpu.Instructions_maps.Instructions_map_CB[0xbe] = cpu.op_cb_0xbe
+	cpu.Instructions_maps.Instructions_map_CB[0xbf] = cpu.op_cb_0xbf
+	cpu.Instructions_maps.Instructions_map_CB[0xc0] = cpu.op_cb_0xc0
+	cpu.Instructions_maps.Instructions_map_CB[0xc1] = cpu.op_cb_0xc1
+	cpu.Instructions_maps.Instructions_map_CB[0xc2] = cpu.op_cb_0xc2
+	cpu.Instructions_maps.Instructions_map_CB[0xc3] = cpu.op_cb_0xc3
+	cpu.Instructions_maps.Instructions_map_CB[0xc4] = cpu.op_cb_0xc4
+	cpu.Instructions_maps.Instructions_map_CB[0xc5] = cpu.op_cb_0xc5
+	cpu.Instructions_maps.Instructions_map_CB[0xc6] = cpu.op_cb_0xc6
+	cpu.Instructions_maps.Instructions_map_CB[0xc7] = cpu.op_cb_0xc7
+	cpu.Instructions_maps.Instructions_map_CB[0xc8] = cpu.op_cb_0xc8
+	cpu.Instructions_maps.Instructions_map_CB[0xc9] = cpu.op_cb_0xc9
+	cpu.Instructions_maps.Instructions_map_CB[0xca] = cpu.op_cb_0xca
+	cpu.Instructions_maps.Instructions_map_CB[0xcb] = cpu.op_cb_0xcb
+	cpu.Instructions_maps.Instructions_map_CB[0xcc] = cpu.op_cb_0xcc
+	cpu.Instructions_maps.Instructions_map_CB[0xcd] = cpu.op_cb_0xcd
+	cpu.Instructions_maps.Instructions_map_CB[0xce] = cpu.op_cb_0xce
 	cpu.Instructions_maps.Instructions_map_CB[0xcf] = cpu.op_cb_0xcf
+	cpu.Instructions_maps.Instructions_map_CB[0xd0] = cpu.op_cb_0xd0
+	cpu.Instructions_maps.Instructions_map_CB[0xd1] = cpu.op_cb_0xd1
+	cpu.Instructions_maps.Instructions_map_CB[0xd2] = cpu.op_cb_0xd2
+	cpu.Instructions_maps.Instructions_map_CB[0xd3] = cpu.op_cb_0xd3
+	cpu.Instructions_maps.Instructions_map_CB[0xd4] = cpu.op_cb_0xd4
+	cpu.Instructions_maps.Instructions_map_CB[0xd5] = cpu.op_cb_0xd5
+	cpu.Instructions_maps.Instructions_map_CB[0xd6] = cpu.op_cb_0xd6
+	cpu.Instructions_maps.Instructions_map_CB[0xd7] = cpu.op_cb_0xd7
+	cpu.Instructions_maps.Instructions_map_CB[0xd8] = cpu.op_cb_0xd8
+	cpu.Instructions_maps.Instructions_map_CB[0xd9] = cpu.op_cb_0xd9
+	cpu.Instructions_maps.Instructions_map_CB[0xda] = cpu.op_cb_0xda
+	cpu.Instructions_maps.Instructions_map_CB[0xdb] = cpu.op_cb_0xdb
+	cpu.Instructions_maps.Instructions_map_CB[0xdc] = cpu.op_cb_0xdc
+	cpu.Instructions_maps.Instructions_map_CB[0xdd] = cpu.op_cb_0xdd
+	cpu.Instructions_maps.Instructions_map_CB[0xde] = cpu.op_cb_0xde
+	cpu.Instructions_maps.Instructions_map_CB[0xdf] = cpu.op_cb_0xdf
+	cpu.Instructions_maps.Instructions_map_CB[0xe0] = cpu.op_cb_0xe0
+	cpu.Instructions_maps.Instructions_map_CB[0xe1] = cpu.op_cb_0xe1
+	cpu.Instructions_maps.Instructions_map_CB[0xe2] = cpu.op_cb_0xe2
+	cpu.Instructions_maps.Instructions_map_CB[0xe3] = cpu.op_cb_0xe3
+	cpu.Instructions_maps.Instructions_map_CB[0xe4] = cpu.op_cb_0xe4
+	cpu.Instructions_maps.Instructions_map_CB[0xe5] = cpu.op_cb_0xe5
+	cpu.Instructions_maps.Instructions_map_CB[0xe6] = cpu.op_cb_0xe6
+	cpu.Instructions_maps.Instructions_map_CB[0xe7] = cpu.op_cb_0xe7
+	cpu.Instructions_maps.Instructions_map_CB[0xe8] = cpu.op_cb_0xe8
+	cpu.Instructions_maps.Instructions_map_CB[0xe9] = cpu.op_cb_0xe9
+	cpu.Instructions_maps.Instructions_map_CB[0xea] = cpu.op_cb_0xea
+	cpu.Instructions_maps.Instructions_map_CB[0xeb] = cpu.op_cb_0xeb
+	cpu.Instructions_maps.Instructions_map_CB[0xec] = cpu.op_cb_0xec
+	cpu.Instructions_maps.Instructions_map_CB[0xed] = cpu.op_cb_0xed
+	cpu.Instructions_maps.Instructions_map_CB[0xee] = cpu.op_cb_0xee
+	cpu.Instructions_maps.Instructions_map_CB[0xef] = cpu.op_cb_0xef
+	cpu.Instructions_maps.Instructions_map_CB[0xf0] = cpu.op_cb_0xf0
+	cpu.Instructions_maps.Instructions_map_CB[0xf1] = cpu.op_cb_0xf1
+	cpu.Instructions_maps.Instructions_map_CB[0xf2] = cpu.op_cb_0xf2
+	cpu.Instructions_maps.Instructions_map_CB[0xf3] = cpu.op_cb_0xf3
+	cpu.Instructions_maps.Instructions_map_CB[0xf4] = cpu.op_cb_0xf4
+	cpu.Instructions_maps.Instructions_map_CB[0xf5] = cpu.op_cb_0xf5
+	cpu.Instructions_maps.Instructions_map_CB[0xf6] = cpu.op_cb_0xf6
+	cpu.Instructions_maps.Instructions_map_CB[0xf7] = cpu.op_cb_0xf7
+	cpu.Instructions_maps.Instructions_map_CB[0xf8] = cpu.op_cb_0xf8
+	cpu.Instructions_maps.Instructions_map_CB[0xf9] = cpu.op_cb_0xf9
+	cpu.Instructions_maps.Instructions_map_CB[0xfa] = cpu.op_cb_0xfa
+	cpu.Instructions_maps.Instructions_map_CB[0xfb] = cpu.op_cb_0xfb
+	cpu.Instructions_maps.Instructions_map_CB[0xfc] = cpu.op_cb_0xfc
+	cpu.Instructions_maps.Instructions_map_CB[0xfd] = cpu.op_cb_0xfd
+	cpu.Instructions_maps.Instructions_map_CB[0xfe] = cpu.op_cb_0xfe
+	cpu.Instructions_maps.Instructions_map_CB[0xff] = cpu.op_cb_0xff
 }
 
 func (cpu *CPU_struct) getAF() uint16 {
@@ -3691,9 +3817,9 @@ func (cpu *CPU_struct) op_cb_0x77() {
 	cpu.bit(cpu.Registers.A, 0b01000000)
 }
 
-// 0xcb 0x78 BIT 6, B
+// 0xcb 0x78 BIT 7, B
 func (cpu *CPU_struct) op_cb_0x78() {
-	cpu.bit(cpu.Registers.B, 0b01000000)
+	cpu.bit(cpu.Registers.B, 0b10000000)
 }
 
 // 0xcb 0x79 BIT 7, C
@@ -3735,25 +3861,734 @@ func (cpu *CPU_struct) op_cb_0x7f() {
 	cpu.bit(cpu.Registers.A, 0b10000000)
 }
 
-//===============================================================
-//===============================================================
-//===============================================================
-//===============================================================
-//===============================================================
-//===============================================================
-//===============================================================
+func (cpu *CPU_struct) res(n *uint8, mask uint8) {
+	*n &= mask
 
-// 0xcb 0xcf SET 1, A
-func (cpu *CPU_struct) op_cb_0xcf() {
-	cpu.Registers.A |= 0b00000010
+	cpu.Cycle += 8
+}
+
+// 0xcb 0x80 RES 0, B
+func (cpu *CPU_struct) op_cb_0x80() {
+	cpu.res(&cpu.Registers.B, 0b11111110)
+}
+
+// 0xcb 0x81 RES 0, C
+func (cpu *CPU_struct) op_cb_0x81() {
+	cpu.res(&cpu.Registers.C, 0b11111110)
+}
+
+// 0xcb 0x82 RES 0, D
+func (cpu *CPU_struct) op_cb_0x82() {
+	cpu.res(&cpu.Registers.D, 0b11111110)
+}
+
+// 0xcb 0x83 RES 0, E
+func (cpu *CPU_struct) op_cb_0x83() {
+	cpu.res(&cpu.Registers.E, 0b11111110)
+}
+
+// 0xcb 0x84 RES 0, H
+func (cpu *CPU_struct) op_cb_0x84() {
+	cpu.res(&cpu.Registers.H, 0b11111110)
+}
+
+// 0xcb 0x85 RES 0, L
+func (cpu *CPU_struct) op_cb_0x85() {
+	cpu.res(&cpu.Registers.L, 0b11111110)
+}
+
+// 0xcb 0x86 RES 0, (HL)
+func (cpu *CPU_struct) op_cb_0x86() {
+	var address uint16 = cpu.getHL()
+	var n uint8 = cpu.MMU.ReadByte(address)
+	cpu.res(&n, 0b11111110)
+	cpu.MMU.WriteByte(address, n)
 
 	cpu.Cycle += 8
 }
 
 // 0xcb 0x87 RES 0, A
 func (cpu *CPU_struct) op_cb_0x87() {
-	cpu.Registers.A &= 0b11111110
+	cpu.res(&cpu.Registers.A, 0b11111110)
+}
 
-	// TODO review 4 or 8, is 0xCB included here?
+// 0xcb 0x88 RES 1, B
+func (cpu *CPU_struct) op_cb_0x88() {
+	cpu.res(&cpu.Registers.B, 0b11111101)
+}
+
+// 0xcb 0x89 RES 1, C
+func (cpu *CPU_struct) op_cb_0x89() {
+	cpu.res(&cpu.Registers.C, 0b11111101)
+}
+
+// 0xcb 0x8a RES 1, D
+func (cpu *CPU_struct) op_cb_0x8a() {
+	cpu.res(&cpu.Registers.D, 0b11111101)
+}
+
+// 0xcb 0x8b RES 1, E
+func (cpu *CPU_struct) op_cb_0x8b() {
+	cpu.res(&cpu.Registers.E, 0b11111101)
+}
+
+// 0xcb 0x8c RES 1, H
+func (cpu *CPU_struct) op_cb_0x8c() {
+	cpu.res(&cpu.Registers.H, 0b11111101)
+}
+
+// 0xcb 0x8d RES 1, L
+func (cpu *CPU_struct) op_cb_0x8d() {
+	cpu.res(&cpu.Registers.L, 0b11111101)
+}
+
+// 0xcb 0x8e RES 1, (HL)
+func (cpu *CPU_struct) op_cb_0x8e() {
+	var address uint16 = cpu.getHL()
+	var n uint8 = cpu.MMU.ReadByte(address)
+	cpu.res(&n, 0b11111101)
+	cpu.MMU.WriteByte(address, n)
+
 	cpu.Cycle += 8
+}
+
+// 0xcb 0x8f RES 1, A
+func (cpu *CPU_struct) op_cb_0x8f() {
+	cpu.res(&cpu.Registers.A, 0b11111101)
+}
+
+// 0xcb 0x90 RES 2, B
+func (cpu *CPU_struct) op_cb_0x90() {
+	cpu.res(&cpu.Registers.B, 0b11111011)
+}
+
+// 0xcb 0x91 RES 2, C
+func (cpu *CPU_struct) op_cb_0x91() {
+	cpu.res(&cpu.Registers.C, 0b11111011)
+}
+
+// 0xcb 0x92 RES 2, D
+func (cpu *CPU_struct) op_cb_0x92() {
+	cpu.res(&cpu.Registers.D, 0b11111011)
+}
+
+// 0xcb 0x93 RES 2, E
+func (cpu *CPU_struct) op_cb_0x93() {
+	cpu.res(&cpu.Registers.E, 0b11111011)
+}
+
+// 0xcb 0x94 RES 2, H
+func (cpu *CPU_struct) op_cb_0x94() {
+	cpu.res(&cpu.Registers.H, 0b11111011)
+}
+
+// 0xcb 0x95 RES 2, L
+func (cpu *CPU_struct) op_cb_0x95() {
+	cpu.res(&cpu.Registers.L, 0b11111011)
+}
+
+// 0xcb 0x96 RES 2, (HL)
+func (cpu *CPU_struct) op_cb_0x96() {
+	var address uint16 = cpu.getHL()
+	var n uint8 = cpu.MMU.ReadByte(address)
+	cpu.res(&n, 0b11111011)
+	cpu.MMU.WriteByte(address, n)
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0x97 RES 2, A
+func (cpu *CPU_struct) op_cb_0x97() {
+	cpu.res(&cpu.Registers.A, 0b11111011)
+}
+
+// 0xcb 0x98 RES 3, B
+func (cpu *CPU_struct) op_cb_0x98() {
+	cpu.res(&cpu.Registers.B, 0b11110111)
+}
+
+// 0xcb 0x99 RES 3, C
+func (cpu *CPU_struct) op_cb_0x99() {
+	cpu.res(&cpu.Registers.C, 0b11110111)
+}
+
+// 0xcb 0x9a RES 3, D
+func (cpu *CPU_struct) op_cb_0x9a() {
+	cpu.res(&cpu.Registers.D, 0b11110111)
+}
+
+// 0xcb 0x9b RES 3, E
+func (cpu *CPU_struct) op_cb_0x9b() {
+	cpu.res(&cpu.Registers.E, 0b11110111)
+}
+
+// 0xcb 0x9c RES 3, H
+func (cpu *CPU_struct) op_cb_0x9c() {
+	cpu.res(&cpu.Registers.H, 0b11110111)
+}
+
+// 0xcb 0x9d RES 3, L
+func (cpu *CPU_struct) op_cb_0x9d() {
+	cpu.res(&cpu.Registers.L, 0b11110111)
+}
+
+// 0xcb 0x9e RES 3, (HL)
+func (cpu *CPU_struct) op_cb_0x9e() {
+	var address uint16 = cpu.getHL()
+	var n uint8 = cpu.MMU.ReadByte(address)
+	cpu.res(&n, 0b11110111)
+	cpu.MMU.WriteByte(address, n)
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0x9f RES 3, A
+func (cpu *CPU_struct) op_cb_0x9f() {
+	cpu.res(&cpu.Registers.A, 0b11110111)
+}
+
+// 0xcb 0xa0 RES 4, B
+func (cpu *CPU_struct) op_cb_0xa0() {
+	cpu.res(&cpu.Registers.B, 0b11101111)
+}
+
+// 0xcb 0xa1 RES 4, C
+func (cpu *CPU_struct) op_cb_0xa1() {
+	cpu.res(&cpu.Registers.C, 0b11101111)
+}
+
+// 0xcb 0xa2 RES 4, D
+func (cpu *CPU_struct) op_cb_0xa2() {
+	cpu.res(&cpu.Registers.D, 0b11101111)
+}
+
+// 0xcb 0xa3 RES 4, E
+func (cpu *CPU_struct) op_cb_0xa3() {
+	cpu.res(&cpu.Registers.E, 0b11101111)
+}
+
+// 0xcb 0xa4 RES 4, H
+func (cpu *CPU_struct) op_cb_0xa4() {
+	cpu.res(&cpu.Registers.H, 0b11101111)
+}
+
+// 0xcb 0xa5 RES 4, L
+func (cpu *CPU_struct) op_cb_0xa5() {
+	cpu.res(&cpu.Registers.L, 0b11101111)
+}
+
+// 0xcb 0xa6 RES 4, (HL)
+func (cpu *CPU_struct) op_cb_0xa6() {
+	var address uint16 = cpu.getHL()
+	var n uint8 = cpu.MMU.ReadByte(address)
+	cpu.res(&n, 0b11101111)
+	cpu.MMU.WriteByte(address, n)
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0xa7 RES 4, A
+func (cpu *CPU_struct) op_cb_0xa7() {
+	cpu.res(&cpu.Registers.A, 0b11101111)
+}
+
+// 0xcb 0xa8 RES 5, B
+func (cpu *CPU_struct) op_cb_0xa8() {
+	cpu.res(&cpu.Registers.B, 0b11011111)
+}
+
+// 0xcb 0xa9 RES 5, C
+func (cpu *CPU_struct) op_cb_0xa9() {
+	cpu.res(&cpu.Registers.C, 0b11011111)
+}
+
+// 0xcb 0xaa RES 5, D
+func (cpu *CPU_struct) op_cb_0xaa() {
+	cpu.res(&cpu.Registers.D, 0b11011111)
+}
+
+// 0xcb 0xab RES 5, E
+func (cpu *CPU_struct) op_cb_0xab() {
+	cpu.res(&cpu.Registers.E, 0b11011111)
+}
+
+// 0xcb 0xac RES 5, H
+func (cpu *CPU_struct) op_cb_0xac() {
+	cpu.res(&cpu.Registers.H, 0b11011111)
+}
+
+// 0xcb 0xad RES 5, L
+func (cpu *CPU_struct) op_cb_0xad() {
+	cpu.res(&cpu.Registers.L, 0b11011111)
+}
+
+// 0xcb 0xae RES 5, (HL)
+func (cpu *CPU_struct) op_cb_0xae() {
+	var address uint16 = cpu.getHL()
+	var n uint8 = cpu.MMU.ReadByte(address)
+	cpu.res(&n, 0b11011111)
+	cpu.MMU.WriteByte(address, n)
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0xaf RES 5, A
+func (cpu *CPU_struct) op_cb_0xaf() {
+	cpu.res(&cpu.Registers.A, 0b11011111)
+}
+
+// 0xcb 0xb0 RES 6, B
+func (cpu *CPU_struct) op_cb_0xb0() {
+	cpu.res(&cpu.Registers.B, 0b10111111)
+}
+
+// 0xcb 0xb1 RES 6, C
+func (cpu *CPU_struct) op_cb_0xb1() {
+	cpu.res(&cpu.Registers.C, 0b10111111)
+}
+
+// 0xcb 0xb2 RES 6, D
+func (cpu *CPU_struct) op_cb_0xb2() {
+	cpu.res(&cpu.Registers.D, 0b10111111)
+}
+
+// 0xcb 0xb3 RES 6, E
+func (cpu *CPU_struct) op_cb_0xb3() {
+	cpu.res(&cpu.Registers.E, 0b10111111)
+}
+
+// 0xcb 0xb4 RES 6, H
+func (cpu *CPU_struct) op_cb_0xb4() {
+	cpu.res(&cpu.Registers.H, 0b10111111)
+}
+
+// 0xcb 0xb5 RES 6, L
+func (cpu *CPU_struct) op_cb_0xb5() {
+	cpu.res(&cpu.Registers.L, 0b10111111)
+}
+
+// 0xcb 0xb6 RES 6, (HL)
+func (cpu *CPU_struct) op_cb_0xb6() {
+	var address uint16 = cpu.getHL()
+	var n uint8 = cpu.MMU.ReadByte(address)
+	cpu.res(&n, 0b10111111)
+	cpu.MMU.WriteByte(address, n)
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0xb7 RES 6, A
+func (cpu *CPU_struct) op_cb_0xb7() {
+	cpu.res(&cpu.Registers.A, 0b10111111)
+}
+
+// 0xcb 0xb8 RES 7, B
+func (cpu *CPU_struct) op_cb_0xb8() {
+	cpu.res(&cpu.Registers.B, 0b01111111)
+}
+
+// 0xcb 0xb9 RES 7, C
+func (cpu *CPU_struct) op_cb_0xb9() {
+	cpu.res(&cpu.Registers.C, 0b01111111)
+}
+
+// 0xcb 0xba RES 7, D
+func (cpu *CPU_struct) op_cb_0xba() {
+	cpu.res(&cpu.Registers.D, 0b01111111)
+}
+
+// 0xcb 0xbb RES 7, E
+func (cpu *CPU_struct) op_cb_0xbb() {
+	cpu.res(&cpu.Registers.E, 0b01111111)
+}
+
+// 0xcb 0xbc RES 7, H
+func (cpu *CPU_struct) op_cb_0xbc() {
+	cpu.res(&cpu.Registers.H, 0b01111111)
+}
+
+// 0xcb 0xbd RES 7, L
+func (cpu *CPU_struct) op_cb_0xbd() {
+	cpu.res(&cpu.Registers.L, 0b01111111)
+}
+
+// 0xcb 0xbe RES 7, (HL)
+func (cpu *CPU_struct) op_cb_0xbe() {
+	var address uint16 = cpu.getHL()
+	var n uint8 = cpu.MMU.ReadByte(address)
+	cpu.res(&n, 0b01111111)
+	cpu.MMU.WriteByte(address, n)
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0xbf RES 7, A
+func (cpu *CPU_struct) op_cb_0xbf() {
+	cpu.res(&cpu.Registers.A, 0b01111111)
+}
+
+func (cpu *CPU_struct) set(n *uint8, mask uint8) {
+	*n |= mask
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0xc0 SET 0, B
+func (cpu *CPU_struct) op_cb_0xc0() {
+	cpu.set(&cpu.Registers.B, 0b00000001)
+}
+
+// 0xcb 0xc1 SET 0, C
+func (cpu *CPU_struct) op_cb_0xc1() {
+	cpu.set(&cpu.Registers.C, 0b00000001)
+}
+
+// 0xcb 0xc2 SET 0, D
+func (cpu *CPU_struct) op_cb_0xc2() {
+	cpu.set(&cpu.Registers.D, 0b00000001)
+}
+
+// 0xcb 0xc3 SET 0, E
+func (cpu *CPU_struct) op_cb_0xc3() {
+	cpu.set(&cpu.Registers.E, 0b00000001)
+}
+
+// 0xcb 0xc4 SET 0, H
+func (cpu *CPU_struct) op_cb_0xc4() {
+	cpu.set(&cpu.Registers.H, 0b00000001)
+}
+
+// 0xcb 0xc5 SET 0, L
+func (cpu *CPU_struct) op_cb_0xc5() {
+	cpu.set(&cpu.Registers.L, 0b00000001)
+}
+
+// 0xcb 0xc6 SET 0, (HL)
+func (cpu *CPU_struct) op_cb_0xc6() {
+	var address uint16 = cpu.getHL()
+	var n uint8 = cpu.MMU.ReadByte(address)
+	cpu.set(&n, 0b00000001)
+	cpu.MMU.WriteByte(address, n)
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0xc7 SET 0, A
+func (cpu *CPU_struct) op_cb_0xc7() {
+	cpu.set(&cpu.Registers.A, 0b00000001)
+}
+
+// 0xcb 0xc8 SET 1, B
+func (cpu *CPU_struct) op_cb_0xc8() {
+	cpu.set(&cpu.Registers.B, 0b00000010)
+}
+
+// 0xcb 0xc9 SET 1, C
+func (cpu *CPU_struct) op_cb_0xc9() {
+	cpu.set(&cpu.Registers.C, 0b00000010)
+}
+
+// 0xcb 0xca SET 1, D
+func (cpu *CPU_struct) op_cb_0xca() {
+	cpu.set(&cpu.Registers.D, 0b00000010)
+}
+
+// 0xcb 0xcb SET 1, E
+func (cpu *CPU_struct) op_cb_0xcb() {
+	cpu.set(&cpu.Registers.E, 0b00000010)
+}
+
+// 0xcb 0xcc SET 1, H
+func (cpu *CPU_struct) op_cb_0xcc() {
+	cpu.set(&cpu.Registers.H, 0b00000010)
+}
+
+// 0xcb 0xcd SET 1, L
+func (cpu *CPU_struct) op_cb_0xcd() {
+	cpu.set(&cpu.Registers.L, 0b00000010)
+}
+
+// 0xcb 0xce SET 1, (HL)
+func (cpu *CPU_struct) op_cb_0xce() {
+	var address uint16 = cpu.getHL()
+	var n uint8 = cpu.MMU.ReadByte(address)
+	cpu.set(&n, 0b00000010)
+	cpu.MMU.WriteByte(address, n)
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0xcf SET 1, A
+func (cpu *CPU_struct) op_cb_0xcf() {
+	cpu.set(&cpu.Registers.A, 0b00000010)
+}
+
+// 0xcb 0xd0 SET 2, B
+func (cpu *CPU_struct) op_cb_0xd0() {
+	cpu.set(&cpu.Registers.B, 0b00000100)
+}
+
+// 0xcb 0xd1 SET 2, C
+func (cpu *CPU_struct) op_cb_0xd1() {
+	cpu.set(&cpu.Registers.C, 0b00000100)
+}
+
+// 0xcb 0xd2 SET 2, D
+func (cpu *CPU_struct) op_cb_0xd2() {
+	cpu.set(&cpu.Registers.D, 0b00000100)
+}
+
+// 0xcb 0xd3 SET 2, E
+func (cpu *CPU_struct) op_cb_0xd3() {
+	cpu.set(&cpu.Registers.E, 0b00000100)
+}
+
+// 0xcb 0xd4 SET 2, H
+func (cpu *CPU_struct) op_cb_0xd4() {
+	cpu.set(&cpu.Registers.H, 0b00000100)
+}
+
+// 0xcb 0xd5 SET 2, L
+func (cpu *CPU_struct) op_cb_0xd5() {
+	cpu.set(&cpu.Registers.L, 0b00000100)
+}
+
+// 0xcb 0xd6 SET 2, (HL)
+func (cpu *CPU_struct) op_cb_0xd6() {
+	var address uint16 = cpu.getHL()
+	var n uint8 = cpu.MMU.ReadByte(address)
+	cpu.set(&n, 0b00000100)
+	cpu.MMU.WriteByte(address, n)
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0xd7 SET 2, A
+func (cpu *CPU_struct) op_cb_0xd7() {
+	cpu.set(&cpu.Registers.A, 0b00000100)
+}
+
+// 0xcb 0xd8 SET 3, B
+func (cpu *CPU_struct) op_cb_0xd8() {
+	cpu.set(&cpu.Registers.B, 0b00001000)
+}
+
+// 0xcb 0xd9 SET 3, C
+func (cpu *CPU_struct) op_cb_0xd9() {
+	cpu.set(&cpu.Registers.C, 0b00001000)
+}
+
+// 0xcb 0xda SET 3, D
+func (cpu *CPU_struct) op_cb_0xda() {
+	cpu.set(&cpu.Registers.D, 0b00001000)
+}
+
+// 0xcb 0xdb SET 3, E
+func (cpu *CPU_struct) op_cb_0xdb() {
+	cpu.set(&cpu.Registers.E, 0b00001000)
+}
+
+// 0xcb 0xdc SET 3, H
+func (cpu *CPU_struct) op_cb_0xdc() {
+	cpu.set(&cpu.Registers.H, 0b00001000)
+}
+
+// 0xcb 0xdd SET 3, L
+func (cpu *CPU_struct) op_cb_0xdd() {
+	cpu.set(&cpu.Registers.L, 0b00001000)
+}
+
+// 0xcb 0xde SET 3, (HL)
+func (cpu *CPU_struct) op_cb_0xde() {
+	var address uint16 = cpu.getHL()
+	var n uint8 = cpu.MMU.ReadByte(address)
+	cpu.set(&n, 0b00001000)
+	cpu.MMU.WriteByte(address, n)
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0xdf SET 3, A
+func (cpu *CPU_struct) op_cb_0xdf() {
+	cpu.set(&cpu.Registers.A, 0b00001000)
+}
+
+// 0xcb 0xe0 SET 4, B
+func (cpu *CPU_struct) op_cb_0xe0() {
+	cpu.set(&cpu.Registers.B, 0b00010000)
+}
+
+// 0xcb 0xe1 SET 4, C
+func (cpu *CPU_struct) op_cb_0xe1() {
+	cpu.set(&cpu.Registers.C, 0b00010000)
+}
+
+// 0xcb 0xe2 SET 4, D
+func (cpu *CPU_struct) op_cb_0xe2() {
+	cpu.set(&cpu.Registers.D, 0b00010000)
+}
+
+// 0xcb 0xe3 SET 4, E
+func (cpu *CPU_struct) op_cb_0xe3() {
+	cpu.set(&cpu.Registers.E, 0b00010000)
+}
+
+// 0xcb 0xe4 SET 4, H
+func (cpu *CPU_struct) op_cb_0xe4() {
+	cpu.set(&cpu.Registers.H, 0b00010000)
+}
+
+// 0xcb 0xe5 SET 4, L
+func (cpu *CPU_struct) op_cb_0xe5() {
+	cpu.set(&cpu.Registers.L, 0b00010000)
+}
+
+// 0xcb 0xe6 SET 4, (HL)
+func (cpu *CPU_struct) op_cb_0xe6() {
+	var address uint16 = cpu.getHL()
+	var n uint8 = cpu.MMU.ReadByte(address)
+	cpu.set(&n, 0b00010000)
+	cpu.MMU.WriteByte(address, n)
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0xe7 SET 4, A
+func (cpu *CPU_struct) op_cb_0xe7() {
+	cpu.set(&cpu.Registers.A, 0b00010000)
+}
+
+// 0xcb 0xe8 SET 5, B
+func (cpu *CPU_struct) op_cb_0xe8() {
+	cpu.set(&cpu.Registers.B, 0b00100000)
+}
+
+// 0xcb 0xe9 SET 5, C
+func (cpu *CPU_struct) op_cb_0xe9() {
+	cpu.set(&cpu.Registers.C, 0b00100000)
+}
+
+// 0xcb 0xea SET 5, D
+func (cpu *CPU_struct) op_cb_0xea() {
+	cpu.set(&cpu.Registers.D, 0b00100000)
+}
+
+// 0xcb 0xeb SET 5, E
+func (cpu *CPU_struct) op_cb_0xeb() {
+	cpu.set(&cpu.Registers.E, 0b00100000)
+}
+
+// 0xcb 0xec SET 5, H
+func (cpu *CPU_struct) op_cb_0xec() {
+	cpu.set(&cpu.Registers.H, 0b00100000)
+}
+
+// 0xcb 0xed SET 5, L
+func (cpu *CPU_struct) op_cb_0xed() {
+	cpu.set(&cpu.Registers.L, 0b00100000)
+}
+
+// 0xcb 0xee SET 5, (HL)
+func (cpu *CPU_struct) op_cb_0xee() {
+	var address uint16 = cpu.getHL()
+	var n uint8 = cpu.MMU.ReadByte(address)
+	cpu.set(&n, 0b00100000)
+	cpu.MMU.WriteByte(address, n)
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0xef SET 5, A
+func (cpu *CPU_struct) op_cb_0xef() {
+	cpu.set(&cpu.Registers.A, 0b00100000)
+}
+
+// 0xcb 0xf0 SET 6, B
+func (cpu *CPU_struct) op_cb_0xf0() {
+	cpu.set(&cpu.Registers.B, 0b01000000)
+}
+
+// 0xcb 0xf1 SET 6, C
+func (cpu *CPU_struct) op_cb_0xf1() {
+	cpu.set(&cpu.Registers.C, 0b01000000)
+}
+
+// 0xcb 0xf2 SET 6, D
+func (cpu *CPU_struct) op_cb_0xf2() {
+	cpu.set(&cpu.Registers.D, 0b01000000)
+}
+
+// 0xcb 0xf3 SET 6, E
+func (cpu *CPU_struct) op_cb_0xf3() {
+	cpu.set(&cpu.Registers.E, 0b01000000)
+}
+
+// 0xcb 0xf4 SET 6, H
+func (cpu *CPU_struct) op_cb_0xf4() {
+	cpu.set(&cpu.Registers.H, 0b01000000)
+}
+
+// 0xcb 0xf5 SET 6, L
+func (cpu *CPU_struct) op_cb_0xf5() {
+	cpu.set(&cpu.Registers.L, 0b01000000)
+}
+
+// 0xcb 0xf6 SET 6, (HL)
+func (cpu *CPU_struct) op_cb_0xf6() {
+	var address uint16 = cpu.getHL()
+	var n uint8 = cpu.MMU.ReadByte(address)
+	cpu.set(&n, 0b01000000)
+	cpu.MMU.WriteByte(address, n)
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0xf7 SET 6, A
+func (cpu *CPU_struct) op_cb_0xf7() {
+	cpu.set(&cpu.Registers.A, 0b01000000)
+}
+
+// 0xcb 0xf8 SET 7, B
+func (cpu *CPU_struct) op_cb_0xf8() {
+	cpu.set(&cpu.Registers.B, 0b10000000)
+}
+
+// 0xcb 0xf9 SET 7, C
+func (cpu *CPU_struct) op_cb_0xf9() {
+	cpu.set(&cpu.Registers.C, 0b10000000)
+}
+
+// 0xcb 0xfa SET 7, D
+func (cpu *CPU_struct) op_cb_0xfa() {
+	cpu.set(&cpu.Registers.D, 0b10000000)
+}
+
+// 0xcb 0xfb SET 7, E
+func (cpu *CPU_struct) op_cb_0xfb() {
+	cpu.set(&cpu.Registers.E, 0b10000000)
+}
+
+// 0xcb 0xfc SET 7, H
+func (cpu *CPU_struct) op_cb_0xfc() {
+	cpu.set(&cpu.Registers.H, 0b10000000)
+}
+
+// 0xcb 0xfd SET 7, L
+func (cpu *CPU_struct) op_cb_0xfd() {
+	cpu.set(&cpu.Registers.L, 0b10000000)
+}
+
+// 0xcb 0xfe SET 7, (HL)
+func (cpu *CPU_struct) op_cb_0xfe() {
+	var address uint16 = cpu.getHL()
+	var n uint8 = cpu.MMU.ReadByte(address)
+	cpu.set(&n, 0b10000000)
+	cpu.MMU.WriteByte(address, n)
+
+	cpu.Cycle += 8
+}
+
+// 0xcb 0xff SET 7, A
+func (cpu *CPU_struct) op_cb_0xff() {
+	cpu.set(&cpu.Registers.A, 0b10000000)
 }
