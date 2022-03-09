@@ -1390,30 +1390,37 @@ func (cpu *CPU_struct) op_0x17() {
 // 0x27 DAA
 // TODO: double check
 func (cpu *CPU_struct) op_0x27() {
-	var n_flag uint8 = cpu.Registers.F & N_BIT
-	var c_flag uint8 = cpu.Registers.F & C_BIT
-	var h_flag uint8 = cpu.Registers.F & H_BIT
-
-	// note: assumes a is a uint8_t and wraps from 0xff to 0
-	if n_flag == 0 { // after an addition, adjust if (half-)carry occurred or if result is out of bounds
-		if (c_flag != 0) || (cpu.Registers.A > 0x99) {
-			cpu.Registers.A += 0x60
-			c_flag = 1
-		}
-		if (h_flag != 0) || ((cpu.Registers.A & 0x0f) > 0x09) {
-			cpu.Registers.A += 0x6
-		}
-	} else { // after a subtraction, only adjust if (half-)carry occurred
-		if c_flag != 0 {
-			cpu.Registers.A -= 0x60
-		}
-		if h_flag != 0 {
-			cpu.Registers.A -= 0x6
-		}
+	var temp uint8 = cpu.Registers.A
+	var corr uint8 = 0
+	if (cpu.Registers.F & H_BIT) != 0 {
+		corr |= 0x06
 	}
-	// these flags are always updated
-	cpu.Registers.F &= N_BIT
-	cpu.setZ(cpu.Registers.A)
+	if (cpu.Registers.F & C_BIT) != 0 {
+		corr |= 0x60
+	}
+	if (cpu.Registers.F & N_BIT) != 0 {
+		temp -= corr
+	} else {
+		if (temp & 0x0F) > 0x09 {
+			corr |= 0x06
+		}
+
+		if temp > 0x99 {
+			corr |= 0x60
+		}
+		temp += corr
+	}
+	var flag uint8 = 0
+	if (temp & 0xFF) == 0 {
+		flag |= Z_BIT
+	}
+	if (corr & 0x60) != 0 {
+		flag |= C_BIT
+	}
+	cpu.Registers.F &= 0b01000000
+	cpu.Registers.F |= flag
+	temp &= 0xFF
+	cpu.Registers.A = temp
 
 	cpu.Cycle += 4
 }
