@@ -13,6 +13,9 @@ type IGPU interface {
 	GetLine() uint8
 	GetScroll_x() uint8
 	GetScroll_y() uint8
+	SetScroll_x(uint8)
+	SetScroll_y(uint8)
+	SetLine(uint8)
 }
 
 type ICPU interface {
@@ -52,8 +55,19 @@ func (mmu *MMU_struct) Innit() {
 	mmu.Bootstrap_path = "data/bootstrap/dmg_boot.bin"
 	// mmu.ROM_path = "data/ROM/Pokemon - Blue Version (USA, Europe) (SGB Enhanced).gb"
 	// mmu.ROM_path = "data/ROM/Super Mario Land (JUE) (V1.1) [!].gb"
-	// mmu.ROM_path = "data/ROM/ttt.gb"
-	mmu.ROM_path = "data/ROM/Tetris.gb"
+	// mmu.ROM_path = "data/ROM/cpu_instrs.gb"
+	// mmu.ROM_path = "data/ROM/Tetris.gb"
+	// mmu.ROM_path = "data/ROM/01-special.gb"
+	// mmu.ROM_path = "data/ROM/02-interrupts.gb"
+	// mmu.ROM_path = "data/ROM/03-op sp,hl.gb" // OK
+	// mmu.ROM_path = "data/ROM/04-op r,imm.gb" // OK
+	// mmu.ROM_path = "data/ROM/05-op rp.gb" // OK
+	// mmu.ROM_path = "data/ROM/06-ld r,r.gb" // OK
+	// mmu.ROM_path = "data/ROM/07-jr,jp,call,ret,rst.gb"
+	mmu.ROM_path = "data/ROM/08-misc instrs.gb"
+	// mmu.ROM_path = "data/ROM/09-op r,r.gb" // OK
+	// mmu.ROM_path = "data/ROM/10-bit ops.gb"
+	// mmu.ROM_path = "data/ROM/11-op a,(hl).gb"
 
 	if !fileExists(mmu.ROM_path) {
 		mmu.ROM_path = "../" + mmu.ROM_path
@@ -160,22 +174,48 @@ func (mmu *MMU_struct) WriteByte(address uint16, n uint8) {
 	// }
 
 	// Tiles
-	if address >= 0x8000 && address <= 0x9000 && n != 0 {
-		fmt.Println(address, n)
+	if (address >= 0x8000) && (address <= 0x9000) {
+		// fmt.Println(address, n)
 		mmu.Memory[address] = n
 		return
 	}
 
 	// Bg
-	if address >= 0x9000 && address <= 0x9bff && n != 0 {
+	if (address >= 0x9000) && (address <= 0x9bff) {
 		mmu.Memory[address] = n
 		return
 	}
 
 	// OAM
-	if address >= 0xFE00 && address <= 0xFE9F && n != 0 {
+	if (address >= 0xFE00) && (address <= 0xFE9F) {
 		// fmt.Printf("address 0x%X, value 0x%X\n", address, n)
 		mmu.Memory[address] = n
+		return
+	}
+
+	// RAM
+	if (address >= 0xC000) && (address <= 0xDE00) {
+		mmu.Memory[address] = n
+		// Write same value on ghost RAM
+		mmu.Memory[(address + 0x2000)] = n
+		return
+	}
+
+	if address == 0xff44 {
+		mmu.GPU.SetLine(n)
+		return
+	}
+
+	// if address >= 0xff00 {
+	// 	fmt.Printf("Read 0x%X\n", address)
+	// }
+
+	if address == 0xff43 {
+		mmu.GPU.SetScroll_x(n)
+		return
+	}
+	if address == 0xff42 {
+		mmu.GPU.SetScroll_y(n)
 		return
 	}
 
@@ -203,6 +243,9 @@ func (mmu *MMU_struct) ReadWord(address uint16) uint16 {
 }
 
 func (mmu *MMU_struct) WriteWord(address uint16, nn uint16) {
+	if (address >= 0x0100 || !mmu.bootstrap_enabled) && address < 0x8000 {
+		panic("Writing on ROM")
+	}
 	mmu.Memory[address] = uint8(nn & 0xff)
 	mmu.Memory[address+1] = uint8(nn >> 8)
 }

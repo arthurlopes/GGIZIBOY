@@ -940,7 +940,7 @@ func (cpu *CPU_struct) Innit_Instruction_maps() {
 }
 
 func (cpu *CPU_struct) getAF() uint16 {
-	return (uint16(cpu.Registers.A) << 8) | uint16(cpu.Registers.F)
+	return (uint16(cpu.Registers.A) << 8) | uint16(cpu.Registers.F&0xf0)
 }
 
 func (cpu *CPU_struct) getBC() uint16 {

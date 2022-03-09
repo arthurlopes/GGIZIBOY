@@ -208,3 +208,15 @@ func (gpu *GPU_struct) GetScroll_x() uint8 {
 func (gpu *GPU_struct) GetScroll_y() uint8 {
 	return gpu.Scroll_y
 }
+
+func (gpu *GPU_struct) SetScroll_x(n uint8) {
+	gpu.Scroll_x = n
+}
+
+func (gpu *GPU_struct) SetScroll_y(n uint8) {
+	gpu.Scroll_y = n
+}
+
+func (gpu *GPU_struct) SetLine(n uint8) {
+	gpu.Line = n
+}
