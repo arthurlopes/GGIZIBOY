@@ -86,20 +86,27 @@ func (cpu *CPU_struct) Run(limit int) {
 			next_instruction_str = cpu.Instructions_maps.Instructions_map_str[next_instruction]
 		}
 
-		if cpu.Registers.PC == 0xC325 {
+		if cpu.Registers.PC == 0xC2B5 {
 			fmt.Printf("%s, %X, %X, %X, %d %d\n", next_instruction_str, cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
 			// cpu.MMU.DumpMemory()
 			// fmt.Scanln()
 		}
 
-		if cpu.Registers.PC == 0xC063 {
-			fmt.Printf("%s, %X, %X, %X, %d %d\n", next_instruction_str, cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
-			// cpu.MMU.DumpMemory()
-			// fmt.Scanln()
-		}
+		// if cpu.Registers.PC == 0xC4E3 {
+		// 	fmt.Printf("%s, %X, %X, %X, %d %d\n", next_instruction_str, cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
+		// 	// cpu.MMU.DumpMemory()
+		// 	// fmt.Scanln()
+		// }
 
-		if next_instruction == 0x55 {
+		// if cpu.Registers.PC == 0xC4E6 {
+		// 	fmt.Printf("%s, %X, %X, %X, %d %d\n", next_instruction_str, cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
+		// 	// cpu.MMU.DumpMemory()
+		// 	// fmt.Scanln()
+		// }
+
+		if cpu.Registers.PC == 0x282e {
 			fmt.Printf("%s, %X, %X, %X, %d %d\n", next_instruction_str, cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
+			fmt.Printf("\n")
 			// cpu.MMU.DumpMemory()
 			// fmt.Scanln()
 		}
@@ -170,31 +177,28 @@ func (cpu *CPU_struct) interruption() {
 		if (cpu.Registers.IF & 0x01) != 0 {
 			// "call" 0x40
 			fmt.Printf("V BLANK\n")
-			cpu.op_0xcd(0x40)
+			cpu.call(0x40)
 			cpu.Registers.IF &= 0b11111110
 			// LCD status triggers
 		} else if (cpu.Registers.IF & 0x02) != 0 {
 			// "call" 0x48
 			fmt.Printf("LCD status triggers\n")
-			cpu.op_0xcd(0x48)
+			cpu.call(0x48)
 			cpu.Registers.IF &= 0b11111101
 			// Timer overflow
 		} else if (cpu.Registers.IF & 0x04) != 0 {
-			// "call" 0x50
 			fmt.Printf("Timer overflow\n")
-			cpu.op_0xcd(0x50)
+			cpu.call(0x50)
 			cpu.Registers.IF &= 0b11111011
 			// Serial link
 		} else if (cpu.Registers.IF & 0x08) != 0 {
-			// "call" 0x58
 			fmt.Printf("Serial link\n")
-			cpu.op_0xcd(0x58)
+			cpu.call(0x58)
 			cpu.Registers.IF &= 0b11110111
 			// Joypad press
 		} else if (cpu.Registers.IF & 0x10) != 0 {
-			// "call" 0x60
 			fmt.Printf("Joypad press\n")
-			cpu.op_0xcd(0x60)
+			cpu.call(0x60)
 			cpu.Registers.IF &= 0b11101111
 		}
 	}
