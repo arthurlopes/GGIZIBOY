@@ -427,3 +427,45 @@ func TestADD_SP_n(t *testing.T) {
 		t.Errorf("Issue on instruction 0xe8, SP 0x%X F 0x%X", gb.CPU.Registers.SP, gb.CPU.Registers.F)
 	}
 }
+
+func TestCCF(t *testing.T) {
+	ch := make(chan bool)
+	var gb = GameboyFactory(ch)
+
+	gb.CPU.Registers.PC = 0x0050
+	gb.CPU.Registers.F = 0x10
+	gb.MMU.WriteByte(0x0050, 0x3f)
+
+	gb.Run(1)
+
+	if gb.CPU.Registers.F != 0x00 {
+		t.Errorf("Issue on instruction 0x3f, F 0x%X", gb.CPU.Registers.F)
+	}
+}
+
+func TestLD_FF00(t *testing.T) {
+	ch := make(chan bool)
+	var gb = GameboyFactory(ch)
+
+	gb.CPU.Registers.PC = 0x0050
+	gb.CPU.Registers.A = 0x67
+	gb.MMU.WriteByte(0x0050, 0xe0)
+	gb.MMU.WriteByte(0x0051, 0x80)
+
+	gb.Run(1)
+
+	if gb.MMU.ReadByte(0xff80) != 0x67 {
+		t.Errorf("Issue on instruction 0xe0, ff80 0x%X", gb.MMU.ReadByte(0xff80))
+	}
+
+	gb.CPU.Registers.PC = 0x0050
+	gb.CPU.Registers.A = 0x00
+	gb.MMU.WriteByte(0x0050, 0xf0)
+	gb.MMU.WriteByte(0x0051, 0x80)
+
+	gb.Run(1)
+
+	if gb.CPU.Registers.A != 0x67 {
+		t.Errorf("Issue on instruction 0xe0, A 0x%X", gb.CPU.Registers.A)
+	}
+}

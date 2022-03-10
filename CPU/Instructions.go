@@ -2949,7 +2949,7 @@ func (cpu *CPU_struct) op_0xfa(nn uint16) {
 // 0xfb EI
 func (cpu *CPU_struct) op_0xfb() {
 	cpu.Registers.IME = 1
-	cpu.Registers.IF = 0
+	// cpu.Registers.IF = 0
 
 	cpu.Cycle += 4
 }

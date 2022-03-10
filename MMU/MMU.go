@@ -21,8 +21,16 @@ type IGPU interface {
 type ICPU interface {
 	GetIE() uint8
 	GetIF() uint8
+	GetTIMA() uint8
+	GetTMA() uint8
+	GetTAC() uint8
+	GetDIV() uint8
 	SetIE(uint8)
 	SetIF(uint8)
+	SetTIMA(uint8)
+	SetTMA(uint8)
+	SetTAC(uint8)
+	SetDIV(uint8)
 }
 
 type MMU_struct struct {
@@ -57,17 +65,17 @@ func (mmu *MMU_struct) Innit() {
 	// mmu.ROM_path = "data/ROM/Super Mario Land (JUE) (V1.1) [!].gb"
 	// mmu.ROM_path = "data/ROM/cpu_instrs.gb"
 	// mmu.ROM_path = "data/ROM/Tetris.gb"
-	// mmu.ROM_path = "data/ROM/01-special.gb"
-	// mmu.ROM_path = "data/ROM/02-interrupts.gb"
+	// mmu.ROM_path = "data/ROM/01-special.gb" // OK
+	mmu.ROM_path = "data/ROM/02-interrupts.gb"
 	// mmu.ROM_path = "data/ROM/03-op sp,hl.gb" // OK
 	// mmu.ROM_path = "data/ROM/04-op r,imm.gb" // OK
 	// mmu.ROM_path = "data/ROM/05-op rp.gb" // OK
 	// mmu.ROM_path = "data/ROM/06-ld r,r.gb" // OK
-	// mmu.ROM_path = "data/ROM/07-jr,jp,call,ret,rst.gb"
-	mmu.ROM_path = "data/ROM/08-misc instrs.gb"
+	// mmu.ROM_path = "data/ROM/07-jr,jp,call,ret,rst.gb" // OK
+	// mmu.ROM_path = "data/ROM/08-misc instrs.gb" // OK
 	// mmu.ROM_path = "data/ROM/09-op r,r.gb" // OK
-	// mmu.ROM_path = "data/ROM/10-bit ops.gb"
-	// mmu.ROM_path = "data/ROM/11-op a,(hl).gb"
+	// mmu.ROM_path = "data/ROM/10-bit ops.gb" // OK
+	// mmu.ROM_path = "data/ROM/11-op a,(hl).gb" // OK
 
 	if !fileExists(mmu.ROM_path) {
 		mmu.ROM_path = "../" + mmu.ROM_path
@@ -160,6 +168,19 @@ func (mmu *MMU_struct) ReadByte(address uint16) uint8 {
 		return mmu.CPU.GetIF()
 	}
 
+	if address == 0xFF04 {
+		return mmu.CPU.GetDIV()
+	}
+	if address == 0xFF05 {
+		return mmu.CPU.GetTIMA()
+	}
+	if address == 0xFF06 {
+		return mmu.CPU.GetTMA()
+	}
+	if address == 0xFF07 {
+		return mmu.CPU.GetTAC()
+	}
+
 	return mmu.Memory[address]
 }
 
@@ -225,6 +246,23 @@ func (mmu *MMU_struct) WriteByte(address uint16, n uint8) {
 	}
 	if address == 0xFF0F {
 		mmu.CPU.SetIF(n)
+		return
+	}
+
+	if address == 0xFF04 {
+		mmu.CPU.SetDIV(n)
+		return
+	}
+	if address == 0xFF05 {
+		mmu.CPU.SetTIMA(n)
+		return
+	}
+	if address == 0xFF06 {
+		mmu.CPU.SetTMA(n)
+		return
+	}
+	if address == 0xFF07 {
+		mmu.CPU.SetTAC(n)
 		return
 	}
 

@@ -32,6 +32,13 @@ type Registers_struct struct {
 	IE  uint8
 	IF  uint8
 
+	DIV      uint8
+	DIV_aux  float32
+	TIMA     uint8
+	TIMA_aux float32
+	TMA      uint8
+	TAC      uint8
+
 	Halt uint8
 }
 
@@ -78,6 +85,8 @@ func (cpu *CPU_struct) Run(limit int) {
 			continue
 		}
 
+		var old_cycle int = cpu.Cycle
+
 		var next_instruction uint8 = cpu.MMU.ReadByte(cpu.Registers.PC)
 		var next_instruction_str string
 		if next_instruction == 0xCB {
@@ -86,23 +95,17 @@ func (cpu *CPU_struct) Run(limit int) {
 			next_instruction_str = cpu.Instructions_maps.Instructions_map_str[next_instruction]
 		}
 
-		if cpu.Registers.PC == 0xC2B5 {
+		if cpu.Registers.PC == 0xC319 {
 			fmt.Printf("%s, %X, %X, %X, %d %d\n", next_instruction_str, cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
 			// cpu.MMU.DumpMemory()
 			// fmt.Scanln()
 		}
 
-		// if cpu.Registers.PC == 0xC4E3 {
-		// 	fmt.Printf("%s, %X, %X, %X, %d %d\n", next_instruction_str, cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
-		// 	// cpu.MMU.DumpMemory()
-		// 	// fmt.Scanln()
-		// }
-
-		// if cpu.Registers.PC == 0xC4E6 {
-		// 	fmt.Printf("%s, %X, %X, %X, %d %d\n", next_instruction_str, cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
-		// 	// cpu.MMU.DumpMemory()
-		// 	// fmt.Scanln()
-		// }
+		if cpu.Registers.PC == 0xC2A8 {
+			fmt.Printf("%s, %X, %X, %X, %d %d\n", next_instruction_str, cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
+			// cpu.MMU.DumpMemory()
+			// fmt.Scanln()
+		}
 
 		if cpu.Registers.PC == 0x282e {
 			fmt.Printf("%s, %X, %X, %X, %d %d\n", next_instruction_str, cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
@@ -151,6 +154,7 @@ func (cpu *CPU_struct) Run(limit int) {
 		cpu.GPU.Update_clock(cpu.Cycle)
 		cpu.GPU.Step()
 
+		cpu.timer(cpu.Cycle - old_cycle)
 		cpu.interruption()
 
 		cpu.Instructions_count += 1
@@ -165,8 +169,35 @@ func (cpu *CPU_struct) Run(limit int) {
 	}
 }
 
+func (cpu *CPU_struct) timer(cycles int) {
+	var n uint8 = 1
+
+	cpu.Registers.DIV_aux += float32(cycles) / 4 / 16
+	cpu.Registers.DIV = uint8(cpu.Registers.DIV_aux)
+
+	var time_ctrl uint8 = cpu.Registers.TAC & 0x03
+	if time_ctrl == 0 {
+		time_ctrl = 64
+	} else if time_ctrl == 1 {
+		time_ctrl = 1
+	} else if time_ctrl == 2 {
+		time_ctrl = 4
+	} else {
+		time_ctrl = 16
+	}
+
+	if cpu.Registers.TAC&0x04 != 0 {
+		cpu.Registers.TIMA_aux += float32(cycles) / 4 / float32(time_ctrl)
+		cpu.Registers.TIMA = uint8(cpu.Registers.TIMA_aux)
+	}
+
+	if (cpu.Registers.TIMA + n) < cpu.Registers.TIMA {
+		cpu.Registers.IF |= 0x04
+	}
+}
+
 func (cpu *CPU_struct) interruption() {
-	if (cpu.Registers.IME & cpu.Registers.IE & cpu.Registers.IF) == 0 {
+	if (cpu.Registers.IME == 0) || ((cpu.Registers.IE & cpu.Registers.IF) == 0) {
 		return
 	}
 
@@ -209,7 +240,7 @@ func (cpu *CPU_struct) GetIE() uint8 {
 }
 
 func (cpu *CPU_struct) SetIE(IE uint8) {
-	cpu.Registers.IE |= IE
+	cpu.Registers.IE = IE
 }
 
 func (cpu CPU_struct) GetIF() uint8 {
@@ -217,5 +248,37 @@ func (cpu CPU_struct) GetIF() uint8 {
 }
 
 func (cpu *CPU_struct) SetIF(IF uint8) {
-	cpu.Registers.IF |= IF
+	cpu.Registers.IF = IF
+}
+
+func (cpu *CPU_struct) GetTIMA() uint8 {
+	return cpu.Registers.TIMA
+}
+
+func (cpu *CPU_struct) SetTIMA(TIMA uint8) {
+	cpu.Registers.TIMA = TIMA
+}
+
+func (cpu CPU_struct) GetTMA() uint8 {
+	return cpu.Registers.TMA
+}
+
+func (cpu *CPU_struct) SetTMA(TMA uint8) {
+	cpu.Registers.TMA = TMA
+}
+
+func (cpu CPU_struct) GetTAC() uint8 {
+	return cpu.Registers.TAC
+}
+
+func (cpu *CPU_struct) SetTAC(TAC uint8) {
+	cpu.Registers.TAC = TAC
+}
+
+func (cpu CPU_struct) GetDIV() uint8 {
+	return cpu.Registers.DIV
+}
+
+func (cpu *CPU_struct) SetDIV(DIV uint8) {
+	cpu.Registers.DIV = DIV
 }
