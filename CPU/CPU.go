@@ -95,25 +95,26 @@ func (cpu *CPU_struct) Run(limit int) {
 			next_instruction_str = cpu.Instructions_maps.Instructions_map_str[next_instruction]
 		}
 
+		if cpu.Registers.PC == 0xC33f {
+			fmt.Printf("%s, %X, %X, %X, %d %d\n", next_instruction_str, cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
+			// cpu.MMU.DumpMemory()
+			// fmt.Scanln()
+		}
+
+		if cpu.Registers.PC == 0xC323 {
+			fmt.Printf("%s, %X, %X, %X, %d %d\n", next_instruction_str, cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
+			// cpu.MMU.DumpMemory()
+			// fmt.Scanln()
+		}
+
 		if cpu.Registers.PC == 0xC319 {
-			fmt.Printf("%s, %X, %X, %X, %d %d\n", next_instruction_str, cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
-			// cpu.MMU.DumpMemory()
-			// fmt.Scanln()
-		}
-
-		if cpu.Registers.PC == 0xC2A8 {
-			fmt.Printf("%s, %X, %X, %X, %d %d\n", next_instruction_str, cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
-			// cpu.MMU.DumpMemory()
-			// fmt.Scanln()
-		}
-
-		if cpu.Registers.PC == 0x282e {
 			fmt.Printf("%s, %X, %X, %X, %d %d\n", next_instruction_str, cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
 			fmt.Printf("\n")
 			// cpu.MMU.DumpMemory()
 			// fmt.Scanln()
 		}
 
+		var oldTAC uint8 = cpu.Registers.TAC
 		if next_instruction == 0xCB {
 			cpu.Registers.PC += 1
 			// fmt.Printf("Instruction 0xCB\n")
@@ -154,7 +155,7 @@ func (cpu *CPU_struct) Run(limit int) {
 		cpu.GPU.Update_clock(cpu.Cycle)
 		cpu.GPU.Step()
 
-		cpu.timer(cpu.Cycle - old_cycle)
+		cpu.timer(cpu.Cycle-old_cycle, oldTAC)
 		cpu.interruption()
 
 		cpu.Instructions_count += 1
@@ -169,31 +170,32 @@ func (cpu *CPU_struct) Run(limit int) {
 	}
 }
 
-func (cpu *CPU_struct) timer(cycles int) {
-	var n uint8 = 1
-
-	cpu.Registers.DIV_aux += float32(cycles) / 4 / 16
+func (cpu *CPU_struct) timer(cycles int, TAC uint8) {
+	cpu.Registers.DIV_aux += float32(cycles) / 4 / 4 / 16
 	cpu.Registers.DIV = uint8(cpu.Registers.DIV_aux)
 
-	var time_ctrl uint8 = cpu.Registers.TAC & 0x03
-	if time_ctrl == 0 {
-		time_ctrl = 64
-	} else if time_ctrl == 1 {
-		time_ctrl = 1
-	} else if time_ctrl == 2 {
-		time_ctrl = 4
-	} else {
-		time_ctrl = 16
-	}
+	if (TAC & 0x04) != 0 {
+		var speed uint8 = TAC & 0x03
+		if speed == 0 {
+			speed = 64
+		} else if speed == 1 {
+			speed = 1
+		} else if speed == 2 {
+			speed = 4
+		} else {
+			speed = 16
+		}
 
-	if cpu.Registers.TAC&0x04 != 0 {
-		cpu.Registers.TIMA_aux += float32(cycles) / 4 / float32(time_ctrl)
+		var old_TIMA uint8 = cpu.Registers.TIMA
+		cpu.Registers.TIMA_aux += float32(cycles) / 4 / 4 / float32(speed)
 		cpu.Registers.TIMA = uint8(cpu.Registers.TIMA_aux)
+
+		if cpu.Registers.TIMA < old_TIMA {
+			cpu.Registers.IF |= 0x04
+			cpu.Registers.TIMA = cpu.Registers.TMA
+		}
 	}
 
-	if (cpu.Registers.TIMA + n) < cpu.Registers.TIMA {
-		cpu.Registers.IF |= 0x04
-	}
 }
 
 func (cpu *CPU_struct) interruption() {
@@ -257,6 +259,7 @@ func (cpu *CPU_struct) GetTIMA() uint8 {
 
 func (cpu *CPU_struct) SetTIMA(TIMA uint8) {
 	cpu.Registers.TIMA = TIMA
+	cpu.Registers.TIMA_aux = float32(TIMA)
 }
 
 func (cpu CPU_struct) GetTMA() uint8 {
@@ -281,4 +284,5 @@ func (cpu CPU_struct) GetDIV() uint8 {
 
 func (cpu *CPU_struct) SetDIV(DIV uint8) {
 	cpu.Registers.DIV = DIV
+	cpu.Registers.DIV_aux = float32(DIV)
 }
