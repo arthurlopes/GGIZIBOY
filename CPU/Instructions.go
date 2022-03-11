@@ -1116,7 +1116,6 @@ func (cpu *CPU_struct) op_0x00() {
 // 0x10 - STOP
 func (cpu *CPU_struct) op_0x10() {
 	cpu.Registers.Halt = 1
-	cpu.Registers.IME = 1
 	cpu.Cycle += 4
 }
 
