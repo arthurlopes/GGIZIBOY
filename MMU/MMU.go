@@ -15,7 +15,12 @@ type IGPU interface {
 	GetScroll_y() uint8
 	SetScroll_x(uint8)
 	SetScroll_y(uint8)
-	SetLine(uint8)
+	GetLYC() uint8
+	SetLYC(uint8)
+	GetLCDC() uint8
+	GetSTAT() uint8
+	SetLCDC(uint8)
+	SetSTAT(uint8)
 }
 
 type ICPU interface {
@@ -64,9 +69,9 @@ func (mmu *MMU_struct) Innit() {
 	// mmu.ROM_path = "data/ROM/Pokemon - Blue Version (USA, Europe) (SGB Enhanced).gb"
 	// mmu.ROM_path = "data/ROM/Super Mario Land (JUE) (V1.1) [!].gb"
 	// mmu.ROM_path = "data/ROM/cpu_instrs.gb"
-	// mmu.ROM_path = "data/ROM/Tetris.gb"
+	mmu.ROM_path = "data/ROM/Tetris.gb"
 	// mmu.ROM_path = "data/ROM/01-special.gb" // OK
-	mmu.ROM_path = "data/ROM/02-interrupts.gb"
+	// mmu.ROM_path = "data/ROM/02-interrupts.gb" // OK
 	// mmu.ROM_path = "data/ROM/03-op sp,hl.gb" // OK
 	// mmu.ROM_path = "data/ROM/04-op r,imm.gb" // OK
 	// mmu.ROM_path = "data/ROM/05-op rp.gb" // OK
@@ -141,6 +146,9 @@ func (mmu *MMU_struct) ReadByte(address uint16) uint8 {
 		return mmu.Rom[address]
 	}
 
+	if address == 0xff45 {
+		return mmu.GPU.GetLYC()
+	}
 	if address == 0xff44 {
 		return mmu.GPU.GetLine()
 	}
@@ -155,12 +163,12 @@ func (mmu *MMU_struct) ReadByte(address uint16) uint8 {
 	if address == 0xff42 {
 		return mmu.GPU.GetScroll_y()
 	}
-	// if address == 0xff40 {
-	// 	return (mmu.GPU.Switchbg) +
-	// 		(mmu.GPU.Bgmap << 4) +
-	// 		(mmu.GPU.Bgtile << 5) +
-	// 		(mmu.GPU.Switchlcd << 8)
-	// }
+	if address == 0xff41 {
+		return mmu.GPU.GetSTAT()
+	}
+	if address == 0xff40 {
+		return mmu.GPU.GetLCDC()
+	}
 	if address == 0xFFFF {
 		return mmu.CPU.GetIE()
 	}
@@ -222,8 +230,16 @@ func (mmu *MMU_struct) WriteByte(address uint16, n uint8) {
 		return
 	}
 
-	if address == 0xff44 {
-		mmu.GPU.SetLine(n)
+	if address == 0xff45 {
+		mmu.GPU.SetLYC(n)
+		return
+	}
+	if address == 0xff41 {
+		mmu.GPU.SetSTAT(n)
+		return
+	}
+	if address == 0xff40 {
+		mmu.GPU.SetLCDC(n)
 		return
 	}
 

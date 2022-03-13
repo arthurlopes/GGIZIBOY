@@ -1,6 +1,7 @@
 package GPU
 
 const V_BLANK_BIT uint8 = 0x01
+const LCD_BIT uint8 = 0x02
 
 type ICPU interface {
 	SetIE(uint8)
@@ -16,24 +17,35 @@ type IMMU interface {
 
 type GPU_struct struct {
 	// GPU internal values
-	mode       int
+	mode       uint8
 	modeclock  int
 	gpu_clock  int
 	Screen     [][]uint8
 	Background [][]uint8
 
 	// GPU registers
-	Lcd_control        uint8
-	Gpu_control        uint8
-	Scroll_y           uint8
-	Scroll_x           uint8
-	Cur_scanline       uint8
-	Line               uint8
-	Background_palette uint8
-	Switchbg           uint8
-	Bgmap              uint8
-	Bgtile             uint8
-	Switchlcd          uint8
+	Lcd_control  uint8
+	Gpu_control  uint8
+	Scroll_y     uint8
+	Scroll_x     uint8
+	Cur_scanline uint8
+	Line         uint8
+	// LCDC
+	Background_palette     uint8
+	WindowTileMap          uint8
+	WindowDisplay          uint8
+	BGWindowTileDataSelect uint8
+	BGWindowTileMapSelect  uint8
+	SpriteSize             uint8
+	SpriteDisplay          uint8
+	BGWindowDisplay        uint8
+	// STAT
+	LYC        uint8
+	LYC_flag   uint8
+	LYC_select uint8
+	Mode00     uint8
+	Mode01     uint8
+	Mode10     uint8
 
 	// Channels
 	hblank_channel chan bool
@@ -146,29 +158,40 @@ func (gpu *GPU_struct) Render_TileMap() [][]uint8 {
 	return gpu.Background
 }
 
+func (gpu *GPU_struct) check_LYC_interrupt() {
+	if gpu.LYC_select != 0 {
+		if gpu.Line == gpu.LYC {
+			gpu.CPU.SetIF(LCD_BIT)
+		}
+	}
+}
+
 func (gpu *GPU_struct) Step() {
-	// render_Screen()
 	// Scanline - OAM
 	if gpu.mode == 2 {
-		if gpu.modeclock >= 80 {
+		if gpu.modeclock >= 20 {
 			gpu.modeclock = 0
 			gpu.mode = 3
 		}
 		// Scanline - VRAM
 	} else if gpu.mode == 3 {
-		if gpu.modeclock >= 172 {
+		if gpu.modeclock >= 43 {
 			gpu.modeclock = 0
 			gpu.mode = 0
+			if gpu.Mode00 != 0 {
+				gpu.CPU.SetIF(LCD_BIT)
+			}
 		}
 		// Hblank
 	} else if gpu.mode == 0 {
-		if gpu.modeclock >= 204 {
+		if gpu.modeclock >= 51 {
 			gpu.modeclock = 0
 			gpu.Line += 1
 			if gpu.Line == 143 {
 				gpu.mode = 1
-				gpu.CPU.SetIE(V_BLANK_BIT)
-				gpu.CPU.SetIF(V_BLANK_BIT)
+				if gpu.Mode01 != 0 {
+					gpu.CPU.SetIF(V_BLANK_BIT)
+				}
 
 				gpu.Render_Background()
 				// gpu.Render_TileMap()
@@ -182,17 +205,25 @@ func (gpu *GPU_struct) Step() {
 				// }
 			} else {
 				gpu.mode = 2
+				if gpu.Mode10 != 0 {
+					gpu.CPU.SetIF(LCD_BIT)
+				}
 			}
+			gpu.check_LYC_interrupt()
 		}
 		// Vblank
 	} else if gpu.mode == 1 {
-		if gpu.modeclock >= 456 {
+		if gpu.modeclock >= 114 {
 			gpu.modeclock = 0
 			gpu.Line += 1
-			if gpu.Line > 153 {
+			if gpu.Line == 153 {
 				gpu.mode = 2
 				gpu.Line = 0
+				if gpu.Mode10 != 0 {
+					gpu.CPU.SetIF(LCD_BIT)
+				}
 			}
+			gpu.check_LYC_interrupt()
 		}
 	}
 }
@@ -217,6 +248,54 @@ func (gpu *GPU_struct) SetScroll_y(n uint8) {
 	gpu.Scroll_y = n
 }
 
-func (gpu *GPU_struct) SetLine(n uint8) {
-	gpu.Line = n
+func (gpu *GPU_struct) GetLYC() uint8 {
+	return gpu.LYC
+}
+
+func (gpu *GPU_struct) SetLYC(n uint8) {
+	gpu.LYC = n
+}
+
+func (gpu *GPU_struct) GetLCDC() uint8 {
+	var lcdc uint8 = (gpu.Lcd_control << 7) |
+		(gpu.WindowTileMap << 6) |
+		(gpu.WindowDisplay << 5) |
+		(gpu.BGWindowTileMapSelect << 4) |
+		(gpu.BGWindowTileDataSelect << 3) |
+		(gpu.SpriteSize << 2) |
+		(gpu.SpriteDisplay << 1) |
+		gpu.BGWindowDisplay
+
+	return lcdc
+}
+
+func (gpu *GPU_struct) GetSTAT() uint8 {
+	var stat uint8 = (gpu.LYC_select << 6) |
+		(gpu.Mode10 << 5) |
+		(gpu.Mode01 << 4) |
+		(gpu.Mode00 << 3) |
+		(gpu.LYC_flag << 2) |
+		gpu.mode
+
+	return stat
+}
+
+func (gpu *GPU_struct) SetLCDC(n uint8) {
+	gpu.Lcd_control = (n & 0b10000000) >> 7
+	gpu.WindowTileMap = (n & 0b01000000) >> 6
+	gpu.WindowDisplay = (n & 0b00100000) >> 5
+	gpu.BGWindowTileMapSelect = (n & 0b00010000) >> 4
+	gpu.BGWindowTileDataSelect = (n & 0b00001000) >> 3
+	gpu.SpriteSize = (n & 0b00000100) >> 2
+	gpu.SpriteDisplay = (n & 0b00000010) >> 1
+	gpu.BGWindowDisplay = (n & 0b00000001)
+}
+
+func (gpu *GPU_struct) SetSTAT(n uint8) {
+	gpu.LYC_select = (n & 0b01000000) >> 6
+	gpu.Mode10 = (n & 0b00100000) >> 5
+	gpu.Mode01 = (n & 0b00010000) >> 4
+	gpu.Mode00 = (n & 0b00001000) >> 3
+	gpu.LYC_flag = (n & 0b00000100) >> 2
+	gpu.mode = (n & 0b00000011)
 }

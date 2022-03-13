@@ -82,7 +82,7 @@ func (cpu *CPU_struct) Run(limit int) {
 			cpu.GPU.Update_clock(cpu.Cycle)
 			cpu.GPU.Step()
 			cpu.timer(4, cpu.Registers.TAC)
-			cpu.interruption()
+			cpu.interruption(cpu.Registers.IME)
 			continue
 		}
 
@@ -96,25 +96,26 @@ func (cpu *CPU_struct) Run(limit int) {
 			next_instruction_str = cpu.Instructions_maps.Instructions_map_str[next_instruction]
 		}
 
-		if cpu.Registers.PC == 0xC36f {
+		if cpu.Registers.PC == 0x02ba {
 			fmt.Printf("%s, %X, %X, %X, %d %d\n", next_instruction_str, cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
 			// cpu.MMU.DumpMemory()
 			// fmt.Scanln()
 		}
 
-		if cpu.Registers.PC == 0xC323 {
+		if cpu.Registers.PC == 0x01DB {
 			fmt.Printf("%s, %X, %X, %X, %d %d\n", next_instruction_str, cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
 			// cpu.MMU.DumpMemory()
 			// fmt.Scanln()
 		}
 
-		if cpu.Registers.PC == 0xC319 {
+		if cpu.Registers.PC == 0x0202 {
 			fmt.Printf("%s, %X, %X, %X, %d %d\n", next_instruction_str, cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
 			fmt.Printf("\n")
 			// cpu.MMU.DumpMemory()
 			// fmt.Scanln()
 		}
 
+		var oldIME = cpu.Registers.IME
 		var oldTAC uint8 = cpu.Registers.TAC
 		if next_instruction == 0xCB {
 			cpu.Registers.PC += 1
@@ -157,7 +158,7 @@ func (cpu *CPU_struct) Run(limit int) {
 		cpu.GPU.Step()
 
 		cpu.timer(cpu.Cycle-old_cycle, oldTAC)
-		cpu.interruption()
+		cpu.interruption(oldIME)
 
 		cpu.Instructions_count += 1
 		if limit > 0 && cpu.Instructions_count == limit {
@@ -199,8 +200,8 @@ func (cpu *CPU_struct) timer(cycles int, TAC uint8) {
 
 }
 
-func (cpu *CPU_struct) interruption() {
-	if (cpu.Registers.IME == 0 && cpu.Registers.Halt == 0) || ((cpu.Registers.IE & cpu.Registers.IF) == 0) {
+func (cpu *CPU_struct) interruption(IME uint8) {
+	if (IME == 0 && cpu.Registers.Halt == 0) || ((cpu.Registers.IE & cpu.Registers.IF) == 0) {
 		return
 	}
 
