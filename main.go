@@ -234,7 +234,7 @@ func main() {
 	hblank_channel := make(chan bool)
 
 	var gameboy = gameboy.GameboyFactory(hblank_channel)
-	go gameboy.Run(20000000)
+	go gameboy.Run(-1)
 
 	screen := makeScreen(gameboy.GPU.Background)
 	draw(screen, window, program)

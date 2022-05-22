@@ -6,6 +6,7 @@ const LCD_BIT uint8 = 0x02
 type ICPU interface {
 	SetIE(uint8)
 	SetIF(uint8)
+	SetInterrupt(uint8)
 }
 
 type IMMU interface {
@@ -24,12 +25,10 @@ type GPU_struct struct {
 	Background [][]uint8
 
 	// GPU registers
-	Lcd_control  uint8
-	Gpu_control  uint8
-	Scroll_y     uint8
-	Scroll_x     uint8
-	Cur_scanline uint8
-	Line         uint8
+	Lcd_control uint8
+	Scroll_y    uint8
+	Scroll_x    uint8
+	Line        uint8
 	// LCDC
 	Background_palette     uint8
 	WindowTileMap          uint8
@@ -74,8 +73,10 @@ func (gpu *GPU_struct) Innit(hblank_channel chan bool) {
 	gpu.hblank_channel = hblank_channel
 }
 
-func (gpu *GPU_struct) Update_clock(cpu_clock int) {
-	gpu.modeclock += cpu_clock - gpu.gpu_clock
+func (gpu *GPU_struct) Update_clock(cpu_clock_delta int, cpu_clock int) {
+	if (gpu.Lcd_control & 1) != 0 {
+		gpu.modeclock += cpu_clock_delta / 4
+	}
 	gpu.gpu_clock = cpu_clock
 }
 
@@ -160,13 +161,17 @@ func (gpu *GPU_struct) Render_TileMap() [][]uint8 {
 
 func (gpu *GPU_struct) check_LYC_interrupt() {
 	if gpu.LYC_select != 0 {
-		if gpu.Line == gpu.LYC {
-			gpu.CPU.SetIF(LCD_BIT)
+		if gpu.LYC_flag != 0 {
+			gpu.CPU.SetInterrupt(LCD_BIT)
 		}
 	}
 }
 
 func (gpu *GPU_struct) Step() {
+	if gpu.Lcd_control == 0 {
+		return
+	}
+
 	// Scanline - OAM
 	if gpu.mode == 2 {
 		if gpu.modeclock >= 20 {
@@ -179,7 +184,7 @@ func (gpu *GPU_struct) Step() {
 			gpu.modeclock = 0
 			gpu.mode = 0
 			if gpu.Mode00 != 0 {
-				gpu.CPU.SetIF(LCD_BIT)
+				gpu.CPU.SetInterrupt(LCD_BIT)
 			}
 		}
 		// Hblank
@@ -190,8 +195,9 @@ func (gpu *GPU_struct) Step() {
 			if gpu.Line == 143 {
 				gpu.mode = 1
 				if gpu.Mode01 != 0 {
-					gpu.CPU.SetIF(V_BLANK_BIT)
+					gpu.CPU.SetInterrupt(LCD_BIT)
 				}
+				gpu.CPU.SetInterrupt(V_BLANK_BIT)
 
 				gpu.Render_Background()
 				// gpu.Render_TileMap()
@@ -206,8 +212,13 @@ func (gpu *GPU_struct) Step() {
 			} else {
 				gpu.mode = 2
 				if gpu.Mode10 != 0 {
-					gpu.CPU.SetIF(LCD_BIT)
+					gpu.CPU.SetInterrupt(LCD_BIT)
 				}
+			}
+			if gpu.LYC == gpu.Line {
+				gpu.LYC_flag = 1
+			} else {
+				gpu.LYC_flag = 0
 			}
 			gpu.check_LYC_interrupt()
 		}
@@ -219,9 +230,14 @@ func (gpu *GPU_struct) Step() {
 			if gpu.Line == 153 {
 				gpu.mode = 2
 				gpu.Line = 0
-				if gpu.Mode10 != 0 {
-					gpu.CPU.SetIF(LCD_BIT)
+				if (gpu.Mode10 != 0) || (gpu.Mode01 != 0) {
+					gpu.CPU.SetInterrupt(LCD_BIT)
 				}
+			}
+			if gpu.LYC == gpu.Line {
+				gpu.LYC_flag = 1
+			} else {
+				gpu.LYC_flag = 0
 			}
 			gpu.check_LYC_interrupt()
 		}
@@ -270,7 +286,8 @@ func (gpu *GPU_struct) GetLCDC() uint8 {
 }
 
 func (gpu *GPU_struct) GetSTAT() uint8 {
-	var stat uint8 = (gpu.LYC_select << 6) |
+	var stat uint8 = (1 << 7) |
+		(gpu.LYC_select << 6) |
 		(gpu.Mode10 << 5) |
 		(gpu.Mode01 << 4) |
 		(gpu.Mode00 << 3) |
@@ -281,6 +298,11 @@ func (gpu *GPU_struct) GetSTAT() uint8 {
 }
 
 func (gpu *GPU_struct) SetLCDC(n uint8) {
+	if (gpu.Lcd_control != 0) && ((n & 0b10000000) == 0) {
+		gpu.mode = 0
+		gpu.Line = 0
+	}
+
 	gpu.Lcd_control = (n & 0b10000000) >> 7
 	gpu.WindowTileMap = (n & 0b01000000) >> 6
 	gpu.WindowDisplay = (n & 0b00100000) >> 5
@@ -296,6 +318,6 @@ func (gpu *GPU_struct) SetSTAT(n uint8) {
 	gpu.Mode10 = (n & 0b00100000) >> 5
 	gpu.Mode01 = (n & 0b00010000) >> 4
 	gpu.Mode00 = (n & 0b00001000) >> 3
-	gpu.LYC_flag = (n & 0b00000100) >> 2
-	gpu.mode = (n & 0b00000011)
+	// gpu.LYC_flag = (n & 0b00000100) >> 2
+	// gpu.mode = (n & 0b00000011)
 }
