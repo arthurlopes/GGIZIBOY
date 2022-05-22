@@ -3,7 +3,7 @@ package CPU
 import "fmt"
 
 type IGPU interface {
-	Update_clock(int)
+	Update_clock(int, int)
 	Step()
 }
 
@@ -79,7 +79,7 @@ func (cpu *CPU_struct) Run(limit int) {
 	for {
 		if cpu.Registers.Halt != 0 {
 			cpu.Cycle += 4
-			cpu.GPU.Update_clock(cpu.Cycle)
+			cpu.GPU.Update_clock(4, cpu.Cycle)
 			cpu.GPU.Step()
 			cpu.timer(4, cpu.Registers.TAC)
 			cpu.interruption(cpu.Registers.IME)
@@ -96,30 +96,31 @@ func (cpu *CPU_struct) Run(limit int) {
 			next_instruction_str = cpu.Instructions_maps.Instructions_map_str[next_instruction]
 		}
 
-		if cpu.Registers.PC == 0x02ba {
+		if cpu.Registers.PC == 0x100 {
 			fmt.Printf("%s, %X, %X, %X, %d %d\n", next_instruction_str, cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
 			// cpu.MMU.DumpMemory()
 			// fmt.Scanln()
 		}
 
-		if cpu.Registers.PC == 0x01DB {
-			fmt.Printf("%s, %X, %X, %X, %d %d\n", next_instruction_str, cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
-			// cpu.MMU.DumpMemory()
-			// fmt.Scanln()
-		}
+		// if cpu.Registers.PC == 0xfe {
+		// 	fmt.Printf("%s, %X, %X, %X, %d %d\n", next_instruction_str, cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
+		// 	// cpu.MMU.DumpMemory()
+		// 	// fmt.Scanln()
+		// }
 
-		if cpu.Registers.PC == 0x0202 {
-			fmt.Printf("%s, %X, %X, %X, %d %d\n", next_instruction_str, cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
-			fmt.Printf("\n")
-			// cpu.MMU.DumpMemory()
-			// fmt.Scanln()
-		}
+		// if cpu.Registers.PC == 0x2BA {
+		// 	fmt.Printf("%s, %X, %X, %X, %d %d\n", next_instruction_str, cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
+		// 	fmt.Printf("\n")
+		// 	// cpu.MMU.DumpMemory()
+		// 	// fmt.Scanln()
+		// }
+
+		// fmt.Printf("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x\n", cpu.Registers.PC, next_instruction, cpu.Registers.A, cpu.Registers.B, cpu.Registers.C, cpu.Registers.D, cpu.Registers.E, cpu.getHL(), cpu.Registers.F) //, cpu.MMU.ReadByte(0xff44))
 
 		var oldIME = cpu.Registers.IME
 		var oldTAC uint8 = cpu.Registers.TAC
 		if next_instruction == 0xCB {
 			cpu.Registers.PC += 1
-			// fmt.Printf("Instruction 0xCB\n")
 			next_instruction = cpu.MMU.ReadByte(cpu.Registers.PC)
 			// TODO: check if can simply skip cycle
 			// cpu.Cycle += 4
@@ -154,7 +155,7 @@ func (cpu *CPU_struct) Run(limit int) {
 				panic("Instruction not implemented")
 			}
 		}
-		cpu.GPU.Update_clock(cpu.Cycle)
+		cpu.GPU.Update_clock(cpu.Cycle-old_cycle, cpu.Cycle)
 		cpu.GPU.Step()
 
 		cpu.timer(cpu.Cycle-old_cycle, oldTAC)
@@ -164,11 +165,6 @@ func (cpu *CPU_struct) Run(limit int) {
 		if limit > 0 && cpu.Instructions_count == limit {
 			break
 		}
-
-		// if cpu.Registers.PC != 0x64 && cpu.Registers.PC != 0x66 && cpu.Registers.PC != 0x68 {
-		// 	fmt.Printf("%s, %X, %X, %X, %d %d\n", next_instruction_str, cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
-		// }
-
 	}
 }
 
@@ -210,7 +206,7 @@ func (cpu *CPU_struct) interruption(IME uint8) {
 		// V BLANK
 		if (cpu.Registers.IF & 0x01) != 0 {
 			// "call" 0x40
-			fmt.Printf("V BLANK\n")
+			// fmt.Printf("V BLANK\n")
 			cpu.call(0x40)
 			if cpu.Registers.Halt == 0 {
 				cpu.Registers.IF &= 0b11111110
@@ -219,7 +215,7 @@ func (cpu *CPU_struct) interruption(IME uint8) {
 			// LCD status triggers
 		} else if (cpu.Registers.IF & 0x02) != 0 {
 			// "call" 0x48
-			fmt.Printf("LCD status triggers\n")
+			// fmt.Printf("LCD status triggers\n")
 			cpu.call(0x48)
 			if cpu.Registers.Halt == 0 {
 				cpu.Registers.IF &= 0b11111101
@@ -227,7 +223,7 @@ func (cpu *CPU_struct) interruption(IME uint8) {
 			cpu.Registers.Halt = 0
 			// Timer overflow
 		} else if (cpu.Registers.IF & 0x04) != 0 {
-			fmt.Printf("Timer overflow\n")
+			// fmt.Printf("Timer overflow\n")
 			cpu.call(0x50)
 			if cpu.Registers.Halt == 0 {
 				cpu.Registers.IF &= 0b11111011
@@ -235,7 +231,7 @@ func (cpu *CPU_struct) interruption(IME uint8) {
 			cpu.Registers.Halt = 0
 			// Serial link
 		} else if (cpu.Registers.IF & 0x08) != 0 {
-			fmt.Printf("Serial link\n")
+			// fmt.Printf("Serial link\n")
 			cpu.call(0x58)
 			if cpu.Registers.Halt == 0 {
 				cpu.Registers.IF &= 0b11110111
@@ -243,7 +239,7 @@ func (cpu *CPU_struct) interruption(IME uint8) {
 			cpu.Registers.Halt = 0
 			// Joypad press
 		} else if (cpu.Registers.IF & 0x10) != 0 {
-			fmt.Printf("Joypad press\n")
+			// fmt.Printf("Joypad press\n")
 			cpu.call(0x60)
 			if cpu.Registers.Halt == 0 {
 				cpu.Registers.IF &= 0b11101111
@@ -263,6 +259,10 @@ func (cpu *CPU_struct) SetIE(IE uint8) {
 
 func (cpu CPU_struct) GetIF() uint8 {
 	return cpu.Registers.IF
+}
+
+func (cpu CPU_struct) SetInterrupt(mask uint8) {
+	cpu.Registers.IF |= mask
 }
 
 func (cpu *CPU_struct) SetIF(IF uint8) {
