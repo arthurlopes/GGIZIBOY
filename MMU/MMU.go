@@ -43,7 +43,7 @@ type MMU_struct struct {
 	Rom               []uint8
 	Bootstrap_path    string
 	ROM_path          string
-	bootstrap_enabled bool
+	Bootstrap_enabled bool
 
 	GPU IGPU
 	CPU ICPU
@@ -64,7 +64,7 @@ func fileExists(filename string) bool {
 }
 
 func (mmu *MMU_struct) Innit() {
-	mmu.bootstrap_enabled = true
+	mmu.Bootstrap_enabled = true
 	mmu.Bootstrap_path = "data/bootstrap/dmg_boot.bin"
 	// mmu.ROM_path = "data/ROM/Pokemon - Blue Version (USA, Europe) (SGB Enhanced).gb"
 	// mmu.ROM_path = "data/ROM/Super Mario Land (JUE) (V1.1) [!].gb"
@@ -142,7 +142,7 @@ func (mmu *MMU_struct) Innit() {
 }
 
 func (mmu *MMU_struct) ReadByte(address uint16) uint8 {
-	if (address >= 0x0100 || !mmu.bootstrap_enabled) && address < 0x8000 {
+	if (address >= 0x0100 || !mmu.Bootstrap_enabled) && address < 0x8000 {
 		return mmu.Rom[address]
 	}
 
@@ -188,13 +188,17 @@ func (mmu *MMU_struct) ReadByte(address uint16) uint8 {
 	if address == 0xFF07 {
 		return mmu.CPU.GetTAC()
 	}
+	if address == 0xFF00 {
+		return 0xFF
+	}
 
 	return mmu.Memory[address]
 }
 
 func (mmu *MMU_struct) WriteByte(address uint16, n uint8) {
 	if address == 0xff50 && n > 0 {
-		mmu.bootstrap_enabled = false
+		mmu.Memory[address] = n
+		mmu.Bootstrap_enabled = false
 		return
 	}
 
@@ -287,7 +291,7 @@ func (mmu *MMU_struct) WriteByte(address uint16, n uint8) {
 
 func (mmu *MMU_struct) ReadWord(address uint16) uint16 {
 	var word uint16
-	if (address >= 0x0100 || !mmu.bootstrap_enabled) && address < 0x8000 {
+	if (address >= 0x0100 || !mmu.Bootstrap_enabled) && address < 0x8000 {
 		word = (uint16(mmu.Rom[address+1]) << 8) | uint16(mmu.Rom[address])
 	} else {
 		word = (uint16(mmu.Memory[address+1]) << 8) | uint16(mmu.Memory[address])
@@ -297,7 +301,7 @@ func (mmu *MMU_struct) ReadWord(address uint16) uint16 {
 }
 
 func (mmu *MMU_struct) WriteWord(address uint16, nn uint16) {
-	if (address >= 0x0100 || !mmu.bootstrap_enabled) && address < 0x8000 {
+	if (address >= 0x0100 || !mmu.Bootstrap_enabled) && address < 0x8000 {
 		panic("Writing on ROM")
 	}
 	mmu.Memory[address] = uint8(nn & 0xff)
