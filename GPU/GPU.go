@@ -103,14 +103,20 @@ func (gpu *GPU_struct) decode_tile(tile [16]uint8) []uint8 {
 
 func (gpu *GPU_struct) Create_tile_map() map[uint16][]uint8 {
 	var tile_map = make(map[uint16][]uint8)
+	var tile_start_address uint16
+	if gpu.BGWindowTileDataSelect == 0 {
+		tile_start_address = 0x8000
+	} else {
+		tile_start_address = 0x8800
+	}
 
-	for address := 0x8000; address < 0x9000; address += 16 {
+	for address := tile_start_address; address < tile_start_address+0x1000; address += 16 {
 		var tile_raw [16]uint8
-		for i := 0; i < 16; i++ {
-			tile_raw[i] = gpu.MMU.ReadByte(uint16(address + i))
+		for i := uint16(0); i < 16; i++ {
+			tile_raw[i] = gpu.MMU.ReadByte(address + i)
 		}
 		var tile []uint8 = gpu.decode_tile(tile_raw)
-		tile_map[uint16((address-0x8000)/16)] = tile
+		tile_map[uint16((address-tile_start_address)/16)] = tile
 	}
 
 	return tile_map
@@ -119,7 +125,15 @@ func (gpu *GPU_struct) Create_tile_map() map[uint16][]uint8 {
 func (gpu *GPU_struct) Render_Background() [][]uint8 {
 	var tile_map = gpu.Create_tile_map()
 	var tile_i, tile_j, i, j uint8
-	for address := 0x9800; address <= 0x9bff; address++ {
+
+	var tile_map_adress uint16
+	if gpu.BGWindowTileMapSelect == 0 {
+		tile_map_adress = 0x9C00
+	} else {
+		tile_map_adress = 0x9800
+	}
+
+	for address := tile_map_adress; address < tile_map_adress+0x400; address++ {
 		var tile_idx = gpu.MMU.ReadByte(uint16(address))
 		var tile = tile_map[uint16(tile_idx)]
 
