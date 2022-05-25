@@ -102,8 +102,9 @@ func (cpu *CPU_struct) Run(limit int) {
 			// fmt.Scanln()
 		}
 
-		// if cpu.Registers.PC == 0xfe {
+		// if cpu.Registers.PC == 0x20B2 {
 		// 	fmt.Printf("%s, %X, %X, %X, %d %d\n", next_instruction_str, cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
+		// 	cpu.GPU.Render_TileMap()
 		// 	// cpu.MMU.DumpMemory()
 		// 	// fmt.Scanln()
 		// }
@@ -115,7 +116,7 @@ func (cpu *CPU_struct) Run(limit int) {
 		// 	// fmt.Scanln()
 		// }
 
-		// fmt.Printf("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x\n", cpu.Registers.PC, next_instruction, cpu.Registers.A, cpu.Registers.B, cpu.Registers.C, cpu.Registers.D, cpu.Registers.E, cpu.getHL(), cpu.Registers.F) //, cpu.MMU.ReadByte(0xff44))
+		// fmt.Printf("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x %d\n", cpu.Registers.PC, next_instruction, cpu.Registers.A, cpu.Registers.B, cpu.Registers.C, cpu.Registers.D, cpu.Registers.E, cpu.getHL(), cpu.Registers.F, cpu.Registers.TIMA) //, cpu.MMU.ReadByte(0xff44))
 
 		var oldIME = cpu.Registers.IME
 		var oldTAC uint8 = cpu.Registers.TAC
@@ -169,31 +170,34 @@ func (cpu *CPU_struct) Run(limit int) {
 }
 
 func (cpu *CPU_struct) timer(cycles int, TAC uint8) {
-	cpu.Registers.DIV_aux += float32(cycles) / 4 / 4 / 16
+	cpu.Registers.DIV_aux += float32(cycles) / 16 / 16
 	cpu.Registers.DIV = uint8(cpu.Registers.DIV_aux)
 
-	if (TAC & 0x04) != 0 {
-		var speed uint8 = TAC & 0x03
-		if speed == 0 {
-			speed = 64
-		} else if speed == 1 {
-			speed = 1
-		} else if speed == 2 {
-			speed = 4
-		} else {
-			speed = 16
-		}
-
-		var old_TIMA uint8 = cpu.Registers.TIMA
-		cpu.Registers.TIMA_aux += float32(cycles) / 4 / 4 / float32(speed)
-		cpu.Registers.TIMA = uint8(cpu.Registers.TIMA_aux)
-
-		if cpu.Registers.TIMA < old_TIMA {
-			cpu.Registers.IF |= 0x04
-			cpu.Registers.TIMA = cpu.Registers.TMA
-		}
+	if (TAC & 0x04) == 0 {
+		return
 	}
 
+	var speed uint8 = TAC & 0x03
+	var divider int
+	if speed == 0 {
+		divider = 256
+	} else if speed == 1 {
+		divider = 1
+	} else if speed == 2 {
+		divider = 4
+	} else {
+		divider = 16
+	}
+
+	var old_TIMA uint8 = cpu.Registers.TIMA
+	cpu.Registers.TIMA_aux += float32(cycles) / 16 / float32(divider)
+	cpu.Registers.TIMA = uint8(cpu.Registers.TIMA_aux)
+
+	if cpu.Registers.TIMA < old_TIMA {
+		cpu.Registers.IF |= 0x04
+		cpu.Registers.TIMA = cpu.Registers.TMA
+		cpu.Registers.TIMA_aux = float32(cpu.Registers.TMA)
+	}
 }
 
 func (cpu *CPU_struct) interruption(IME uint8) {
