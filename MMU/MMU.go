@@ -44,6 +44,7 @@ type MMU_struct struct {
 	Bootstrap_path    string
 	ROM_path          string
 	Bootstrap_enabled bool
+	cartridge_type    uint8
 
 	GPU IGPU
 	CPU ICPU
@@ -68,8 +69,9 @@ func (mmu *MMU_struct) Innit() {
 	mmu.Bootstrap_path = "data/bootstrap/dmg_boot.bin"
 	// mmu.ROM_path = "data/ROM/Pokemon - Blue Version (USA, Europe) (SGB Enhanced).gb"
 	// mmu.ROM_path = "data/ROM/Super Mario Land (JUE) (V1.1) [!].gb"
+	mmu.ROM_path = "data/ROM/Dr. Mario (World).gb"
 	// mmu.ROM_path = "data/ROM/cpu_instrs.gb"
-	mmu.ROM_path = "data/ROM/Tetris.gb"
+	// mmu.ROM_path = "data/ROM/Tetris.gb"
 	// mmu.ROM_path = "data/ROM/01-special.gb" // OK
 	// mmu.ROM_path = "data/ROM/02-interrupts.gb" // OK
 	// mmu.ROM_path = "data/ROM/03-op sp,hl.gb" // OK
@@ -81,6 +83,7 @@ func (mmu *MMU_struct) Innit() {
 	// mmu.ROM_path = "data/ROM/09-op r,r.gb" // OK
 	// mmu.ROM_path = "data/ROM/10-bit ops.gb" // OK
 	// mmu.ROM_path = "data/ROM/11-op a,(hl).gb" // OK
+	// mmu.ROM_path = "data/ROM/naughtyemu.gb"
 
 	if !fileExists(mmu.ROM_path) {
 		mmu.ROM_path = "../" + mmu.ROM_path
@@ -139,6 +142,9 @@ func (mmu *MMU_struct) Innit() {
 		log.Fatalln(err)
 	}
 
+	// get cartridge type
+	mmu.cartridge_type = mmu.Rom[0x147]
+	fmt.Printf("Cartridge type %d\n", mmu.cartridge_type)
 }
 
 func (mmu *MMU_struct) ReadByte(address uint16) uint8 {
@@ -302,6 +308,7 @@ func (mmu *MMU_struct) ReadWord(address uint16) uint16 {
 
 func (mmu *MMU_struct) WriteWord(address uint16, nn uint16) {
 	if (address >= 0x0100 || !mmu.Bootstrap_enabled) && address < 0x8000 {
+		fmt.Printf("Writing on ROM 0x%X, 0x%X\n", address, nn)
 		panic("Writing on ROM")
 	}
 	mmu.Memory[address] = uint8(nn & 0xff)
