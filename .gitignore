@@ -17,5 +17,7 @@
 .vscode
 *.bin
 *.gb
+*.gb.ram
 *.log
 misc/
+*.sum
