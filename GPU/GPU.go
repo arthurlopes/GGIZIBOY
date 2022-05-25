@@ -75,7 +75,7 @@ func (gpu *GPU_struct) Innit(hblank_channel chan bool) {
 
 func (gpu *GPU_struct) Update_clock(cpu_clock_delta int, cpu_clock int) {
 	if (gpu.Lcd_control & 1) != 0 {
-		gpu.modeclock += cpu_clock_delta / 4
+		gpu.modeclock += cpu_clock_delta
 	}
 	gpu.gpu_clock = cpu_clock
 }
@@ -103,14 +103,9 @@ func (gpu *GPU_struct) decode_tile(tile [16]uint8) []uint8 {
 
 func (gpu *GPU_struct) Create_tile_map() map[uint16][]uint8 {
 	var tile_map = make(map[uint16][]uint8)
-	var tile_start_address uint16
-	if gpu.BGWindowTileDataSelect == 0 {
-		tile_start_address = 0x8000
-	} else {
-		tile_start_address = 0x8800
-	}
+	var tile_start_address uint16 = 0x8000
 
-	for address := tile_start_address; address < tile_start_address+0x1000; address += 16 {
+	for address := tile_start_address; address < tile_start_address+0x1800; address += 16 {
 		var tile_raw [16]uint8
 		for i := uint16(0); i < 16; i++ {
 			tile_raw[i] = gpu.MMU.ReadByte(address + i)
@@ -128,14 +123,21 @@ func (gpu *GPU_struct) Render_Background() [][]uint8 {
 
 	var tile_map_adress uint16
 	if gpu.BGWindowTileMapSelect == 0 {
-		tile_map_adress = 0x9C00
-	} else {
 		tile_map_adress = 0x9800
+	} else {
+		tile_map_adress = 0x9C00
 	}
 
+	var tile_start_offset uint16
 	for address := tile_map_adress; address < tile_map_adress+0x400; address++ {
 		var tile_idx = gpu.MMU.ReadByte(uint16(address))
-		var tile = tile_map[uint16(tile_idx)]
+
+		tile_start_offset = 0
+		if (gpu.BGWindowTileDataSelect == 0) && (tile_idx < 128) {
+			tile_start_offset = 256
+		}
+
+		var tile = tile_map[tile_start_offset+uint16(tile_idx)]
 
 		for i = 0; i < 8; i++ {
 			for j = 0; j < 8; j++ {
@@ -143,9 +145,9 @@ func (gpu *GPU_struct) Render_Background() [][]uint8 {
 			}
 		}
 
-		tile_j = (tile_j + 8) % 255
+		tile_j = (tile_j + 8)
 		if tile_j == 0 {
-			tile_i = (tile_i + 8) % 255
+			tile_i = (tile_i + 8)
 		}
 	}
 
@@ -155,7 +157,7 @@ func (gpu *GPU_struct) Render_Background() [][]uint8 {
 func (gpu *GPU_struct) Render_TileMap() [][]uint8 {
 	var tile_map = gpu.Create_tile_map()
 	var tile_i, tile_j, i, j uint8
-	for tile_idx := 0; tile_idx < 1024; tile_idx++ {
+	for tile_idx := 0; tile_idx < 384; tile_idx++ {
 		if tile, ok := tile_map[uint16(tile_idx)]; ok {
 			for i = 0; i < 8; i++ {
 				for j = 0; j < 8; j++ {
@@ -163,10 +165,9 @@ func (gpu *GPU_struct) Render_TileMap() [][]uint8 {
 				}
 			}
 		}
-
-		tile_j = (tile_j + 8) % 255
+		tile_j = (tile_j + 8) % 128
 		if tile_j == 0 {
-			tile_i = (tile_i + 8) % 255
+			tile_i = (tile_i + 8)
 		}
 	}
 
@@ -186,15 +187,20 @@ func (gpu *GPU_struct) Step() {
 		return
 	}
 
+	OAM_TIME := 80
+	VRAM_TIME := 170
+	HBLANK_TIME := 206
+	VBLANK_TIME := 456
+
 	// Scanline - OAM
 	if gpu.mode == 2 {
-		if gpu.modeclock >= 20 {
+		if gpu.modeclock >= OAM_TIME {
 			gpu.modeclock = 0
 			gpu.mode = 3
 		}
 		// Scanline - VRAM
 	} else if gpu.mode == 3 {
-		if gpu.modeclock >= 43 {
+		if gpu.modeclock >= VRAM_TIME {
 			gpu.modeclock = 0
 			gpu.mode = 0
 			if gpu.Mode00 != 0 {
@@ -203,7 +209,7 @@ func (gpu *GPU_struct) Step() {
 		}
 		// Hblank
 	} else if gpu.mode == 0 {
-		if gpu.modeclock >= 51 {
+		if gpu.modeclock >= HBLANK_TIME {
 			gpu.modeclock = 0
 			gpu.Line += 1
 			if gpu.Line == 143 {
@@ -238,7 +244,7 @@ func (gpu *GPU_struct) Step() {
 		}
 		// Vblank
 	} else if gpu.mode == 1 {
-		if gpu.modeclock >= 114 {
+		if gpu.modeclock >= VBLANK_TIME {
 			gpu.modeclock = 0
 			gpu.Line += 1
 			if gpu.Line == 153 {
@@ -290,8 +296,8 @@ func (gpu *GPU_struct) GetLCDC() uint8 {
 	var lcdc uint8 = (gpu.Lcd_control << 7) |
 		(gpu.WindowTileMap << 6) |
 		(gpu.WindowDisplay << 5) |
-		(gpu.BGWindowTileMapSelect << 4) |
-		(gpu.BGWindowTileDataSelect << 3) |
+		(gpu.BGWindowTileDataSelect << 4) |
+		(gpu.BGWindowTileMapSelect << 3) |
 		(gpu.SpriteSize << 2) |
 		(gpu.SpriteDisplay << 1) |
 		gpu.BGWindowDisplay
@@ -320,8 +326,8 @@ func (gpu *GPU_struct) SetLCDC(n uint8) {
 	gpu.Lcd_control = (n & 0b10000000) >> 7
 	gpu.WindowTileMap = (n & 0b01000000) >> 6
 	gpu.WindowDisplay = (n & 0b00100000) >> 5
-	gpu.BGWindowTileMapSelect = (n & 0b00010000) >> 4
-	gpu.BGWindowTileDataSelect = (n & 0b00001000) >> 3
+	gpu.BGWindowTileDataSelect = (n & 0b00010000) >> 4
+	gpu.BGWindowTileMapSelect = (n & 0b00001000) >> 3
 	gpu.SpriteSize = (n & 0b00000100) >> 2
 	gpu.SpriteDisplay = (n & 0b00000010) >> 1
 	gpu.BGWindowDisplay = (n & 0b00000001)
