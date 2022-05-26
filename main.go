@@ -52,26 +52,22 @@ var (
 )
 
 type screen struct {
-	points [][][]float32
-	vaos   [][]uint32
-	vbos   [][]uint32
+	points []float32
+	// vaos   [][]uint32
+	// vbos   [][]uint32
+	vao uint32
+	vbo uint32
 }
 
 func draw(cur_screen *screen, window *glfw.Window, program uint32) {
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 	gl.UseProgram(program)
 
-	for y := 0; y < rows; y++ {
-		for x := 0; x < columns; x++ {
-			// vao := makeVao(cur_screen.points[y][x])
-			gl.BindBuffer(gl.ARRAY_BUFFER, cur_screen.vbos[y][x])
-			gl.BufferData(gl.ARRAY_BUFFER, 4*len(cur_screen.points[y][x]), gl.Ptr(cur_screen.points[y][x]), gl.STATIC_DRAW)
+	gl.BindBuffer(gl.ARRAY_BUFFER, cur_screen.vbo)
+	gl.BufferData(gl.ARRAY_BUFFER, 4*len(cur_screen.points), gl.Ptr(cur_screen.points), gl.DYNAMIC_DRAW)
 
-			gl.BindVertexArray(cur_screen.vaos[y][x])
-			// gl.BindVertexArray(vao)
-			gl.DrawArrays(gl.TRIANGLES, 0, int32(len(square)/4))
-		}
-	}
+	gl.BindVertexArray(cur_screen.vao)
+	gl.DrawArrays(gl.TRIANGLES, 0, int32(len(cur_screen.points)/4))
 
 	glfw.PollEvents()
 	window.SwapBuffers()
@@ -81,37 +77,35 @@ func updateScreen(new_screen [][]uint8, cur_screen *screen) {
 	for y := 0; y < rows; y++ {
 		for x := 0; x < columns; x++ {
 			color := new_screen[y][x]
-			cur_screen.points[y][x][3] = 1 - float32(color)/3
-			cur_screen.points[y][x][7] = 1 - float32(color)/3
-			cur_screen.points[y][x][11] = 1 - float32(color)/3
-			cur_screen.points[y][x][15] = 1 - float32(color)/3
-			cur_screen.points[y][x][19] = 1 - float32(color)/3
-			cur_screen.points[y][x][23] = 1 - float32(color)/3
+			for p := 3; p < len(square); p += 4 {
+				cur_screen.points[(y*columns*len(square))+(x*len(square))+p] = 1 - float32(color)/3
+			}
 		}
 	}
 }
 
 func makeScreen() *screen {
 	points := make([][][]float32, rows)
-	vaos := make([][]uint32, rows)
-	vbos := make([][]uint32, rows)
+	points_flat := make([]float32, rows*columns*len(square))
 	for y := 0; y < rows; y++ {
 		for x := 0; x < columns; x++ {
-			c, vao, vbo := newPixel(x, y)
+			c := newPixel(x, y)
 			points[y] = append(points[y], c)
-			vaos[y] = append(vaos[y], vao)
-			vbos[y] = append(vbos[y], vbo)
+			for p := 0; p < len(square); p++ {
+				points_flat[(y*columns*len(square))+(x*len(square))+p] = points[y][x][p]
+			}
 		}
 	}
 
+	vao, vbo := makeVao(points_flat)
 	return &screen{
-		points,
-		vaos,
-		vbos,
+		points_flat,
+		vao,
+		vbo,
 	}
 }
 
-func newPixel(x, y int) ([]float32, uint32, uint32) {
+func newPixel(x, y int) []float32 {
 	points := make([]float32, len(square))
 	copy(points, square)
 
@@ -140,8 +134,7 @@ func newPixel(x, y int) ([]float32, uint32, uint32) {
 		}
 	}
 
-	vaos, vbos := makeVao(points)
-	return points, vaos, vbos
+	return points
 }
 
 // makeVao initializes and returns a vertex array from the points provided.
@@ -161,7 +154,7 @@ func makeVao(points []float32) (uint32, uint32) {
 	gl.VertexAttribPointer(1, 1, gl.FLOAT, false, 4*4, gl.PtrOffset(3*4))
 	gl.EnableVertexAttribArray(1)
 
-	// gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
+	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
 
 	return vao, vbo
 }
