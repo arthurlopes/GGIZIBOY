@@ -14,6 +14,8 @@ type IMMU interface {
 	ReadWord(uint16) uint16
 	WriteByte(uint16, uint8)
 	WriteWord(uint16, uint16)
+	Get_VRAM_modified() bool
+	Set_VRAM_modified(bool)
 }
 
 type GPU_struct struct {
@@ -223,16 +225,18 @@ func (gpu *GPU_struct) Step() {
 				}
 				gpu.CPU.SetInterrupt(V_BLANK_BIT)
 
-				gpu.Render_Background()
-				// gpu.Render_TileMap()
-
-				gpu.hblank_channel <- true
-				// select {
-				// case gpu.hblank_channel <- true:
-				// 	// fmt.Println("sent message", msg)
-				// default:
-				// 	// fmt.Println("no message sent")
-				// }
+				if gpu.MMU.Get_VRAM_modified() {
+					gpu.Render_Background()
+					// gpu.Render_TileMap()
+					gpu.MMU.Set_VRAM_modified(false)
+					gpu.hblank_channel <- true
+					// select {
+					// case gpu.hblank_channel <- true:
+					// 	// fmt.Println("sent message", msg)
+					// default:
+					// 	// fmt.Println("no message sent")
+					// }
+				}
 			} else {
 				gpu.mode = 2
 				if gpu.Mode10 != 0 {

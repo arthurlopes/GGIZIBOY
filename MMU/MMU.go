@@ -47,6 +47,7 @@ type MMU_struct struct {
 	ROM_path          string
 	Bootstrap_enabled bool
 	cartridge_type    uint8
+	VRAM_modified     bool
 
 	GPU IGPU
 	CPU ICPU
@@ -213,27 +214,24 @@ func (mmu *MMU_struct) WriteByte(address uint16, n uint8) {
 		return
 	}
 
-	// if address >= 0xff00 {
-	// 	fmt.Printf("Write 0x%X 0x%X\n", address, n)
-	// }
-
 	// Tiles
 	if (address >= 0x8000) && (address <= 0x9000) {
-		// fmt.Println(address, n)
 		mmu.Memory[address] = n
+		mmu.VRAM_modified = true
 		return
 	}
 
 	// Bg
 	if (address >= 0x9000) && (address <= 0x9bff) {
 		mmu.Memory[address] = n
+		mmu.VRAM_modified = true
 		return
 	}
 
 	// OAM
 	if (address >= 0xFE00) && (address <= 0xFE9F) {
-		// fmt.Printf("address 0x%X, value 0x%X\n", address, n)
 		mmu.Memory[address] = n
+		mmu.VRAM_modified = true
 		return
 	}
 
@@ -353,4 +351,12 @@ func (mmu *MMU_struct) LoadDump() {
 		log.Fatalln(err)
 	}
 
+}
+
+func (mmu *MMU_struct) Get_VRAM_modified() bool {
+	return mmu.VRAM_modified
+}
+
+func (mmu *MMU_struct) Set_VRAM_modified(b bool) {
+	mmu.VRAM_modified = b
 }
