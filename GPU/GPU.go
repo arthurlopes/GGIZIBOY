@@ -29,6 +29,9 @@ type GPU_struct struct {
 	Scroll_y    uint8
 	Scroll_x    uint8
 	Line        uint8
+	BGP         uint8
+	BGP_map     map[uint8]uint8
+
 	// LCDC
 	Background_palette     uint8
 	WindowTileMap          uint8
@@ -71,6 +74,7 @@ func (gpu *GPU_struct) Innit(hblank_channel chan bool) {
 	}
 
 	gpu.hblank_channel = hblank_channel
+	gpu.BGP_map = make(map[uint8]uint8)
 }
 
 func (gpu *GPU_struct) Update_clock(cpu_clock_delta int, cpu_clock int) {
@@ -141,7 +145,7 @@ func (gpu *GPU_struct) Render_Background() [][]uint8 {
 
 		for i = 0; i < 8; i++ {
 			for j = 0; j < 8; j++ {
-				gpu.Background[tile_i+i][tile_j+j] = tile[8*i+j]
+				gpu.Background[tile_i+i][tile_j+j] = gpu.BGP_map[tile[8*i+j]]
 			}
 		}
 
@@ -161,7 +165,7 @@ func (gpu *GPU_struct) Render_TileMap() [][]uint8 {
 		if tile, ok := tile_map[uint16(tile_idx)]; ok {
 			for i = 0; i < 8; i++ {
 				for j = 0; j < 8; j++ {
-					gpu.Background[tile_i+i][tile_j+j] = tile[8*i+j]
+					gpu.Background[tile_i+i][tile_j+j] = gpu.BGP_map[tile[8*i+j]]
 				}
 			}
 		}
@@ -262,6 +266,18 @@ func (gpu *GPU_struct) Step() {
 			gpu.check_LYC_interrupt()
 		}
 	}
+}
+
+func (gpu *GPU_struct) SetBGP(n uint8) {
+	gpu.BGP = n
+	gpu.BGP_map[0] = n & 0b00000011
+	gpu.BGP_map[1] = n & 0b00001100 >> 2
+	gpu.BGP_map[2] = n & 0b00110000 >> 4
+	gpu.BGP_map[3] = n & 0b11000000 >> 6
+}
+
+func (gpu *GPU_struct) GetBGP() uint8 {
+	return gpu.BGP
 }
 
 func (gpu *GPU_struct) GetLine() uint8 {

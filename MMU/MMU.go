@@ -21,6 +21,8 @@ type IGPU interface {
 	GetSTAT() uint8
 	SetLCDC(uint8)
 	SetSTAT(uint8)
+	GetBGP() uint8
+	SetBGP(uint8)
 }
 
 type ICPU interface {
@@ -152,6 +154,9 @@ func (mmu *MMU_struct) ReadByte(address uint16) uint8 {
 		return mmu.Rom[address]
 	}
 
+	if address == 0xff47 {
+		return mmu.GPU.GetBGP()
+	}
 	if address == 0xff45 {
 		return mmu.GPU.GetLYC()
 	}
@@ -240,6 +245,10 @@ func (mmu *MMU_struct) WriteByte(address uint16, n uint8) {
 		return
 	}
 
+	if address == 0xff47 {
+		mmu.GPU.SetBGP(n)
+		return
+	}
 	if address == 0xff45 {
 		mmu.GPU.SetLYC(n)
 		return
