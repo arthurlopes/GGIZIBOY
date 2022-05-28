@@ -25,6 +25,7 @@ type GPU_struct struct {
 	gpu_clock  int
 	Screen     [][]uint8
 	Background [][]uint8
+	Tile_data  [][]uint8
 
 	// GPU registers
 	Lcd_control uint8
@@ -73,6 +74,11 @@ func (gpu *GPU_struct) Innit(hblank_channel chan bool) {
 	gpu.Background = make([][]uint8, 256)
 	for i := range gpu.Background {
 		gpu.Background[i] = make([]uint8, 256)
+	}
+
+	gpu.Tile_data = make([][]uint8, 256)
+	for i := range gpu.Tile_data {
+		gpu.Tile_data[i] = make([]uint8, 256)
 	}
 
 	gpu.hblank_channel = hblank_channel
@@ -167,7 +173,7 @@ func (gpu *GPU_struct) Render_TileMap() [][]uint8 {
 		if tile, ok := tile_map[uint16(tile_idx)]; ok {
 			for i = 0; i < 8; i++ {
 				for j = 0; j < 8; j++ {
-					gpu.Background[tile_i+i][tile_j+j] = gpu.BGP_map[tile[8*i+j]]
+					gpu.Tile_data[tile_i+i][tile_j+j] = gpu.BGP_map[tile[8*i+j]]
 				}
 			}
 		}
@@ -177,7 +183,7 @@ func (gpu *GPU_struct) Render_TileMap() [][]uint8 {
 		}
 	}
 
-	return gpu.Background
+	return gpu.Tile_data
 }
 
 func (gpu *GPU_struct) check_LYC_interrupt() {
@@ -226,8 +232,9 @@ func (gpu *GPU_struct) Step() {
 				gpu.CPU.SetInterrupt(V_BLANK_BIT)
 
 				if gpu.MMU.Get_VRAM_modified() {
+					gpu.Render_TileMap()
 					gpu.Render_Background()
-					// gpu.Render_TileMap()
+
 					gpu.MMU.Set_VRAM_modified(false)
 					gpu.hblank_channel <- true
 					// select {
