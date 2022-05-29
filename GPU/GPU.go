@@ -66,9 +66,9 @@ func GPUFactory(hblank_channel chan bool) *GPU_struct {
 }
 
 func (gpu *GPU_struct) Innit(hblank_channel chan bool) {
-	gpu.Screen = make([][]uint8, 160)
+	gpu.Screen = make([][]uint8, 144)
 	for i := range gpu.Screen {
-		gpu.Screen[i] = make([]uint8, 144)
+		gpu.Screen[i] = make([]uint8, 160)
 	}
 
 	gpu.Background = make([][]uint8, 256)
@@ -186,6 +186,12 @@ func (gpu *GPU_struct) Render_TileMap() [][]uint8 {
 	return gpu.Tile_data
 }
 
+func (gpu *GPU_struct) Render_Screen_Line() {
+	for i := uint8(0); i < 160; i++ {
+		gpu.Screen[gpu.Line][i] = gpu.Background[gpu.Scroll_y+gpu.Line][gpu.Scroll_x+i]
+	}
+}
+
 func (gpu *GPU_struct) check_LYC_interrupt() {
 	if gpu.LYC_select != 0 {
 		if gpu.LYC_flag != 0 {
@@ -218,6 +224,7 @@ func (gpu *GPU_struct) Step() {
 			if gpu.Mode00 != 0 {
 				gpu.CPU.SetInterrupt(LCD_BIT)
 			}
+			gpu.Render_Screen_Line()
 		}
 		// Hblank
 	} else if gpu.mode == 0 {
