@@ -48,6 +48,7 @@ type MMU_struct struct {
 	Bootstrap_enabled bool
 	cartridge_type    uint8
 	VRAM_modified     bool
+	memory_bank       uint8
 
 	GPU IGPU
 	CPU ICPU
@@ -71,8 +72,8 @@ func (mmu *MMU_struct) Innit() {
 	mmu.Bootstrap_enabled = true
 	mmu.Bootstrap_path = "data/bootstrap/dmg_boot.bin"
 	// mmu.ROM_path = "data/ROM/Pokemon - Blue Version (USA, Europe) (SGB Enhanced).gb"
-	// mmu.ROM_path = "data/ROM/Super Mario Land (JUE) (V1.1) [!].gb"
-	mmu.ROM_path = "data/ROM/Dr. Mario (World).gb"
+	mmu.ROM_path = "data/ROM/Super Mario Land (JUE) (V1.1) [!].gb"
+	// mmu.ROM_path = "data/ROM/Dr. Mario (World).gb"
 	// mmu.ROM_path = "data/ROM/cpu_instrs.gb"
 	// mmu.ROM_path = "data/ROM/Tetris.gb"
 	// mmu.ROM_path = "data/ROM/01-special.gb" // OK
@@ -109,18 +110,6 @@ func (mmu *MMU_struct) Innit() {
 		log.Fatalln(err)
 	}
 
-	// read ROM
-	// rom_file, err := os.Open(mmu.ROM_path)
-	// if err != nil {
-	// 	log.Fatalln(err)
-	// }
-	// defer rom_file.Close()
-
-	// memory_rom := mmu.Rom[:]
-	// err = binary.Read(rom_file, binary.LittleEndian, &memory_rom)
-	// if err != nil {
-	// 	log.Fatalln(err)
-	// }
 	file, err := os.Open(mmu.ROM_path)
 
 	if err != nil {
@@ -152,7 +141,11 @@ func (mmu *MMU_struct) Innit() {
 
 func (mmu *MMU_struct) ReadByte(address uint16) uint8 {
 	if (address >= 0x0100 || !mmu.Bootstrap_enabled) && address < 0x8000 {
-		return mmu.Rom[address]
+		if address >= 0x4000 {
+			return mmu.Rom[address+uint16(mmu.memory_bank-1)*0x4000]
+		} else {
+			return mmu.Rom[address]
+		}
 	}
 
 	if address == 0xff47 {
@@ -164,11 +157,6 @@ func (mmu *MMU_struct) ReadByte(address uint16) uint8 {
 	if address == 0xff44 {
 		return mmu.GPU.GetLine()
 	}
-
-	// if address >= 0xff00 {
-	// 	fmt.Printf("Read 0x%X\n", address)
-	// }
-
 	if address == 0xff43 {
 		return mmu.GPU.GetScroll_x()
 	}
@@ -187,7 +175,6 @@ func (mmu *MMU_struct) ReadByte(address uint16) uint8 {
 	if address == 0xFF0F {
 		return mmu.CPU.GetIF()
 	}
-
 	if address == 0xFF04 {
 		return mmu.CPU.GetDIV()
 	}
@@ -247,6 +234,16 @@ func (mmu *MMU_struct) WriteByte(address uint16, n uint8) {
 		mmu.GPU.SetBGP(n)
 		return
 	}
+	if address == 0xff46 {
+		mmu.Memory[address] = n
+		// DMA
+		DMA_startAddress := uint16(n) << 8
+		OAM_startAdress := uint16(0xFE00)
+		for offset := uint16(0); offset < 280; offset++ {
+			mmu.Memory[OAM_startAdress+offset] = mmu.Memory[DMA_startAddress+offset]
+		}
+		return
+	}
 	if address == 0xff45 {
 		mmu.GPU.SetLYC(n)
 		return
@@ -259,11 +256,6 @@ func (mmu *MMU_struct) WriteByte(address uint16, n uint8) {
 		mmu.GPU.SetLCDC(n)
 		return
 	}
-
-	// if address >= 0xff00 {
-	// 	fmt.Printf("Read 0x%X\n", address)
-	// }
-
 	if address == 0xff43 {
 		mmu.GPU.SetScroll_x(n)
 		return
@@ -272,7 +264,6 @@ func (mmu *MMU_struct) WriteByte(address uint16, n uint8) {
 		mmu.GPU.SetScroll_y(n)
 		return
 	}
-
 	if address == 0xFFFF {
 		mmu.CPU.SetIE(n)
 		return
@@ -281,7 +272,6 @@ func (mmu *MMU_struct) WriteByte(address uint16, n uint8) {
 		mmu.CPU.SetIF(n)
 		return
 	}
-
 	if address == 0xFF04 {
 		mmu.CPU.SetDIV(n)
 		return
@@ -299,27 +289,21 @@ func (mmu *MMU_struct) WriteByte(address uint16, n uint8) {
 		return
 	}
 
+	if (address >= 0x2000) && (address < 0x4000) {
+		mmu.memory_bank = n & 0b00011111
+	}
+
 	mmu.Memory[address] = n
 }
 
 func (mmu *MMU_struct) ReadWord(address uint16) uint16 {
-	var word uint16
-	if (address >= 0x0100 || !mmu.Bootstrap_enabled) && address < 0x8000 {
-		word = (uint16(mmu.Rom[address+1]) << 8) | uint16(mmu.Rom[address])
-	} else {
-		word = (uint16(mmu.Memory[address+1]) << 8) | uint16(mmu.Memory[address])
-	}
-
+	word := (uint16(mmu.ReadByte(address+1)) << 8) | uint16(mmu.ReadByte(address))
 	return word
 }
 
 func (mmu *MMU_struct) WriteWord(address uint16, nn uint16) {
-	if (address >= 0x0100 || !mmu.Bootstrap_enabled) && address < 0x8000 {
-		fmt.Printf("Writing on ROM 0x%X, 0x%X\n", address, nn)
-		panic("Writing on ROM")
-	}
-	mmu.Memory[address] = uint8(nn & 0xff)
-	mmu.Memory[address+1] = uint8(nn >> 8)
+	mmu.WriteByte(address, uint8(nn&0xff))
+	mmu.WriteByte(address+1, uint8(nn>>8))
 }
 
 func (mmu *MMU_struct) DumpMemory() {
