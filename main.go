@@ -5,6 +5,7 @@ import (
 	"GGIZIBOY/gameboy"
 	"log"
 	"runtime"
+	"time"
 
 	"github.com/go-gl/gl/v4.6-core/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
@@ -38,7 +39,6 @@ func draw(cur_screen *screen, window *glfw.Window, program uint32) {
 	gl.BindVertexArray(cur_screen.vao)
 	gl.DrawArrays(gl.TRIANGLES, 0, int32(len(cur_screen.points)/4))
 
-	glfw.PollEvents()
 	window.SwapBuffers()
 }
 
@@ -136,11 +136,27 @@ func initOpenGL() {
 
 }
 
+func initGlfw() {
+	if err := glfw.Init(); err != nil {
+		panic(err)
+	}
+}
+
 func main() {
 	runtime.LockOSThread()
 
-	window := OpenGL.WindowFactory(256, 256, 4)
+	initGlfw()
+
+	// bg_window := OpenGL.WindowFactory(256, 256, 4, "Background", nil)
+	// bg_window.Glfw_window.MakeContextCurrent()
+
+	screen_window := OpenGL.WindowFactory(144, 160, 4, "Main screen", nil)
+	screen_window.Glfw_window.MakeContextCurrent()
+
+	// tile_window := OpenGL.WindowFactory(196, 128, 4, "Tile Data", bg_window.Glfw_window)
+	// tile_window.Glfw_window.MakeContextCurrent()
 	defer glfw.Terminate()
+
 	initOpenGL()
 
 	vertexShader := OpenGL.ShaderFactory("./OpenGL/shaders/vertex.glsl", gl.VERTEX_SHADER)
@@ -154,19 +170,40 @@ func main() {
 	gl.AttachShader(program, fragmentShader.Compiled_shader)
 	gl.LinkProgram(program)
 
+	bg_screen := makeScreen(screen_window)
+	// tile_screen := makeScreen(tile_window)
+
 	hblank_channel := make(chan bool)
 
 	var gameboy = gameboy.GameboyFactory(hblank_channel)
 	go gameboy.Run(-1)
 
-	_screen := makeScreen(window)
-	draw(_screen, window.Glfw_window, program)
-
-	for !window.Glfw_window.ShouldClose() {
+	// for !bg_window.Glfw_window.ShouldClose() && !tile_window.Glfw_window.ShouldClose() {
+	for !screen_window.Glfw_window.ShouldClose() {
 		draw_flag := <-hblank_channel
+
+		ticker := time.NewTicker(8 * time.Millisecond)
+		done := make(chan bool)
+
 		if draw_flag {
-			updateScreen(gameboy.GPU.Background, _screen, window)
-			draw(_screen, window.Glfw_window, program)
+
+			updateScreen(gameboy.GPU.Screen, bg_screen, screen_window)
+			// updateScreen(gameboy.GPU.Tile_data, tile_screen, tile_window)
+
+			screen_window.Glfw_window.MakeContextCurrent()
+			draw(bg_screen, screen_window.Glfw_window, program)
+
+			// tile_window.Glfw_window.MakeContextCurrent()
+			// draw(tile_screen, tile_window.Glfw_window, program)
+
+			glfw.PollEvents()
+		}
+
+		select {
+		case <-done:
+			return
+		case <-ticker.C:
+			// fmt.Println("Tick at", t)
 		}
 	}
 }

@@ -97,24 +97,8 @@ func (cpu *CPU_struct) Run(limit int) {
 		}
 
 		if cpu.Registers.PC == 0x100 {
-			fmt.Printf("%s, %X, %X, %X, %d %d\n", next_instruction_str, cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
-			// cpu.MMU.DumpMemory()
-			// fmt.Scanln()
+			fmt.Println("Bootstrap done", next_instruction_str)
 		}
-
-		// if cpu.Registers.PC == 0x20B2 {
-		// 	fmt.Printf("%s, %X, %X, %X, %d %d\n", next_instruction_str, cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
-		// 	cpu.GPU.Render_TileMap()
-		// 	// cpu.MMU.DumpMemory()
-		// 	// fmt.Scanln()
-		// }
-
-		// if cpu.Registers.PC == 0x2BA {
-		// 	fmt.Printf("%s, %X, %X, %X, %d %d\n", next_instruction_str, cpu.Registers.PC, next_instruction, cpu.Registers.SP, cpu.Cycle, cpu.Instructions_count)
-		// 	fmt.Printf("\n")
-		// 	// cpu.MMU.DumpMemory()
-		// 	// fmt.Scanln()
-		// }
 
 		// fmt.Printf("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x %d\n", cpu.Registers.PC, next_instruction, cpu.Registers.A, cpu.Registers.B, cpu.Registers.C, cpu.Registers.D, cpu.Registers.E, cpu.getHL(), cpu.Registers.F, cpu.Registers.TIMA) //, cpu.MMU.ReadByte(0xff44))
 
