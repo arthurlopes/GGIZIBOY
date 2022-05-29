@@ -1,5 +1,7 @@
 package GPU
 
+import "sort"
+
 const V_BLANK_BIT uint8 = 0x01
 const LCD_BIT uint8 = 0x02
 
@@ -16,6 +18,17 @@ type IMMU interface {
 	WriteWord(uint16, uint16)
 	Get_VRAM_modified() bool
 	Set_VRAM_modified(bool)
+	Get_OAM_modified() bool
+	Set_OAM_modified(bool)
+}
+
+type OAM_Struct struct {
+	sprites []Sprite_Struct
+}
+
+type Sprite_Struct struct {
+	x, y, tile_no, flags              uint8
+	priority, y_flip, x_flip, palette uint8
 }
 
 type GPU_struct struct {
@@ -26,6 +39,7 @@ type GPU_struct struct {
 	Screen     [][]uint8
 	Background [][]uint8
 	Tile_data  [][]uint8
+	tile_map   map[uint16][]uint8
 
 	// GPU registers
 	Lcd_control uint8
@@ -33,7 +47,11 @@ type GPU_struct struct {
 	Scroll_x    uint8
 	Line        uint8
 	BGP         uint8
+	OBP0        uint8
+	OBP1        uint8
 	BGP_map     map[uint8]uint8
+	OBP0_map    map[uint8]uint8
+	OBP1_map    map[uint8]uint8
 
 	// LCDC
 	Background_palette     uint8
@@ -54,6 +72,9 @@ type GPU_struct struct {
 
 	// Channels
 	hblank_channel chan bool
+
+	// OAM
+	OAM OAM_Struct
 
 	CPU ICPU
 	MMU IMMU
@@ -81,8 +102,13 @@ func (gpu *GPU_struct) Innit(hblank_channel chan bool) {
 		gpu.Tile_data[i] = make([]uint8, 256)
 	}
 
+	gpu.OAM = OAM_Struct{}
+	gpu.OAM.sprites = make([]Sprite_Struct, 40)
+
 	gpu.hblank_channel = hblank_channel
 	gpu.BGP_map = make(map[uint8]uint8)
+	gpu.OBP0_map = make(map[uint8]uint8)
+	gpu.OBP1_map = make(map[uint8]uint8)
 }
 
 func (gpu *GPU_struct) Update_clock(cpu_clock_delta int, cpu_clock int) {
@@ -130,7 +156,6 @@ func (gpu *GPU_struct) Create_tile_map() map[uint16][]uint8 {
 }
 
 func (gpu *GPU_struct) Render_Background() [][]uint8 {
-	var tile_map = gpu.Create_tile_map()
 	var tile_i, tile_j, i, j uint8
 
 	var tile_map_adress uint16
@@ -149,7 +174,7 @@ func (gpu *GPU_struct) Render_Background() [][]uint8 {
 			tile_start_offset = 256
 		}
 
-		var tile = tile_map[tile_start_offset+uint16(tile_idx)]
+		var tile = gpu.tile_map[tile_start_offset+uint16(tile_idx)]
 
 		for i = 0; i < 8; i++ {
 			for j = 0; j < 8; j++ {
@@ -167,10 +192,9 @@ func (gpu *GPU_struct) Render_Background() [][]uint8 {
 }
 
 func (gpu *GPU_struct) Render_TileMap() [][]uint8 {
-	var tile_map = gpu.Create_tile_map()
 	var tile_i, tile_j, i, j uint8
 	for tile_idx := 0; tile_idx < 384; tile_idx++ {
-		if tile, ok := tile_map[uint16(tile_idx)]; ok {
+		if tile, ok := gpu.tile_map[uint16(tile_idx)]; ok {
 			for i = 0; i < 8; i++ {
 				for j = 0; j < 8; j++ {
 					gpu.Tile_data[tile_i+i][tile_j+j] = gpu.BGP_map[tile[8*i+j]]
@@ -186,9 +210,68 @@ func (gpu *GPU_struct) Render_TileMap() [][]uint8 {
 	return gpu.Tile_data
 }
 
+func (gpu *GPU_struct) Render_OAM() {
+	for i := uint16(0); i < 40; i++ {
+		spriteAddress := 0xFE00 + 4*i
+		gpu.OAM.sprites[i].y = gpu.MMU.ReadByte(spriteAddress)
+		gpu.OAM.sprites[i].x = gpu.MMU.ReadByte(spriteAddress + 1)
+		gpu.OAM.sprites[i].tile_no = gpu.MMU.ReadByte(spriteAddress + 2)
+		gpu.OAM.sprites[i].flags = gpu.MMU.ReadByte(spriteAddress + 3)
+
+		gpu.OAM.sprites[i].priority = (gpu.OAM.sprites[i].flags & 0b10000000) >> 7
+		gpu.OAM.sprites[i].y_flip = (gpu.OAM.sprites[i].flags & 0b01000000) >> 6
+		gpu.OAM.sprites[i].x_flip = (gpu.OAM.sprites[i].flags & 0b00100000) >> 5
+		gpu.OAM.sprites[i].palette = (gpu.OAM.sprites[i].flags & 0b00010000) >> 4
+	}
+
+	// Sort based on x
+	sort.Slice(gpu.OAM.sprites, func(i, j int) bool {
+		return gpu.OAM.sprites[i].x > gpu.OAM.sprites[j].x
+	})
+
+}
+
 func (gpu *GPU_struct) Render_Screen_Line() {
+	if gpu.MMU.Get_OAM_modified() {
+		gpu.Render_OAM()
+		gpu.MMU.Set_OAM_modified(false)
+	}
+
+	// Load Background
+	y := (gpu.Scroll_y + gpu.Line)
 	for i := uint8(0); i < 160; i++ {
-		gpu.Screen[gpu.Line][i] = gpu.Background[gpu.Scroll_y+gpu.Line][gpu.Scroll_x+i]
+		x := (gpu.Scroll_x + i)
+		gpu.Screen[gpu.Line][i] = gpu.Background[y][x]
+	}
+
+	// Load sprites
+	sprites_on_current_line := make([]uint8, 0)
+	for i := uint8(0); i < 40; i++ {
+		sprite := gpu.OAM.sprites[i]
+		if (sprite.x < 8) || (sprite.y < 16) || (sprite.x >= 160) || (sprite.y >= 144) {
+			continue
+		}
+		if (sprite.y-16 <= gpu.Line) && (gpu.Line < sprite.y-8) {
+			sprites_on_current_line = append(sprites_on_current_line, i)
+		}
+	}
+
+	for _, i := range sprites_on_current_line {
+		sprite := gpu.OAM.sprites[i]
+		for j := uint8(0); j < 8; j++ {
+			tile := gpu.tile_map[uint16(sprite.tile_no)]
+
+			var tile_paletted uint8
+			if sprite.palette == 0 {
+				tile_paletted = gpu.OBP0_map[tile[(gpu.Line-(sprite.y-16))*8+j]]
+			} else {
+				tile_paletted = gpu.OBP1_map[tile[(gpu.Line-(sprite.y-16))*8+j]]
+			}
+
+			if ((sprite.priority == 0) && tile_paletted != 0) || (gpu.Screen[gpu.Line][sprite.x-8+j] == 0) {
+				gpu.Screen[gpu.Line][sprite.x-8+j] = tile_paletted
+			}
+		}
 	}
 }
 
@@ -239,18 +322,14 @@ func (gpu *GPU_struct) Step() {
 				gpu.CPU.SetInterrupt(V_BLANK_BIT)
 
 				if gpu.MMU.Get_VRAM_modified() {
+					gpu.tile_map = gpu.Create_tile_map()
 					gpu.Render_TileMap()
 					gpu.Render_Background()
 
 					gpu.MMU.Set_VRAM_modified(false)
-					gpu.hblank_channel <- true
-					// select {
-					// case gpu.hblank_channel <- true:
-					// 	// fmt.Println("sent message", msg)
-					// default:
-					// 	// fmt.Println("no message sent")
-					// }
+
 				}
+				gpu.hblank_channel <- true
 			} else {
 				gpu.mode = 2
 				if gpu.Mode10 != 0 {
@@ -294,8 +373,32 @@ func (gpu *GPU_struct) SetBGP(n uint8) {
 	gpu.BGP_map[3] = n & 0b11000000 >> 6
 }
 
+func (gpu *GPU_struct) SetOBP0(n uint8) {
+	gpu.OBP0 = n
+	gpu.OBP0_map[0] = n & 0b00000011
+	gpu.OBP0_map[1] = n & 0b00001100 >> 2
+	gpu.OBP0_map[2] = n & 0b00110000 >> 4
+	gpu.OBP0_map[3] = n & 0b11000000 >> 6
+}
+
+func (gpu *GPU_struct) SetOBP1(n uint8) {
+	gpu.OBP1 = n
+	gpu.OBP1_map[0] = n & 0b00000011
+	gpu.OBP1_map[1] = n & 0b00001100 >> 2
+	gpu.OBP1_map[2] = n & 0b00110000 >> 4
+	gpu.OBP1_map[3] = n & 0b11000000 >> 6
+}
+
 func (gpu *GPU_struct) GetBGP() uint8 {
 	return gpu.BGP
+}
+
+func (gpu *GPU_struct) GetOBP0() uint8 {
+	return gpu.OBP0
+}
+
+func (gpu *GPU_struct) GetOBP1() uint8 {
+	return gpu.OBP1
 }
 
 func (gpu *GPU_struct) GetLine() uint8 {

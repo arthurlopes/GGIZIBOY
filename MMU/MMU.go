@@ -23,6 +23,10 @@ type IGPU interface {
 	SetSTAT(uint8)
 	GetBGP() uint8
 	SetBGP(uint8)
+	SetOBP0(uint8)
+	SetOBP1(uint8)
+	GetOBP0() uint8
+	GetOBP1() uint8
 }
 
 type ICPU interface {
@@ -48,6 +52,7 @@ type MMU_struct struct {
 	Bootstrap_enabled bool
 	cartridge_type    uint8
 	VRAM_modified     bool
+	OAM_modified      bool
 	memory_bank       uint8
 
 	GPU IGPU
@@ -148,6 +153,12 @@ func (mmu *MMU_struct) ReadByte(address uint16) uint8 {
 		}
 	}
 
+	if address == 0xff49 {
+		return mmu.GPU.GetOBP1()
+	}
+	if address == 0xff48 {
+		return mmu.GPU.GetOBP0()
+	}
 	if address == 0xff47 {
 		return mmu.GPU.GetBGP()
 	}
@@ -218,7 +229,7 @@ func (mmu *MMU_struct) WriteByte(address uint16, n uint8) {
 	// OAM
 	if (address >= 0xFE00) && (address <= 0xFE9F) {
 		mmu.Memory[address] = n
-		mmu.VRAM_modified = true
+		mmu.OAM_modified = true
 		return
 	}
 
@@ -230,6 +241,14 @@ func (mmu *MMU_struct) WriteByte(address uint16, n uint8) {
 		return
 	}
 
+	if address == 0xff49 {
+		mmu.GPU.SetOBP1(n)
+		return
+	}
+	if address == 0xff48 {
+		mmu.GPU.SetOBP0(n)
+		return
+	}
 	if address == 0xff47 {
 		mmu.GPU.SetBGP(n)
 		return
@@ -242,7 +261,7 @@ func (mmu *MMU_struct) WriteByte(address uint16, n uint8) {
 		for offset := uint16(0); offset < 280; offset++ {
 			mmu.Memory[OAM_startAdress+offset] = mmu.Memory[DMA_startAddress+offset]
 		}
-		return
+		mmu.OAM_modified = true
 	}
 	if address == 0xff45 {
 		mmu.GPU.SetLYC(n)
@@ -339,8 +358,17 @@ func (mmu *MMU_struct) LoadDump() {
 
 func (mmu *MMU_struct) Get_VRAM_modified() bool {
 	return mmu.VRAM_modified
+	// return true
 }
 
 func (mmu *MMU_struct) Set_VRAM_modified(b bool) {
 	mmu.VRAM_modified = b
+}
+
+func (mmu *MMU_struct) Get_OAM_modified() bool {
+	return mmu.OAM_modified
+}
+
+func (mmu *MMU_struct) Set_OAM_modified(b bool) {
+	mmu.OAM_modified = b
 }
