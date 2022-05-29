@@ -76,8 +76,8 @@ func fileExists(filename string) bool {
 func (mmu *MMU_struct) Innit() {
 	mmu.Bootstrap_enabled = true
 	mmu.Bootstrap_path = "data/bootstrap/dmg_boot.bin"
-	// mmu.ROM_path = "data/ROM/Pokemon - Blue Version (USA, Europe) (SGB Enhanced).gb"
-	mmu.ROM_path = "data/ROM/Super Mario Land (JUE) (V1.1) [!].gb"
+	mmu.ROM_path = "data/ROM/Pokemon - Blue Version (USA, Europe) (SGB Enhanced).gb"
+	// mmu.ROM_path = "data/ROM/Super Mario Land (JUE) (V1.1) [!].gb"
 	// mmu.ROM_path = "data/ROM/Dr. Mario (World).gb"
 	// mmu.ROM_path = "data/ROM/cpu_instrs.gb"
 	// mmu.ROM_path = "data/ROM/Tetris.gb"
@@ -141,13 +141,13 @@ func (mmu *MMU_struct) Innit() {
 
 	// get cartridge type
 	mmu.cartridge_type = mmu.Rom[0x147]
-	fmt.Printf("Cartridge type %d\n", mmu.cartridge_type)
+	fmt.Printf("Cartridge type 0x%X\n", mmu.cartridge_type)
 }
 
 func (mmu *MMU_struct) ReadByte(address uint16) uint8 {
 	if (address >= 0x0100 || !mmu.Bootstrap_enabled) && address < 0x8000 {
 		if address >= 0x4000 {
-			return mmu.Rom[address+uint16(mmu.memory_bank-1)*0x4000]
+			return mmu.Rom[uint32(address)+uint32(mmu.memory_bank-1)*0x4000]
 		} else {
 			return mmu.Rom[address]
 		}
@@ -309,7 +309,11 @@ func (mmu *MMU_struct) WriteByte(address uint16, n uint8) {
 	}
 
 	if (address >= 0x2000) && (address < 0x4000) {
-		mmu.memory_bank = n & 0b00011111
+		if mmu.cartridge_type == 0x01 {
+			mmu.memory_bank = n & 0b00011111
+		} else if mmu.cartridge_type == 0x13 {
+			mmu.memory_bank = n & 0b01111111
+		}
 	}
 
 	mmu.Memory[address] = n
