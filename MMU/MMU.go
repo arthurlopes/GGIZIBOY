@@ -55,13 +55,15 @@ type MMU_struct struct {
 	OAM_modified      bool
 	memory_bank       uint8
 
+	input_channel chan uint8
+
 	GPU IGPU
 	CPU ICPU
 }
 
-func MMUFactory() *MMU_struct {
+func MMUFactory(input_channel chan uint8) *MMU_struct {
 	var mmu = MMU_struct{}
-	mmu.Innit()
+	mmu.Innit(input_channel)
 	return &mmu
 }
 
@@ -73,12 +75,14 @@ func fileExists(filename string) bool {
 	return !info.IsDir()
 }
 
-func (mmu *MMU_struct) Innit() {
+func (mmu *MMU_struct) Innit(input_channel chan uint8) {
+	mmu.input_channel = input_channel
+
 	mmu.Bootstrap_enabled = true
 	mmu.Bootstrap_path = "data/bootstrap/dmg_boot.bin"
-	mmu.ROM_path = "data/ROM/Pokemon - Blue Version (USA, Europe) (SGB Enhanced).gb"
+	// mmu.ROM_path = "data/ROM/Pokemon - Blue Version (USA, Europe) (SGB Enhanced).gb"
 	// mmu.ROM_path = "data/ROM/Super Mario Land (JUE) (V1.1) [!].gb"
-	// mmu.ROM_path = "data/ROM/Dr. Mario (World).gb"
+	mmu.ROM_path = "data/ROM/Dr. Mario (World).gb"
 	// mmu.ROM_path = "data/ROM/cpu_instrs.gb"
 	// mmu.ROM_path = "data/ROM/Tetris.gb"
 	// mmu.ROM_path = "data/ROM/01-special.gb" // OK
@@ -146,7 +150,7 @@ func (mmu *MMU_struct) Innit() {
 
 func (mmu *MMU_struct) ReadByte(address uint16) uint8 {
 	if (address >= 0x0100 || !mmu.Bootstrap_enabled) && address < 0x8000 {
-		if address >= 0x4000 {
+		if (address >= 0x4000) && (mmu.cartridge_type != 0x0) {
 			return mmu.Rom[uint32(address)+uint32(mmu.memory_bank-1)*0x4000]
 		} else {
 			return mmu.Rom[address]
@@ -199,7 +203,17 @@ func (mmu *MMU_struct) ReadByte(address uint16) uint8 {
 		return mmu.CPU.GetTAC()
 	}
 	if address == 0xFF00 {
-		return 0xFF
+		input := <-mmu.input_channel
+		if input != 0 {
+			if mmu.Memory[0xFF00] == 0x10 {
+				// Read P15 pins
+				return (input >> 4) | 0xf0
+			} else if mmu.Memory[0xFF00] == 0x20 {
+				// Read P14 pins
+				return input | 0xf0
+			}
+		}
+		return 0xff
 	}
 
 	return mmu.Memory[address]

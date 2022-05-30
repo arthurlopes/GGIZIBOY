@@ -142,6 +142,26 @@ func initGlfw() {
 	}
 }
 
+func check_input(window *glfw.Window, input_channel chan uint8) {
+	for {
+		state := uint8(0)
+		state |= uint8(window.GetKey(glfw.KeyRight))
+		state |= uint8(window.GetKey(glfw.KeyLeft)) << 1
+		state |= uint8(window.GetKey(glfw.KeyUp)) << 2
+		state |= uint8(window.GetKey(glfw.KeyDown)) << 3
+		state |= uint8(window.GetKey(glfw.KeyA)) << 4
+		state |= uint8(window.GetKey(glfw.KeyS)) << 5
+		state |= uint8(window.GetKey(glfw.KeyBackspace)) << 6
+		state |= uint8(window.GetKey(glfw.KeyEnter)) << 7
+		state = (uint8(state) ^ 0xff)
+
+		select {
+		case input_channel <- state:
+		default:
+		}
+	}
+}
+
 func main() {
 	runtime.LockOSThread()
 
@@ -174,36 +194,37 @@ func main() {
 	// tile_screen := makeScreen(tile_window)
 
 	hblank_channel := make(chan bool)
+	input_channel := make(chan uint8)
 
-	var gameboy = gameboy.GameboyFactory(hblank_channel)
+	var gameboy = gameboy.GameboyFactory(hblank_channel, input_channel)
 	go gameboy.Run(-1)
+	go check_input(screen_window.Glfw_window, input_channel)
 
 	// for !bg_window.Glfw_window.ShouldClose() && !tile_window.Glfw_window.ShouldClose() {
 	for !screen_window.Glfw_window.ShouldClose() {
 		draw_flag := <-hblank_channel
 
-		ticker := time.NewTicker(8 * time.Millisecond)
+		ticker := time.NewTicker(1 * time.Millisecond)
 		done := make(chan bool)
 
 		if draw_flag {
+			select {
+			case <-done:
+				return
+			case <-ticker.C:
 
-			updateScreen(gameboy.GPU.Screen, bg_screen, screen_window)
-			// updateScreen(gameboy.GPU.Tile_data, tile_screen, tile_window)
+				updateScreen(gameboy.GPU.Screen, bg_screen, screen_window)
+				// updateScreen(gameboy.GPU.Tile_data, tile_screen, tile_window)
 
-			screen_window.Glfw_window.MakeContextCurrent()
-			draw(bg_screen, screen_window.Glfw_window, program)
+				screen_window.Glfw_window.MakeContextCurrent()
+				draw(bg_screen, screen_window.Glfw_window, program)
 
-			// tile_window.Glfw_window.MakeContextCurrent()
-			// draw(tile_screen, tile_window.Glfw_window, program)
+				// tile_window.Glfw_window.MakeContextCurrent()
+				// draw(tile_screen, tile_window.Glfw_window, program)
 
-			glfw.PollEvents()
+				glfw.PollEvents()
+			}
 		}
 
-		select {
-		case <-done:
-			return
-		case <-ticker.C:
-			// fmt.Println("Tick at", t)
-		}
 	}
 }

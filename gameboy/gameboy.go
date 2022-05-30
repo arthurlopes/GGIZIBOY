@@ -12,14 +12,14 @@ type Gameboy_struct struct {
 	GPU *GPU.GPU_struct
 }
 
-func GameboyFactory(hblank_channel chan bool) *Gameboy_struct {
+func GameboyFactory(hblank_channel chan bool, input_channel chan uint8) *Gameboy_struct {
 	var gb = Gameboy_struct{}
-	gb.Innit(hblank_channel)
+	gb.Innit(hblank_channel, input_channel)
 	return &gb
 }
 
-func (gb *Gameboy_struct) Innit(hblank_channel chan bool) {
-	gb.MMU = MMU.MMUFactory()
+func (gb *Gameboy_struct) Innit(hblank_channel chan bool, input_channel chan uint8) {
+	gb.MMU = MMU.MMUFactory(input_channel)
 	gb.CPU = CPU.CPUFactory()
 	gb.GPU = GPU.GPUFactory(hblank_channel)
 
