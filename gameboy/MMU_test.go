@@ -7,7 +7,8 @@ import (
 
 func TestLoadBoostrap(t *testing.T) {
 	ch := make(chan bool)
-	var gb = GameboyFactory(ch)
+	in := make(chan uint8)
+	var gb = GameboyFactory(ch, in)
 
 	md5 := md5.Sum(gb.MMU.Memory[:0x100])
 
@@ -20,7 +21,8 @@ func TestLoadBoostrap(t *testing.T) {
 
 func TestWriteRead(t *testing.T) {
 	ch := make(chan bool)
-	var gb = GameboyFactory(ch)
+	in := make(chan uint8)
+	var gb = GameboyFactory(ch, in)
 
 	gb.MMU.WriteByte(0x10, 0x66)
 	if gb.MMU.ReadByte(0x10) != 0x66 {

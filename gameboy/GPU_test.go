@@ -1,25 +1,14 @@
 package gameboy
 
 import (
-	"fmt"
 	"reflect"
 	"testing"
 )
 
-func TestRenderBackground(t *testing.T) {
-	ch := make(chan bool)
-	var gb = GameboyFactory(ch)
-	gb.MMU.LoadDump()
-
-	gb.GPU.Render_Background()
-
-	// TODO: Check if logo was printed
-	fmt.Println("")
-}
-
 func TestCreateTileMap(t *testing.T) {
 	ch := make(chan bool)
-	var gb = GameboyFactory(ch)
+	in := make(chan uint8)
+	var gb = GameboyFactory(ch, in)
 	gb.MMU.LoadDump()
 
 	var tileMap = gb.GPU.Create_tile_map()

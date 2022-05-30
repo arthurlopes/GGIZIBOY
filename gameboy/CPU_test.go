@@ -6,7 +6,8 @@ import (
 
 func TestLD(t *testing.T) {
 	ch := make(chan bool)
-	var gb = GameboyFactory(ch)
+	in := make(chan uint8)
+	var gb = GameboyFactory(ch, in)
 
 	gb.CPU.Registers.PC = 0x0050
 	gb.MMU.WriteByte(0x0050, 0x06)
@@ -21,7 +22,8 @@ func TestLD(t *testing.T) {
 
 func TestADD(t *testing.T) {
 	ch := make(chan bool)
-	var gb = GameboyFactory(ch)
+	in := make(chan uint8)
+	var gb = GameboyFactory(ch, in)
 
 	gb.CPU.Registers.PC = 0x0050
 	gb.CPU.Registers.A = 0x01
@@ -43,7 +45,8 @@ func TestADD(t *testing.T) {
 
 func TestADDOverflow(t *testing.T) {
 	ch := make(chan bool)
-	var gb = GameboyFactory(ch)
+	in := make(chan uint8)
+	var gb = GameboyFactory(ch, in)
 
 	gb.CPU.Registers.PC = 0x0050
 	gb.CPU.Registers.A = 0x02
@@ -65,7 +68,8 @@ func TestADDOverflow(t *testing.T) {
 
 func TestJR(t *testing.T) {
 	ch := make(chan bool)
-	var gb = GameboyFactory(ch)
+	in := make(chan uint8)
+	var gb = GameboyFactory(ch, in)
 
 	gb.CPU.Registers.PC = 0x0050
 	gb.MMU.WriteByte(0x0050, 0x18)
@@ -91,7 +95,8 @@ func TestJR(t *testing.T) {
 
 func TestLD_nn_A_0xEA(t *testing.T) {
 	ch := make(chan bool)
-	var gb = GameboyFactory(ch)
+	in := make(chan uint8)
+	var gb = GameboyFactory(ch, in)
 
 	gb.CPU.Registers.PC = 0x0050
 	gb.MMU.WriteByte(0x0050, 0xEA)
@@ -108,7 +113,8 @@ func TestLD_nn_A_0xEA(t *testing.T) {
 
 func TestLD_SP_nn_0x31(t *testing.T) {
 	ch := make(chan bool)
-	var gb = GameboyFactory(ch)
+	in := make(chan uint8)
+	var gb = GameboyFactory(ch, in)
 
 	gb.CPU.Registers.PC = 0x0050
 	gb.MMU.WriteByte(0x0050, 0x31)
@@ -124,7 +130,8 @@ func TestLD_SP_nn_0x31(t *testing.T) {
 
 func TestLD_HL_0x21(t *testing.T) {
 	ch := make(chan bool)
-	var gb = GameboyFactory(ch)
+	in := make(chan uint8)
+	var gb = GameboyFactory(ch, in)
 
 	gb.CPU.Registers.PC = 0x0050
 	gb.MMU.WriteByte(0x0050, 0x21)
@@ -140,7 +147,8 @@ func TestLD_HL_0x21(t *testing.T) {
 
 func TestLD_BC_0x01(t *testing.T) {
 	ch := make(chan bool)
-	var gb = GameboyFactory(ch)
+	in := make(chan uint8)
+	var gb = GameboyFactory(ch, in)
 
 	gb.CPU.Registers.PC = 0x0050
 	gb.MMU.WriteByte(0x0050, 0x01)
@@ -156,7 +164,8 @@ func TestLD_BC_0x01(t *testing.T) {
 
 func TestCall_nn_0xcd(t *testing.T) {
 	ch := make(chan bool)
-	var gb = GameboyFactory(ch)
+	in := make(chan uint8)
+	var gb = GameboyFactory(ch, in)
 
 	gb.CPU.Registers.PC = 0x8150
 	gb.CPU.Registers.SP = 0xaaaa
@@ -173,7 +182,8 @@ func TestCall_nn_0xcd(t *testing.T) {
 
 func TestDEC_B_0x05(t *testing.T) {
 	ch := make(chan bool)
-	var gb = GameboyFactory(ch)
+	in := make(chan uint8)
+	var gb = GameboyFactory(ch, in)
 
 	gb.CPU.Registers.PC = 0x0050
 	gb.CPU.Registers.B = 0
@@ -211,7 +221,8 @@ func TestDEC_B_0x05(t *testing.T) {
 
 func TestPush_Pop(t *testing.T) {
 	ch := make(chan bool)
-	var gb = GameboyFactory(ch)
+	in := make(chan uint8)
+	var gb = GameboyFactory(ch, in)
 
 	gb.CPU.Registers.PC = 0x0050
 	gb.CPU.Registers.SP = 0xef02
@@ -238,7 +249,8 @@ func TestPush_Pop(t *testing.T) {
 
 func TestSWAP(t *testing.T) {
 	ch := make(chan bool)
-	var gb = GameboyFactory(ch)
+	in := make(chan uint8)
+	var gb = GameboyFactory(ch, in)
 
 	gb.CPU.Registers.PC = 0x0050
 	gb.CPU.Registers.SP = 0xef02
@@ -255,7 +267,8 @@ func TestSWAP(t *testing.T) {
 
 func TestINC_BC_overflow(t *testing.T) {
 	ch := make(chan bool)
-	var gb = GameboyFactory(ch)
+	in := make(chan uint8)
+	var gb = GameboyFactory(ch, in)
 
 	gb.CPU.Registers.PC = 0x0050
 	gb.CPU.Registers.B = 0xff
@@ -271,7 +284,8 @@ func TestINC_BC_overflow(t *testing.T) {
 
 func TestINC_B_half_carry(t *testing.T) {
 	ch := make(chan bool)
-	var gb = GameboyFactory(ch)
+	in := make(chan uint8)
+	var gb = GameboyFactory(ch, in)
 
 	gb.CPU.Registers.PC = 0x0050
 	gb.CPU.Registers.B = 0x0f
@@ -285,7 +299,8 @@ func TestINC_B_half_carry(t *testing.T) {
 }
 func TestLD_nn(t *testing.T) {
 	ch := make(chan bool)
-	var gb = GameboyFactory(ch)
+	in := make(chan uint8)
+	var gb = GameboyFactory(ch, in)
 
 	gb.CPU.Registers.PC = 0x0050
 	gb.MMU.WriteByte(0x0050, 0x01)
@@ -301,7 +316,8 @@ func TestLD_nn(t *testing.T) {
 
 func TestLD_nn_address(t *testing.T) {
 	ch := make(chan bool)
-	var gb = GameboyFactory(ch)
+	in := make(chan uint8)
+	var gb = GameboyFactory(ch, in)
 
 	gb.CPU.Registers.PC = 0x0050
 	gb.CPU.Registers.A = 0x50
@@ -318,7 +334,8 @@ func TestLD_nn_address(t *testing.T) {
 
 func TestCP(t *testing.T) {
 	ch := make(chan bool)
-	var gb = GameboyFactory(ch)
+	in := make(chan uint8)
+	var gb = GameboyFactory(ch, in)
 
 	gb.CPU.Registers.PC = 0x0050
 	gb.CPU.Registers.A = 0xff
@@ -334,7 +351,8 @@ func TestCP(t *testing.T) {
 
 func TestRRA(t *testing.T) {
 	ch := make(chan bool)
-	var gb = GameboyFactory(ch)
+	in := make(chan uint8)
+	var gb = GameboyFactory(ch, in)
 
 	gb.CPU.Registers.PC = 0x0050
 	gb.CPU.Registers.A = 0x7f
@@ -361,7 +379,8 @@ func TestRRA(t *testing.T) {
 
 func TestDEC_A(t *testing.T) {
 	ch := make(chan bool)
-	var gb = GameboyFactory(ch)
+	in := make(chan uint8)
+	var gb = GameboyFactory(ch, in)
 
 	gb.CPU.Registers.PC = 0x0050
 	gb.CPU.Registers.A = 0x08
@@ -377,7 +396,8 @@ func TestDEC_A(t *testing.T) {
 
 func TestDEC_A_using_SUB(t *testing.T) {
 	ch := make(chan bool)
-	var gb = GameboyFactory(ch)
+	in := make(chan uint8)
+	var gb = GameboyFactory(ch, in)
 
 	gb.CPU.Registers.PC = 0x0050
 	gb.CPU.Registers.A = 0x08
@@ -394,7 +414,8 @@ func TestDEC_A_using_SUB(t *testing.T) {
 
 func TestADD_HL_BC(t *testing.T) {
 	ch := make(chan bool)
-	var gb = GameboyFactory(ch)
+	in := make(chan uint8)
+	var gb = GameboyFactory(ch, in)
 
 	gb.CPU.Registers.PC = 0x0050
 	gb.CPU.Registers.A = 0x08
@@ -414,7 +435,8 @@ func TestADD_HL_BC(t *testing.T) {
 
 func TestADD_SP_n(t *testing.T) {
 	ch := make(chan bool)
-	var gb = GameboyFactory(ch)
+	in := make(chan uint8)
+	var gb = GameboyFactory(ch, in)
 
 	gb.CPU.Registers.PC = 0x0050
 	gb.CPU.Registers.SP = 0x000f
@@ -430,7 +452,8 @@ func TestADD_SP_n(t *testing.T) {
 
 func TestCCF(t *testing.T) {
 	ch := make(chan bool)
-	var gb = GameboyFactory(ch)
+	in := make(chan uint8)
+	var gb = GameboyFactory(ch, in)
 
 	gb.CPU.Registers.PC = 0x0050
 	gb.CPU.Registers.F = 0x10
@@ -445,7 +468,8 @@ func TestCCF(t *testing.T) {
 
 func TestLD_FF00(t *testing.T) {
 	ch := make(chan bool)
-	var gb = GameboyFactory(ch)
+	in := make(chan uint8)
+	var gb = GameboyFactory(ch, in)
 
 	gb.CPU.Registers.PC = 0x0050
 	gb.CPU.Registers.A = 0x67
