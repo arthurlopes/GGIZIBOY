@@ -260,7 +260,14 @@ func (gpu *GPU_struct) Render_Screen_Line() {
 		sprite := gpu.OAM.sprites[i]
 		for j := uint8(0); j < 8; j++ {
 			tile := gpu.tile_map[uint16(sprite.tile_no)]
-			tile_pixel := tile[(gpu.Line-(sprite.y-16))*8+j]
+			tile_pixel_idx := ((gpu.Line - (sprite.y - 16)) * 8)
+			var x_offset uint8
+			if sprite.x_flip != 0 {
+				x_offset = (7 - j)
+			} else {
+				x_offset = j
+			}
+			tile_pixel := tile[tile_pixel_idx+x_offset]
 
 			var tile_paletted uint8
 			if sprite.palette == 0 {
@@ -269,8 +276,9 @@ func (gpu *GPU_struct) Render_Screen_Line() {
 				tile_paletted = gpu.OBP1_map[tile_pixel]
 			}
 
-			if ((sprite.priority == 0) && tile_pixel != 0) || (gpu.Background[y][gpu.Scroll_x+sprite.x-8+j] == 0) {
-				gpu.Screen[gpu.Line][sprite.x-8+j] = tile_paletted
+			x_pos := sprite.x - 8 + j
+			if ((sprite.priority == 0) && tile_pixel != 0) || (gpu.Background[y][gpu.Scroll_x+x_pos] == 0) {
+				gpu.Screen[gpu.Line][x_pos] = tile_paletted
 			}
 		}
 	}
