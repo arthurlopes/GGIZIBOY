@@ -178,7 +178,7 @@ func (gpu *GPU_struct) Render_Background() [][]uint8 {
 
 		for i = 0; i < 8; i++ {
 			for j = 0; j < 8; j++ {
-				gpu.Background[tile_i+i][tile_j+j] = gpu.BGP_map[tile[8*i+j]]
+				gpu.Background[tile_i+i][tile_j+j] = tile[8*i+j]
 			}
 		}
 
@@ -241,7 +241,7 @@ func (gpu *GPU_struct) Render_Screen_Line() {
 	y := (gpu.Scroll_y + gpu.Line)
 	for i := uint8(0); i < 160; i++ {
 		x := (gpu.Scroll_x + i)
-		gpu.Screen[gpu.Line][i] = gpu.Background[y][x]
+		gpu.Screen[gpu.Line][i] = gpu.BGP_map[gpu.Background[y][x]]
 	}
 
 	// Load sprites
@@ -260,15 +260,16 @@ func (gpu *GPU_struct) Render_Screen_Line() {
 		sprite := gpu.OAM.sprites[i]
 		for j := uint8(0); j < 8; j++ {
 			tile := gpu.tile_map[uint16(sprite.tile_no)]
+			tile_pixel := tile[(gpu.Line-(sprite.y-16))*8+j]
 
 			var tile_paletted uint8
 			if sprite.palette == 0 {
-				tile_paletted = gpu.OBP0_map[tile[(gpu.Line-(sprite.y-16))*8+j]]
+				tile_paletted = gpu.OBP0_map[tile_pixel]
 			} else {
-				tile_paletted = gpu.OBP1_map[tile[(gpu.Line-(sprite.y-16))*8+j]]
+				tile_paletted = gpu.OBP1_map[tile_pixel]
 			}
 
-			if ((sprite.priority == 0) && tile_paletted != 0) || (gpu.Screen[gpu.Line][sprite.x-8+j] == 0) {
+			if ((sprite.priority == 0) && tile_pixel != 0) || (gpu.Background[y][gpu.Scroll_x+sprite.x-8+j] == 0) {
 				gpu.Screen[gpu.Line][sprite.x-8+j] = tile_paletted
 			}
 		}
