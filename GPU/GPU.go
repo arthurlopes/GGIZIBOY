@@ -248,7 +248,7 @@ func (gpu *GPU_struct) Render_Screen_Line() {
 	sprites_on_current_line := make([]uint8, 0)
 	for i := uint8(0); i < 40; i++ {
 		sprite := gpu.OAM.sprites[i]
-		if (sprite.x < 8) || (sprite.y < 16) || (sprite.x >= 160+8) || (sprite.y >= 144+16) {
+		if (sprite.x < 8) || (sprite.y < 16) || (sprite.x > 160+8) || (sprite.y > 144+16) {
 			continue
 		}
 		if (sprite.y-16 <= gpu.Line) && (gpu.Line < sprite.y-8) {
@@ -277,7 +277,7 @@ func (gpu *GPU_struct) Render_Screen_Line() {
 			}
 
 			x_pos := sprite.x - 8 + j
-			if ((sprite.priority == 0) && tile_pixel != 0) || (gpu.Background[y][gpu.Scroll_x+x_pos] == 0) {
+			if (x_pos < 160) && (((sprite.priority == 0) && tile_pixel != 0) || (gpu.Background[y][gpu.Scroll_x+x_pos] == 0)) {
 				gpu.Screen[gpu.Line][x_pos] = tile_paletted
 			}
 		}

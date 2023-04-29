@@ -40,6 +40,7 @@ type Registers_struct struct {
 	TAC      uint8
 
 	Halt uint8
+	Boot bool
 }
 
 type Instructions_maps struct {
@@ -98,9 +99,12 @@ func (cpu *CPU_struct) Run(limit int) {
 
 		if cpu.Registers.PC == 0x100 {
 			fmt.Println("Bootstrap done", next_instruction_str)
+			cpu.Registers.Boot = true
 		}
 
-		// fmt.Printf("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x %d\n", cpu.Registers.PC, next_instruction, cpu.Registers.A, cpu.Registers.B, cpu.Registers.C, cpu.Registers.D, cpu.Registers.E, cpu.getHL(), cpu.Registers.F, cpu.Registers.TIMA) //, cpu.MMU.ReadByte(0xff44))
+		// if cpu.Registers.Boot {
+		// 	fmt.Printf("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x %d\n", cpu.Registers.PC, next_instruction, cpu.Registers.A, cpu.Registers.B, cpu.Registers.C, cpu.Registers.D, cpu.Registers.E, cpu.getHL(), cpu.Registers.F, cpu.Registers.TIMA) //, cpu.MMU.ReadByte(0xff44))
+		// }
 
 		var oldIME = cpu.Registers.IME
 		var oldTAC uint8 = cpu.Registers.TAC
