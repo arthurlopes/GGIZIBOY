@@ -1,18 +1,64 @@
-# Binaries for programs and plugins
-*.exe
-*.exe~
-*.dll
+# Compiled Object files
+*.o
+*.a
 *.so
-*.dylib
 
-# Test binary, built with `go test -c`
-*.test
-
-# Output of the go coverage tool, specifically when used with LiteIDE
+# Build artifacts
+*.exe
 *.out
+*.build
 
-# Dependency directories (remove the comment below to include it)
-# vendor/
+# Folders
+_obj
+_test
+
+# Architecture specific extensions/prefixes
+*.[568vq]
+[568vq].out
+
+*.cgo1.go
+*.cgo2.c
+_cgo_defun.c
+_cgo_gotypes.go
+_cgo_export.*
+
+_testmain.go
+
+# Dependency directories
+vendor/
+
+# IDE/Editor folders and files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+*.bak
+*.orig
+*.sublime*
+*.iml
+*.ipr
+*.iws
+*.tmproj
+*.tmproject
+*.user
+*.userprefs
+*.kdev4
+*.kdev4
+*.kdev4
+*.kateconfig
+*.kateschema
+*.katev1
+*.kate
+*.suo
+*.sln.docstates
+*.sln.ide
+*.dbmdl
+*.dbproj.schemaview
+*.pfx
+*.publishsettings
+*.pem
+.DS_Store
 
 .vscode
 *.bin
@@ -20,5 +66,4 @@
 *.gb.ram
 *.log
 misc/
-*.sum
 *.sav
