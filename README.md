@@ -19,6 +19,7 @@ Welcome to GGIZIBoy! GGIZIBoy is a Game Boy emulator written from scratch in the
 In this table:
 
 :heavy_check_mark: represents a feature that has been implemented.
+
 :construction: represents a feature that is still in development.
 
 # Screenshots
@@ -67,11 +68,16 @@ Replace [path/to/rom.gb] with the path to a Game Boy ROM file.
 
 The default control mappings are:
 
-Directional keys: Arrow keys
-A button: X
-B button: Z
-Start button: Enter
-Select button: Space
+| Key                    | Action                |
+|------------------------|-----------------------|
+| <kbd>Arrow Up</kbd>    | Move Up               |
+| <kbd>Arrow Down</kbd>  | Move Down             |
+| <kbd>Arrow Left</kbd>  | Move Left             |
+| <kbd>Arrow Right</kbd> | Move Right            |
+| <kbd>A</kbd>           | Button A              |
+| <kbd>S</kbd>           | Button B              |
+| <kbd>Enter</kbd>       | Start                 |
+| <kbd>Backspace</kbd>   | Select                |
 
 # Contributing
 If you'd like to help improve the emulator, please submit a pull request or open an issue on GitHub.
